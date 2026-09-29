@@ -1,0 +1,2755 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>EL | UE CAG</title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Remove Tap Highlight on Windows Phone IE -->
+    <meta name="msapplication-tap-highlight" content="no" />
+
+    <link rel="icon" type="image/png" href="../../../dist/assets/img/favicon_16x16.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="../../../dist/assets/img/favicon_32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="../../../dist/assets/img/favicon_64x64.png" sizes="64x64">
+
+    <!-- <link href="https://fonts.googleapis.com/css?family=Montserrat:100,300,400,600,700,900" rel="stylesheet"> -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- additional styles for plugins -->
+    <!-- weather icons -->
+    <link rel="stylesheet" href="../../dist/bower_components/weather-icons/css/weather-icons.min.css" media="all">
+    <!-- metrics graphics (charts) -->
+    <link rel="stylesheet" href="../../dist/bower_components/metrics-graphics/dist/metricsgraphics.css">
+    <!-- chartist -->
+    <link rel="stylesheet" href="../../dist/bower_components/chartist/dist/chartist.min.css">
+
+    <!-- uikit -->
+    <link rel="stylesheet" href="../../dist/bower_components/uikit/css/uikit.almost-flat.min.css" media="all">
+
+    <!-- flag icons -->
+    <link rel="stylesheet" href="../../dist/assets/icons/flags/flags.min.css" media="all">
+
+    <!-- style switcher -->
+    <link rel="stylesheet" href="../../dist/assets/css/style_switcher.min.css" media="all">
+
+    <!-- minificar y actualizar en Producción-->
+    <!-- <link rel="stylesheet" href="../../../../../dist/assets/css/main.css" media="all"> -->
+    <link rel="stylesheet" href="../../../../dist/assets/css/main.css" media="all">
+
+    <!-- themes -->
+    <link rel="stylesheet" href="../../dist/assets/css/themes/themes_combined.min.css" media="all">
+
+    <!-- altair admin -->
+    <link rel="stylesheet" href="../../../../dist/assets/css/style_educalinks.css" media="all">
+
+    <link href="../../includes/common/growl/jquery.growl.css" rel="stylesheet" type="text/css" />
+
+    <link rel="stylesheet" href="../../../../dist/assets/css/utils.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js" type="text/javascript"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js" type="text/javascript"></script>
+    <link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="Stylesheet" type="text/css" />
+<body class="disable_transitions sidebar_main_open sidebar_main_swipe footer_active educalinks educalinks--alumnos">
+  <form name="frm_menu" id="frm_menu" action="../general/" enctype="multipart/form-data" method="post">
+    <header id="header_main">
+        <div class="header_main_content">
+            <nav class="uk-navbar">
+                <a href="#" id="sidebar_main_toggle" class="sSwitch sSwitch_left">
+                    <span class="sSwitchIcon"></span>
+                </a>
+
+                
+
+                <a style="line-height: 45px;" href="index.php"
+                   class="sSidebar_hide sidebar_logo_large uk-hidden-small ">
+                    <img class="logo_light" src="../../../../includes/common/logos/logo_educalinks_ver.png" alt=""
+                         style="width: 190px;"/>
+                </a>
+                <a style="line-height: 45px;" href="index.php"
+                   class="sSidebar_hide sidebar_logo_large uk-hidden-xlarge uk-hidden-large uk-hidden-medium">
+                    <img class="logo_light" src="../../../../includes/common/logos/logo_educalinks_small.png" alt=""
+                         style="width: 50px;"/>
+                </a>
+                                    <a style="color: #fff;" class="uk-hidden-small"><i
+                                class="material-icons md-24 ingenium-color-blue">event_available</i></i><span
+                                class="ingenium-color-blue">&nbsp;Período: 2026 - 2027</span>
+                    </a>
+                
+
+                <div class="uk-navbar-flip uk-hidden-xlarge uk-hidden-large">
+                    <ul class="uk-navbar-nav user_actions">
+                                                <script>
+                            function onErrorChargePhoto(e) {
+                                let nombre = "".split(' ')[0];
+                                let apellido = "".split(' ')[0];
+                                e.src = `https://ui-avatars.com/api/?name=${nombre}+${apellido}&background=0D8ABC&color=fff`;
+                            }
+                        </script>
+
+                        <li data-uk-dropdown="{mode:click,pos:bottom-right}">
+                            <a href="#" class="user_action_image uk-text-truncate ingenium-color-blue"><img
+                                        class="md-user-image"
+                                        src=""
+                                        onError="javascript:onErrorChargePhoto(this)"
+                                        alt=""/><span
+                                        class="uk-hidden-medium uk-hidden-small">&nbsp;&nbsp;ROGER DANIEL</span>
+                            </a>
+                            <div class="uk-dropdown uk-dropdown-xlarge">
+                                <ul class="uk-nav js-uk-prevent">
+                                    
+
+                                    <li><a href="admin_pass.php">Contraseña</a>
+                                    <li><a href="../../salir.php">Cerrar Sesión</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="uk-navbar-flip uk-hidden-small uk-hidden-medium">
+                    <ul class="uk-navbar-nav user_actions">
+
+                        
+                        
+                        <li data-uk-dropdown="{mode:click,pos:bottom-right}">
+                            <a href="#" class="user_action_image uk-text-truncate ingenium-color-blue">
+                                <img class="md-user-image"
+                                     src="https://ui-avatars.com/api/?name=ROGER DANIEL&background=3f266a&color=FFF&size=150"
+                                     alt=""/>&nbsp;&nbsp;ROGER DANIEL                            </a>
+                            <div class="uk-dropdown uk-dropdown-xlarge">
+                                <ul class="uk-nav js-uk-prevent">
+                                    <li><a href="admin_pass.php">Contraseña</a>
+                                    <li><a href="../../salir.php">Cerrar Sesión</a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        
+                        <li class="uk-hidden-small" data-uk-dropdown="{mode:click,pos:bottom-right}">
+                            <a href="#" class="user_action_icon"><i
+                                        class="material-icons md-24 md-light ingenium-color-blue"></i><span
+                                        class="uk-badge">7</span></a>
+                            <div class="uk-dropdown uk-dropdown-xlarge">
+                                <div class="md-card-content">
+                                    <ul class="uk-tab uk-tab-grid"
+                                        data-uk-tab="{connect:'#header_alerts',animation:'slide-horizontal'}">
+                                        <li class="uk-width-1-1 uk-active"><a href="#"
+                                                                              class="js-uk-prevent uk-text-small">Mensajes
+                                                (7)</a></li>
+                                    </ul>
+                                    <ul id="header_alerts" class="uk-switcher uk-margin">
+                                        <li>
+                                            <ul class="md-list md-list-addon">
+
+                                                                                                        <li>
+                                                            <div class="md-list-addon-element">
+                                                               <a href=""> <span class="md-user-letters md-bg-purple">M</span></a>
+                                                            </div>
+                                                            <div class="md-list-content">
+                                                                <span class="md-list-heading"><a   href="/alumnos/mensajes?mens_codi=38479">Recordatorio: Encuesta de percepci&oacute;n de los estudiantes sobre los docentes</a></span>
+                                                                <span class="uk-text-small uk-text-muted">ANDREA LORENA PRADO TORAL</span>
+                                                                <small>
+                                                                    <i class='fa fa-clock-o'></i>15/09/2026                                                                </small>
+                                                            </div>
+                                                        </li>
+                                                                                                                <li>
+                                                            <div class="md-list-addon-element">
+                                                               <a href=""> <span class="md-user-letters md-bg-purple">M</span></a>
+                                                            </div>
+                                                            <div class="md-list-content">
+                                                                <span class="md-list-heading"><a   href="/alumnos/mensajes?mens_codi=37266">Tu opini&oacute;n es importante: Encuesta de percepci&oacute;n al docente</a></span>
+                                                                <span class="uk-text-small uk-text-muted">ANDREA LORENA PRADO TORAL</span>
+                                                                <small>
+                                                                    <i class='fa fa-clock-o'></i>11/09/2026                                                                </small>
+                                                            </div>
+                                                        </li>
+                                                                                                                <li>
+                                                            <div class="md-list-addon-element">
+                                                               <a href=""> <span class="md-user-letters md-bg-purple">M</span></a>
+                                                            </div>
+                                                            <div class="md-list-content">
+                                                                <span class="md-list-heading"><a   href="/alumnos/mensajes?mens_codi=36773">Tu opini&oacute;n es importante: Encuesta de percepci&oacute;n al docente</a></span>
+                                                                <span class="uk-text-small uk-text-muted">ANDREA LORENA PRADO TORAL</span>
+                                                                <small>
+                                                                    <i class='fa fa-clock-o'></i>11/09/2026                                                                </small>
+                                                            </div>
+                                                        </li>
+                                                                                                                <li>
+                                                            <div class="md-list-addon-element">
+                                                               <a href=""> <span class="md-user-letters md-bg-purple">M</span></a>
+                                                            </div>
+                                                            <div class="md-list-content">
+                                                                <span class="md-list-heading"><a   href="/alumnos/mensajes?mens_codi=30558">Recordatorio de entrega ? Evaluaci&oacute;n Interna de F&iacute;sica IB - TERCER CURSO BGU "WYOMING"</a></span>
+                                                                <span class="uk-text-small uk-text-muted">FLAVIO EMILIO ARGUELLO ROMAN</span>
+                                                                <small>
+                                                                    <i class='fa fa-clock-o'></i>06/08/2026                                                                </small>
+                                                            </div>
+                                                        </li>
+                                                                                                                <li>
+                                                            <div class="md-list-addon-element">
+                                                               <a href=""> <span class="md-user-letters md-bg-purple">M</span></a>
+                                                            </div>
+                                                            <div class="md-list-content">
+                                                                <span class="md-list-heading"><a   href="/alumnos/mensajes?mens_codi=28245">Recepci&oacute;n del segundo borrador de Monograf&iacute;a - TERCER CURSO BGU "WYOMING"</a></span>
+                                                                <span class="uk-text-small uk-text-muted">FLAVIO EMILIO ARGUELLO ROMAN</span>
+                                                                <small>
+                                                                    <i class='fa fa-clock-o'></i>21/07/2026                                                                </small>
+                                                            </div>
+                                                        </li>
+                                                                                                                <li>
+                                                            <div class="md-list-addon-element">
+                                                               <a href=""> <span class="md-user-letters md-bg-purple">M</span></a>
+                                                            </div>
+                                                            <div class="md-list-content">
+                                                                <span class="md-list-heading"><a   href="/alumnos/mensajes?mens_codi=28233">Seguimiento al avance de la Investigaci&oacute;n de F&iacute;sica IB - TERCER CURSO BGU "WYOMING"</a></span>
+                                                                <span class="uk-text-small uk-text-muted">FLAVIO EMILIO ARGUELLO ROMAN</span>
+                                                                <small>
+                                                                    <i class='fa fa-clock-o'></i>21/07/2026                                                                </small>
+                                                            </div>
+                                                        </li>
+                                                                                                                <li>
+                                                            <div class="md-list-addon-element">
+                                                               <a href=""> <span class="md-user-letters md-bg-purple">M</span></a>
+                                                            </div>
+                                                            <div class="md-list-content">
+                                                                <span class="md-list-heading"><a   href="/alumnos/mensajes?mens_codi=28220">Retroalimentaci&oacute;n sobre los IB Mocks ? Completar formulario - TERCER CURSO BGU "WYOMING"</a></span>
+                                                                <span class="uk-text-small uk-text-muted">FLAVIO EMILIO ARGUELLO ROMAN</span>
+                                                                <small>
+                                                                    <i class='fa fa-clock-o'></i>21/07/2026                                                                </small>
+                                                            </div>
+                                                        </li>
+                                                        
+
+                                            </ul>
+                                            <div class="uk-text-center uk-margin-top uk-margin-small-bottom">
+                                                <a href="/alumnos/mensajes"
+                                                   class="md-btn md-btn-flat md-btn-flat-primary js-uk-prevent">Ver
+                                                    todos mensajes</a>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+
+
+                        <li class="uk-hidden-small">
+                            <a href="#" id="sidebar_secondary_toggle" class="user_action_icon  sidebar_secondary_check"><i
+                                        class="material-icons md-24 md-light ingenium-color-blue">&#xE7F4;</i><span
+                                        class="uk-badge"
+                                        style="background: #f8691f">0</span></a>
+                        </li>
+
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+</form>
+
+
+<!-- secondary sidebar -->
+<aside id="sidebar_secondary" class="tabbed_sidebar">
+    <ul class="uk-tab uk-tab-icons uk-tab-grid"
+        data-uk-tab="{connect:'#dashboard_sidebar_tabs', animation:'slide-horizontal'}">
+        <li class="uk-active uk-width-1-1"><a href="#"><i class="material-icons  md-light">date_range</i> Eventos y
+                Circulares</a></li>
+    </ul>
+
+    <div class="scrollbar-inner">
+        <ul id="dashboard_sidebar_tabs" class="uk-switcher">
+            <li>
+                <div class="timeline timeline_small uk-margin-bottom">
+
+                                    </div>
+            </li>
+        </ul>
+    </div>
+
+    <button type="button" class="chat_sidebar_close uk-close"></button>
+    <div class="chat_submit_box">
+        <div class="uk-input-group">
+            <input type="text" class="md-input" name="submit_message" id="submit_message" placeholder="Send message">
+            <span class="uk-input-group-addon">
+                    <a href="#"><i class="material-icons md-24">&#xE163;</i></a>
+                </span>
+        </div>
+    </div>
+
+</aside>
+<!-- secondary sidebar end -->
+
+
+<!-- Modal Vista mensaje-->
+<div class="modal fade bd-example-modal-lg" id="modal_leer_ext" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div id="modal_main_ext" width="100%" class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+<!-- Modal Responder-->
+<div class="modal fade bs-example-modal-lg" id="mens_responder" tabindex="-1" role="dialog" aria-labelledby="myModal"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div id="div_mens_resp" class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal eliminar-->
+
+
+<div class="uk-modal modal_sms" id="modal_del_sms" aria-hidden="true">
+    <div class="uk-modal-dialog">
+        <div class="uk-modal-header">
+            <h3 class="uk-modal-title">Educalinks<i class="material-icons"></i></h3>
+            <input type='hidden' id='hd_del_mes_codi' name='hd_del_mes_codi' value=''/>
+        </div>
+        <p>¿Eliminar mensaje? Pasará a la bandeja de mensajes eliminados. </p>
+        <div class="uk-modal-footer uk-text-right">
+            <button data-uk-modal="{target:'#modal_del_sms'}" type="button" class="md-btn md-btn-flat uk-modal-close"
+            ">No Eliminar</button>
+            <button type="button" onclick="elimina_mensaje_followed()" class="md-btn md-btn-flat md-btn-flat-primary">
+                Eliminar
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<div class="uk-modal" id="ModalPeriodos" aria-hidden="true">
+    <div class="uk-modal-dialog">
+        <div class="uk-container uk-container-center">
+            <div class="uk-grid" data-uk-grid-margin="">
+                <div class="uk-width-medium-1-1" style="text-align: -webkit-center;">
+                    <img width="300px" src="../../imagenes/logo_inicial.png" alt="Educalinks">
+                </div>
+            </div>
+            <br/>
+            <div class="scroll-wrapper scrollbar-inner">
+                <div class="scrollbar-inner scroll-content scroll-scrolly_visible">
+                    <ul class="md-list md-list-outside invoices_list" id="invoices_list">
+                        <li class="heading_list">Seleccione un periodo</li>
+                                                        <li class="md-list-item-active" style="background:#ffb48c">
+                                    <a onClick="periodo_cambio_repre(1029);" class="md-list-content">
+                                                                                    <span class="uk-badge uk-badge-primary">ACTIVO</span>
+                                                                                <span class="md-list-heading uk-text-truncate">
+                                            VER PERIODO LECTIVO 2026 - 2027                                        </span>
+                                    </a>
+                                </li>
+                                                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function validar_envio() {
+        tipo = document.getElementById('mens_tipo').value;
+        cc = document.getElementById('mens_cc_usua').value;
+
+        if (document.getElementById('mens_titu').value === '') {
+            $.growl.warning({title: "Educalinks informa ", message: "Por favor, escriba un título para el mensaje. "});
+            $('#envio_mensaje').button('reset');
+            return false;
+        }
+
+        mm = 0;
+        i = 1;
+
+        while (i <= cc) {
+            if (document.getElementById('ch_' + tipo + '_' + i) != null) {
+                if (document.getElementById('ch_' + tipo + '_' + i).checked) {
+                    mm += 1;
+                }
+            }
+            i += 1;
+        }
+        if (mm == 0) {
+            $.growl.warning({
+                title: "Educalinks informa ",
+                message: "No ha seleccionado destinatario(s) para el mensaje. "
+            });
+            $('#envio_mensaje').button('reset');
+            return false;
+        }
+
+        if (CKEDITOR.instances.mens_deta.getData() == '') {
+            if (confirm("No hay texto en el detalle del mensaje, desea enviar de todas formas?") == false) {
+                $('#envio_mensaje').button('reset');
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function envio_mensaje_nuevo() {
+        if (validar_envio()) {
+
+            $("#envio_mensaje").hide();
+            tipo = document.getElementById('mens_tipo').value;
+            cc = document.getElementById('mens_cc_usua').value;
+
+            url = 'mensajes_nuevo_script_envio.php';
+
+            mens_ok = 0;
+            mens_ko = 0;
+            mm = 0;
+            i = 1;
+
+            var jsonArr = [];
+
+            while (i <= cc) {
+
+                if (document.getElementById('ch_' + tipo + '_' + i) != null) {
+                    if (document.getElementById('ch_' + tipo + '_' + i).checked) {
+                        jsonArr.push({
+                            mens_para: document.getElementById('ch_' + tipo + '_' + i).value,
+                            mens_para_tipo: tipo,
+                            mens_alum_codi: document.getElementById('ch_' + tipo + '_' + i).getAttribute("data-alum-codi")
+                        });
+                    }
+
+                }
+                i += 1;
+
+            }
+            var data = new FormData();
+            var data = new FormData();
+            var file = document.getElementById("archivo")
+            var fullPath = document.getElementById("archivo").value;
+            var startIndex = (fullPath.indexOf('\\') >= 0 ? fullPath.lastIndexOf('\\') : fullPath.lastIndexOf('/'));
+            var filename = fullPath.substring(startIndex);
+            file_array = filename.split(".")
+            var extension = file_array[1];
+            data.append('mens_de', document.getElementById('mens_de').value);
+            data.append('mens_de_tipo', document.getElementById('mens_de_tipo').value);
+            //data.append('mens_para', document.getElementById('ch_'+ tipo + '_' + i).value);
+            //data.append('mens_para_tipo', tipo);
+            data.append('mens_dest', JSON.stringify(jsonArr));
+            data.append('mens_titu', document.getElementById('mens_titu').value);
+            data.append('mens_deta', CKEDITOR.instances.mens_deta.getData());
+            data.append('DO', 'ADD');
+            if (extension != null) {
+                data.append('mens_extension', extension);
+                data.append('mens_file', file.files[0]);
+            }
+
+            var xhr_mensaje = new XMLHttpRequest();
+            xhr_mensaje.open('POST', url, true);
+            //xhr_mensaje.setRequestHeader("Content-Type", "application/json");
+            xhr_mensaje.onload = function () {
+                // do something to response
+                //console.log(this.responseText);
+            };
+            xhr_mensaje.onreadystatechange = function () {
+                if (xhr_mensaje.readyState == 4 && xhr_mensaje.status == 200) {
+                    obj = JSON.parse(xhr_mensaje.responseText);
+                    if (obj.tipo == "error") {
+                        $.growl.error({title: "Error: ", message: obj.mensaje});
+
+                    } else //if(obj.tipo == "warning")
+                    {
+                        var repr = "";
+                        obj.forEach(function (repr) {
+                            if (repr.tipo == "warning") {
+                                repr = repr + "</br>" + repr + ", ";
+                            }
+                        });
+                        if (repr == "") {
+                            $.growl.notice({title: "Información: ", message: "Mensajes enviados con éxito"});
+                            //$('#envio_mensaje').button('reset');
+                            //$('#nuev_mens').modal('hide');
+                            $("#envio_mensaje").show();
+                            load_ajax_mensajes('mens_main_view', 'mensajes_view.php', 'OP=3', 5);
+                        } else {
+                            $.growl.warning({
+                                title: "Advertencia: "
+                                ,
+                                duration: 5600
+                                ,
+                                size: 'large'
+                                ,
+                                message: "Mail no enviado a los siguientes representantes: <b>" + repr + "</b></br>verificiar formato de e-mail."
+                            });
+                            //$('#envio_mensaje').button('reset');
+                            //$('#nuev_mens').modal('hide');
+                        }
+                    }
+
+                }
+            }
+            xhr_mensaje.send(data);
+
+        }
+
+    }
+
+    function envio_mensaje_resp(mens_para, mens_para_tipo) {
+
+        //$('#responder_mensaje').button('loading');
+
+        if (validar_envio_respuesta()) {
+
+            url = 'mensajes_nuevo_script_envio.php';
+
+
+            var data = new FormData();
+            data.append('mens_de', document.getElementById('mens_de').value);
+            data.append('mens_de_tipo', document.getElementById('mens_de_tipo').value);
+            data.append('mens_para', mens_para);
+            data.append('mens_para_tipo', mens_para_tipo);
+            data.append('mens_titu', document.getElementById('mens_titu').value);
+            data.append('mens_deta', CKEDITOR.instances.mens_deta.getData());
+            data.append('DO', 'RESP');
+
+            var xhr_mensaje = new XMLHttpRequest();
+            xhr_mensaje.open('POST', url, true);
+            //xhr_mensaje.setRequestHeader("Content-Type", "application/json");
+            xhr_mensaje.onload = function () {
+                // do something to response
+                console.log(this.responseText);
+            };
+            xhr_mensaje.onreadystatechange = function () {
+                if (xhr_mensaje.readyState == 4 && xhr_mensaje.status == 200) {
+                    obj = JSON.parse(xhr_mensaje.responseText);
+                    if (obj.tipo == "error") {
+                        $.growl.error({title: "Error: ", message: obj.mensaje});
+                        $('#responder_mensaje').button('reset');
+                    } else //if(obj.tipo == "warning")
+                    {
+                        var repr = "";
+                        obj.forEach(function (entry) {
+                            if (entry.tipo == "warning") {
+                                repr = repr + "</br>" + entry.repr + ", ";
+                            }
+                        });
+                        if (repr == "") {
+                            $.growl.notice({title: "Información: ", message: "Mensajes enviados con éxito"});
+                            $('#responder_mensaje').button('reset');
+                            $('#mens_responder').modal('hide');
+                        } else {
+                            $.growl.warning({
+                                title: "Advertencia: "
+                                ,
+                                duration: 5600
+                                ,
+                                message: "Mail no enviado al representante: <b>" + repr + "</b></br>verificiar formato de e-mail."
+                            });
+                            $('#responder_mensaje').button('reset');
+                            $('#mens_responder').modal('hide');
+                        }
+                    }
+
+                }
+            }
+            xhr_mensaje.send(data);
+
+        }
+
+    }
+</script>
+  <style>
+
+    .card-resumen {
+      background: #3f266a;
+      color: white !important;
+    }
+
+     .card-resumen h3,.card-resumen i, .card-resumen .md-card-overlay-toggler{
+      color: #f0f0f5 !important;
+    }
+
+    #new-add-placas .uk-slideshow::-webkit-scrollbar   {
+        display:  none;
+    }
+
+  </style>
+  <!-- main header -->
+  <!-- main header end -->
+  <!-- main sidebar -->
+
+  <aside id="sidebar_main">
+  <div class="sidebar_main_header">
+    <div class="sidebar_actions">
+      <br />
+      <div style="text-align: center" class=" uk-margin-top">
+        <img style="max-height: 100px;" class="" src="../../imagenes/clientes/americano/logo-blanco.png">
+      </div>
+    </div>
+  </div>
+  <div class="menu_section">
+    <ul>
+      <li class="current_section " title="Inicio">
+        <a href="index.php">
+          <span class="menu_icon"><i class="material-icons">&#xE871;</i></span>
+          <span class="menu_title">Inicio</span>
+        </a>
+      </li>
+
+                    <li title="Chats" class="">
+                <a href="horario.php">
+                    <span class="menu_icon"><i class="material-icons">alarm</i></span>
+                    <span class="menu_title">Horarios</span>
+                </a>
+            </li>
+        
+            
+    <li class="" title="Mis Clases">
+      <a href="materias.php">
+        <span class="menu_icon"><i class="material-icons">class</i></span>
+        <span class="menu_title">Mis Clases</span>
+      </a>
+    </li>
+              <li title="Plataformas Externas" class="">
+          <a href="enlace.php">
+            <span class="menu_icon"><i class="material-icons">link</i></span>
+            <span class="menu_title">Plat. Externas</span>
+          </a>
+        </li>
+      
+      
+      
+        <li class="" title="Tareas">
+          <a href="agenda.php">
+            <span class="menu_icon"><i class="material-icons">date_range</i></span>
+            <span class="menu_title">Tareas</span>
+          </a>
+        </li>
+                <li class="" title="Circulares">
+          <a href="circulares.php">
+            <span class="menu_icon"><i class="material-icons">dns</i></span>
+            <span class="menu_title">Circulares</span>
+          </a>
+        </li>
+
+        
+                  <li class="" title="Calificaciones">
+            <a href="notas.php">
+              <span class="menu_icon"><i class="material-icons">&#xe0e0;</i></span>
+              <span class="menu_title">Calificaciones</span>
+            </a>
+          </li>
+
+                
+        
+        <li class="" title="Observaciones">
+          <a href="observaciones_main.php">
+            <span class="menu_icon"><i class="material-icons">&#xe02f;</i></span>
+            <span class="menu_title">Observaciones</span>
+          </a>
+        </li>
+        <li class="" title="Mensajes">
+          <a href="mensajes">
+            <span class="menu_icon"><i class="material-icons">question_answer</i></span>
+            <span class="menu_title">Mensajes</span>
+          </a>
+        </li>
+
+
+        <li class="" title="Videos Tutoriales">
+          <a href="../alumnos/videoteca.php">
+            <span class="menu_icon"><i class="material-icons">subscriptions</i></span>
+            <span class="menu_title">Videos Tutoriales</span>
+          </a>
+        </li>
+                                </ul>
+  </div>
+</aside>
+
+  <div id="page_content">
+    <div id="page_content_inner">
+
+            <!-- Curso Paralelos -->
+
+      
+      
+      <div class="page_content">
+        <div class="uk-width-1-1">
+
+                    <div class="md-card" style="background: rgb(63,38,106);background: linear-gradient(113deg, rgba(56,34,96,1) 0%, rgba(125,8,140,1) 54%, rgba(138,86,224,1) 100%)">
+            <div class="user_heading" style="background-color:unset !important;background-image:url('../../imagenes/portada_bg_home.png');background-size:contain;background-repeat:no-repeat;background-position:right">
+
+              <!-- Nuevo -->
+                            <div class="user_heading_avatar">
+                <div class="thumbnail">
+                    <img src="/imagenes/default.jpg" alt="../fotos/americano/alumnos/1029/2022000043.jpg">
+                </div>
+              </div>
+
+              <div class="user_heading_content">
+
+                <h2 class="heading_b">ROGER DANIEL LEMUS MEDINA              </h2>
+
+                                                  <span class="user-pill-badge"> <i class="material-icons md-color-deep-purple-50">school</i> TERCER CURSO BGU WYOMING</span>
+                  <br>
+                
+                <div class="user_heading_info_block">
+                  <span class="user_heading_item"> <i class="material-icons md-color-deep-purple-50">mail</i> roger.lemus@colegioamericano.edu.ec</span>
+                </div>
+                <div class="user_heading_info">
+                  <div class="user_heading_info_block">
+                    <span class="user_heading_item"> <i class="material-icons md-color-deep-purple-50">book</i> 2022000043</span>
+
+                  </div>
+                  <div class="user_heading_info_block">
+                    <span class="user_heading_item"> <i class="material-icons md-color-deep-purple-50">person</i> 0930935093</span>
+                  </div>
+                                  </div>
+              </div>
+              <!-- Fin Nuevo -->
+
+              <!-- <div class="user_heading_avatar">
+                    <div class="thumbnail uk-margin-medium-top">
+                                                    <img src="/imagenes/nino.png" alt="user avatar">
+                                            </div>
+                </div>
+                <div class="user_heading_content" >
+                    <h2 class="heading_b">
+                        <span class="uk-text-truncate" style="font-weight:600 !important">ROGER DANIEL LEMUS MEDINA</span>
+                        <span class="sub-heading uk-text-small uk-margin-top">
+                            <i class="material-icons md-color-deep-purple-50">book</i> 2022000043                        </span>
+                        <span
+                                class="sub-heading uk-text-small"> <i class="material-icons md-color-deep-purple-50">school</i> TERCER CURSO BGU WYOMING                         </span>
+                         <span class="sub-heading uk-text-small">
+                            <i class="material-icons md-color-deep-purple-50">person</i> 0930935093                        </span>
+                        <span
+                                class="sub-heading uk-text-small"> <i class="material-icons md-color-deep-purple-50">lock</i> 0930935093                         </span>
+                    </h2>
+                </div> -->
+            </div>
+          </div>
+
+          <!-- <div class="user_heading_avatar">
+
+
+                           
+                <div class="thumbnail" style="marging-right: 30px;float: left;">
+                    <img src="../../../imagenes/nino.png" alt="user avatar" data-dense-cap="2" class="dense-image dense-ready">
+                </div>
+           
+                
+
+                <div  style="padding-left: 30px;float: left;">
+                    <h2 class="heading_b uk-margin-bottom">
+                        <span class="uk-text-truncate">ROGER DANIEL LEMUS MEDINA</span>
+                        <span class="sub-heading">
+                            <small>Código:</small><strong>  2022000043 </strong><br>
+                            <small>Curso:</small><strong>  TERCER CURSO BGU WYOMING</strong>
+                        </span>
+                    </h2>
+                </div>
+            
+        </div>  -->
+
+          <!-- <div class="uk-width-medium-4-5 uk-container-center">
+                            <div class="md-card">
+                                <div class="md-card-content large-padding">
+
+                                    <h2 class="heading_b">Inicio del período
+                                        lectivo 2026 - 2027 y solicitud de accesos a
+                                        Plataformas</h2>
+                                    <div class="uk-grid uk-grid-divider" data-uk-grid-margin="">
+                                        <div class="uk-width-medium-2-3 uk-row-first">
+                                            <div class="uk-grid" data-uk-grid-margin="">
+                                                <div class="uk-width-medium-1-1 uk-row-first">
+                                                    <p class="uk-text-muted" style="text-align: justify">
+                                                        Declaro que acepto y conozco las políticas, términos y
+                                                        condiciones académicas y financieras de la matriculación en
+                                                        la Unidad Educativa Americano de Guayaquil, estipuladas
+                                                        en el <a title="Ver documento adjunto"
+                                                                 onclick="window.open('../admin/convenio_matricula/americano/1029/contrato_pdf.php?alum_curs_para_codi=588008','_blank')">Contrato Educativo</a>; así mismo, solicito mis claves de acceso
+                                                        a la Plataforma digital indicada por la unidad educativa y 
+                                                        consiento que mi representado
+                                                        inicie las clases de acuerdo al calendario escolar de la institución.                                                        <br><br>
+                                                        <input type="checkbox" id="term_condiciones"
+                                                               name="term_condiciones">
+                                                        <a>Aceptar términos y condiciones</a>
+                                                        <br><br>
+                                                        <strong>Más Información</strong>
+                                                    <p style="text-align: justify"></p>
+                                                    </p>
+
+                                                </div>
+                                                <div class="uk-width-medium-1-1 uk-row-first" style="text-align: right">
+
+                                                    <button id="btn_aceptar" disabled=""
+                                                            class="md-btn md-btn-success md-btn-wave-light waves-effect waves-button waves-light disabled"
+                                                            type="button">ACEPTAR
+                                                    </button>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="uk-width-medium-1-3">
+                                            <img style="max-height: 500px;" class=""
+                                                 src="../../../imagenes/clases_online.jpg">
+
+
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div> -->
+
+        </div>
+
+        <br>
+
+        <!-- <div class="uk-width-medium-6-6 uk-container-center">
+                            <div class="md-card" style="box-shadow: rgba(0, 0, 0, 0.06) 0px 2px 4px 0px inset !important; border: 1px solid #f1f1f1; border-radius:1rem">
+                                <div class="md-card-content large-padding">
+
+                                    <h2 class="heading_b ingenium-color-blue" style="font-weight:600">Inicio del período
+                                        lectivo 2026 - 2027 y solicitud de accesos a
+                                        Plataformas</h2>
+                                    <div class="uk-grid " data-uk-grid-margin="">
+                                        <div class="uk-width-medium-2-3 uk-row-first">
+                                            <div class="uk-grid" data-uk-grid-margin="">
+                                                <div class="uk-width-medium-1-1 uk-row-first">
+                                                    <p class="uk-text-muted" style="text-align: justify">
+                                                        Declaro que acepto y conozco las políticas, términos y
+                                                        condiciones académicas y financieras de la matriculación en
+                                                        la Unidad Educativa Americano de Guayaquil, estipuladas
+                                                        en el <a title="Ver documento adjunto"
+                                                                 onclick="window.open('../admin/convenio_matricula/americano/1029/contrato_pdf.php?alum_curs_para_codi=588008','_blank')">Contrato Educativo</a>; así mismo, solicito mis claves de acceso
+                                                        a la Plataforma digital indicada por la unidad educativa y 
+                                                        consiento que mi representado
+                                                        inicie las clases de acuerdo al calendario escolar de la institución.                                                        <br><br>
+                                                        <input type="checkbox" id="term_condiciones"
+                                                               name="term_condiciones">
+                                                        <a>Aceptar términos y condiciones</a>
+                                                        <br><br>
+                                                        <strong>Más Información</strong>
+                                                    <p style="text-align: justify"></p>
+                                                    </p>
+
+                                                </div>
+                                                <div class="uk-width-medium-1-1 uk-row-first" style="text-align: left">
+
+                                                    <button id="btn_aceptar" disabled=""
+                                                            class="md-btn md-btn-success md-btn-wave-light waves-effect waves-button waves-light disabled"
+                                                            type="button">ACEPTAR
+                                                    </button>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="uk-width-medium-1-3">
+                                            <img style="max-height: 500px;border" class="uk-margin-bottom"
+                                                 src="../../../imagenes/term_cond.png">
+
+
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div> -->
+        
+                  <!-- circular charts -->
+          <div class="uk-grid uk-grid-width-small-1-2 uk-grid-width-large-1-3 uk-grid-width-xlarge-1-5 uk-text-center  sortable-handler" id="dashboard_sortable_cards" data-uk-sortable data-uk-grid-margin>
+           
+            <div>
+              <div class="md-card md-card-hover md-card-overlay">
+
+                <a href="mensajes.php">
+                  <div class="md-card-content">
+                    <div class="epc_chart" data-percent="100" data-bar-color="#03a9f4">
+                      <span class="epc_chart_icon"><i class="material-icons">&#xE0BE;</i></span>
+                    </div>
+                  </div>
+                </a>
+                <div class="md-card-overlay-content">
+                  <div class="uk-clearfix md-card-overlay-header">
+                    <i class="md-icon material-icons md-card-overlay-toggler">&#xE5D4;</i>
+                    <a href="mensajes.php">
+                      
+                      <h3>
+                        Mensajes <span class="uk-badge">7</span>
+                      </h3>
+                    </a>
+                  </div>
+                  <p> Visualice, reciba o envie mensajes a los docentes de su representado.</p>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="md-card md-card-hover md-card-overlay">
+                <a data-uk-modal="{target:'#modal_informe'}">
+                  <div class="md-card-content" id="canvas_1">
+                    <div class="epc_chart" data-percent="100" data-bar-color="#9c27b0">
+                      <span class="epc_chart_icon"><i class="material-icons">&#xE85D;</i></span>
+                    </div>
+                  </div>
+                </a>
+
+                <div class="md-card-overlay-content">
+                  
+                  <div class="uk-clearfix md-card-overlay-header">
+                    <i class="md-icon material-icons md-card-overlay-toggler">&#xE5D4;</i>
+                    <h3 data-uk-modal="{target:'#modal_informe'}">
+                      Informe del día <span class="uk-badge"></span>
+                    </h3>
+
+                  </div>
+                  <p>Detalles del día de hoy:</p>
+
+
+                  <p> Agenda <span class="uk-badge"></span> <br>
+                     Leccionario <span class="uk-badge"> </span><br>                   <p> Observaciones <span class="uk-badge"></span>
+                  </p>
+                  <button data-uk-modal="{target:'#modal_informe'}" class="md-btn md-btn-mini md-btn-primary">
+                    VER
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="md-card md-card-hove card-resumen">
+                <a href="resumen.php">
+                  <div class="md-card-content" id="canvas_1" style="overflow: visible; padding-left: 0; padding-right: 0" >
+                  <img src="../imagenes/banner-edlinks-05.png" alt="banner-resumen" style="z-index: 4; height: 100%">
+
+                  </div>
+                </a>
+
+                
+              </div>
+            </div>
+            <div>
+              <div class="md-card md-card-hover md-card-overlay">
+                <a data-uk-modal="{target:'#modal_faltas'}">
+                  <div class="md-card-content uk-flex uk-flex-center uk-flex-middle">
+                    <span class="peity_conversions_large peity_data">5,3,9,6,5,9,7</span>
+                  </div>
+                </a>
+
+                <div class="md-card-overlay-content">
+                  <div class="uk-clearfix md-card-overlay-header">
+                    <i class="md-icon material-icons md-card-overlay-toggler">&#xE5D4;</i>
+                                        <h3 data-uk-modal="{target:'#modal_faltas'}">
+                      Falltas/Atrasos <span class="uk-badge">0</span>
+                    </h3>
+                  </div>
+                  Resumen de faltas y atrasos del periodo lectivo.
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="md-card md-card-hover md-card-overlay">
+                <a data-uk-modal="{target:'#modal_informe_dia_sgte'}">
+                  <div class="md-card-content" id="canvas_1">
+                    <div class="epc_chart" data-percent="100" data-bar-color="#9c27b0">
+                      <span class="epc_chart_icon"><i class="material-icons">event</i></span>
+                    </div>
+                  </div>
+                </a>
+
+                <div class="md-card-overlay-content">
+                  <div class="uk-clearfix md-card-overlay-header">
+                    <i class="md-icon material-icons md-card-overlay-toggler">&#xE5D4;</i>
+                    <h3 data-uk-modal="{target:'#modal_informe_dia_sgte'}">
+                      Para mañana
+                    </h3>
+                  </div>
+                  <p>Detalle del día de mañana:</p>
+
+                                    <p>Agenda <span class="uk-badge"></span><br>  Leccionario
+                      <span class="uk-badge">                  </p><br>
+                  <button data-uk-modal="{target:'#modal_informe_dia_sgte'}" class="md-btn md-btn-mini md-btn-primary">VER
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div>
+                              <!--<div class="md-card md-card-hover md-card-overlay">
+                    <a id="companeros" data-uk-modal="{target:'#modal_header_footer'}">
+                        <div class="md-card-content">
+                            <div class="epc_chart" data-percent="100" data-bar-color="#607d8b">
+                                <span class="epc_chart_icon"><i class="material-icons">people</i></span>
+                            </div>
+                        </div>
+                    </a>
+                    <div class="md-card-overlay-content">
+                        <div class="uk-clearfix md-card-overlay-header">
+                            <i class="md-icon material-icons md-card-overlay-toggler">&#xE5D4;</i>
+                            <h3>
+                                Compañeros
+                            </h3>
+                        </div>
+                        Listado de compañeros de clases.
+                    </div>
+                </div>-->
+                          </div>
+          </div>
+
+          <!-- Rendimiento -->
+                          <!-- Agenda y Eventos -->
+        <div class="uk-grid" data-uk-grid-margin data-uk-grid-match="{target:'.md-card-content'}">
+          <!-- Agenda -->
+          <div class="uk-width-medium-1-2">
+            <div class="md-card">
+              <div class="md-card-toolbar">
+                <div class="md-card-toolbar-actions">
+                  <a href="agenda.php"><i title="Ir Agendas" class="md-icon material-icons">&#xE5D5;</i></a>
+                  <i class="md-icon material-icons md-card-fullscreen-activate">&#xE5D0;</i>
+                </div>
+                <h3 class="md-card-toolbar-heading-text">
+                  Agendas Cercanas (próximos 8 días)
+                </h3>
+              </div>
+              <div class="md-card-content">
+
+                <div class="uk-overflow-container" style="width:100%">
+                  <table class="uk-table uk-table-hover" id="dt_agenda" name="dt_agenda">
+                    <thead>
+                      <tr>
+                        <th class="uk-text-nowrap">Materia</th>
+                        <th class="uk-text-nowrap">Estado</th>
+                        <th class="uk-text-nowrap uk-text-right">Fecha Inicio</th>
+                        <th class="uk-text-nowrap uk-text-right">Fecha Fin</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                                          </tbody>
+                  </table>
+                  <div class="uk-modal agenda_modal" id="agenda_modal">
+                    <div class="uk-modal-dialog">
+
+                      <div id="modal-body">
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Eventos -->
+          <div class="uk-width-medium-1-2">
+            <div class="md-card">
+              <div class="md-card-toolbar">
+                <div class="md-card-toolbar-actions">
+                  <i class="md-icon material-icons md-card-fullscreen-activate">&#xE5D0;</i>
+                </div>
+                <h3 class="md-card-toolbar-heading-text">
+                  Eventos
+                </h3>
+              </div>
+              <div class="md-card-content">
+                <div id="clndr_events" class="clndr-wrapper">
+
+                  
+                  <script>
+                    var eventos = [{"icono":"picture_as_pdf","adjunto":"_blank","img":"https:\/\/storage-api.educalinks.com.ec\/descargar-archivo\/MTAyOS1iOGY2czc0d2Jtam4xOHU2cjYwdWFpcG1mXzIwMjYwNTIwMTQyODAyLnBkZg==","date":"2026-05-20","title":"Visita Cultural a Suiza","url":"Recordatorio de visita cultural a Suiza. \u00a1\u00a1\u00a1Los esperamos!!!","timeStart":false,"timeEnd":false},{"icono":"picture_as_pdf","adjunto":"_blank","img":"https:\/\/storage-api.educalinks.com.ec\/descargar-archivo\/MTAyOS15eW1uZDl4NTAwemJmOG1wemc2bDNzMTB4XzIwMjYwNTEzMDg1NzM2LnBkZg==","date":"2026-05-13","title":"Graduation en USA","url":"","timeStart":false,"timeEnd":false}];
+
+                    // calendar events
+                    clndrEvents = eventos
+                  </script>
+                  <script id="clndr_events_template" type="text/x-handlebars-template">
+                    <div class="md-card-toolbar">
+                                    <div class="md-card-toolbar-actions">
+                                        <i class="md-icon clndr_today material-icons">&#xE8DF;</i>
+                                        <i class="md-icon clndr_previous material-icons">&#xE408;</i>
+                                        <i class="md-icon clndr_next material-icons uk-margin-remove">&#xE409;</i>
+                                    </div>
+                                    <h3 class="md-card-toolbar-heading-text">
+                                        {{ month }} {{ year }}
+                                    </h3>
+                                </div>
+                                <div class="clndr_days">
+                                    <div class="clndr_days_names">
+                                        {{#each daysOfTheWeek}}
+                                        <div class="day-header">{{ this }}</div>
+                                        {{/each}}
+                                    </div>
+                                    <div class="clndr_days_grid">
+                                        {{#each days}}
+                                        <div class="{{ this.classes }}"  id="{{ this.id }}">
+                                        <span>{{ this.day }}</span>
+                                    </div>
+                                    {{/each}}
+                                </div>
+                                </div>
+                                <div class="clndr_events">
+                                    <i class="material-icons clndr_events_close_button">&#xE5CD;</i>
+                                    <li class="heading_list">Eventos</li>
+                                    {{#each eventsThisMonth}}
+                                    <li class="clndr_event"
+                                        data-clndr-event="{{ dateFormat this.date format='YYYY-MM-DD' }}">
+                                        <a target="{{ this.adjunto }}" href="{{ this.img }}" class="md-list-content"
+                                           data-invoice-id="2">
+                                            <span class="md-list-heading uk-text-truncate" title="{{ this.title }}"><i
+                                                        class="material-icons md-36">{{ this.icono }}</i>{{ this.title }}</span>
+                                            <span class="uk-text-small uk-text-muted">{{~dateFormat this.date format='D MMM'}}</span><br/>
+                                            <span class="uk-text-small uk-text-muted">{{ this.url }}</span>
+                                        </a>
+                                    </li>
+                                    {{/each}}
+                                </div>
+                            </script>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Planificacion  y Circulares -->
+        <div class="uk-grid" data-uk-grid-margin data-uk-grid-match="{target:'.md-card-content'}">
+          <!-- Planificacion -->
+                      <div class="uk-width-medium-1-2">
+              <div class="md-card">
+                <div class="md-card-toolbar">
+                  <div class="md-card-toolbar-actions">
+                    <a href="planificacion.php"><i title="Ir Leccionario" class="md-icon material-icons">&#xE5D5;</i></a>
+                    <i class="md-icon material-icons md-card-fullscreen-activate">&#xE5D0;</i>
+                  </div>
+                  <h3 class="md-card-toolbar-heading-text">
+                    Planificación Actual
+                  </h3>
+                </div>
+                <div class="md-card-content">
+                  <div class="uk-overflow-container">
+
+                    <table class="uk-table uk-table-hover">
+                      <thead>
+                        <tr>
+                          <th class="uk-text-nowrap">Materia</th>
+                          <th class="uk-text-nowrap">Descripción</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                                              </tbody>
+                    </table>
+                    <div class="uk-modal plan_modal" id="plan_modal">
+                      <div class="uk-modal-dialog">
+
+                        <div id="modal-body">
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+                    <!-- Circulares -->
+          <div class="uk-width-medium-1-2">
+            <div class="md-card">
+              <div class="md-card-toolbar">
+                <div class="md-card-toolbar-actions">
+                  <a href="circulares.php"><i title="Ir Circulares" class="md-icon material-icons">&#xE5D5;</i></a>
+                  <i class="md-icon material-icons md-card-fullscreen-activate">&#xE5D0;</i>
+                </div>
+                <h3 class="md-card-toolbar-heading-text">
+                  Circulares
+                </h3>
+              </div>
+              <div class="md-card-content">
+                <div class="uk-overflow-container">
+
+                  <ul class="md-list md-list-addon md-list-right">
+                    <li>
+                                            <a target="_blank" href="https://storage-api.educalinks.com.ec/descargar-archivo/MTAyOS11NzJnZTdmYjZ3MmlkZXFtbjZpZjdjeHVqXzIwMjYwNzE3MTMyODA5LnBkZg==" class="md-list-addon-element">
+                                                <i class="md-list-addon-icon material-icons uk-text-primary md-36">picture_as_pdf</i>
+                                            </a>
+                                            <div class="md-list-content">
+                                                <span class="md-list-heading">Circular Pensión Julio</span>
+                                                <span class="uk-text-small uk-text-muted">17 Jul 2026</span>
+                                                <span class="uk-text-small uk-text-muted">Se adjunta circular informativa sobre cobro pensión mes de Julio</span>
+                                            </div>
+                                        </li><li>
+                                            <a target="_blank" href="https://storage-api.educalinks.com.ec/descargar-archivo/MTAyOS12MmtzaGU3bnZyOW5heTI0Zm8xcnZ0YnhwXzIwMjYwNzE1MTAxODIyLnBkZg==" class="md-list-addon-element">
+                                                <i class="md-list-addon-icon material-icons uk-text-primary md-36">picture_as_pdf</i>
+                                            </a>
+                                            <div class="md-list-content">
+                                                <span class="md-list-heading">Circular Deportes</span>
+                                                <span class="uk-text-small uk-text-muted">15 Jul 2026</span>
+                                                <span class="uk-text-small uk-text-muted">Estimados padres de familia. Se adjunta circular de deporte, para que aquellos padres que desean inscribir a sus representados puedan hacerlo hasta el 25 de julio</span>
+                                            </div>
+                                        </li><li>
+                                            <a target="_blank" href="https://storage-api.educalinks.com.ec/descargar-archivo/MTAyOS13Znlib3R0eHBwaGNrazQwOHFrZm9xdzNiXzIwMjYwNzE1MDgzNjM2LnBkZg==" class="md-list-addon-element">
+                                                <i class="md-list-addon-icon material-icons uk-text-primary md-36">picture_as_pdf</i>
+                                            </a>
+                                            <div class="md-list-content">
+                                                <span class="md-list-heading"></span>
+                                                <span class="uk-text-small uk-text-muted">15 Jul 2026</span>
+                                                <span class="uk-text-small uk-text-muted">Se adjunta circular informativa</span>
+                                            </div>
+                                        </li><li>
+                                            <a target="_blank" href="https://storage-api.educalinks.com.ec/descargar-archivo/MTAyOS1rbTR4OW41emhncDloNm44dDM4cHl1dXFuXzIwMjYwNTE5MTAzNjA4LnBkZg==" class="md-list-addon-element">
+                                                <i class="md-list-addon-icon material-icons uk-text-primary md-36">picture_as_pdf</i>
+                                            </a>
+                                            <div class="md-list-content">
+                                                <span class="md-list-heading">Seguro accidentes </span>
+                                                <span class="uk-text-small uk-text-muted">19 May 2026</span>
+                                                <span class="uk-text-small uk-text-muted">Circular informativa sobre seguro de accidentes personales </span>
+                                            </div>
+                                        </li><li>
+                                            <a target="_blank" href="https://storage-api.educalinks.com.ec/descargar-archivo/MTAyOS00YXducjQ0ZXRmNTdzb29mZTdqNGZ3djB0XzIwMjYwNTE1MTMxMTQ3LnBkZg==" class="md-list-addon-element">
+                                                <i class="md-list-addon-icon material-icons uk-text-primary md-36">picture_as_pdf</i>
+                                            </a>
+                                            <div class="md-list-content">
+                                                <span class="md-list-heading">Clases extras IB </span>
+                                                <span class="uk-text-small uk-text-muted">15 May 2026</span>
+                                                <span class="uk-text-small uk-text-muted">Horario de clases extracurriculares de IB</span>
+                                            </div>
+                                        </li><li>
+                                            <a target="_blank" href="https://storage-api.educalinks.com.ec/descargar-archivo/MTAyOS1pNGxvdnMzc2ViMTd2dWhtbXdsMGsxbDJ6XzIwMjYwNTE0MTAxODM2LnBkZg==" class="md-list-addon-element">
+                                                <i class="md-list-addon-icon material-icons uk-text-primary md-36">picture_as_pdf</i>
+                                            </a>
+                                            <div class="md-list-content">
+                                                <span class="md-list-heading">Elección de Comité PPFF</span>
+                                                <span class="uk-text-small uk-text-muted">14 May 2026</span>
+                                                <span class="uk-text-small uk-text-muted">Nueva convocatoria virtual para elección del comité de padres de 3er. Curso Bach. Wyoming</span>
+                                            </div>
+                                        </li><li>
+                                            <a target="_blank" href="https://storage-api.educalinks.com.ec/descargar-archivo/MTAyOS15d2Nodm1vYTkxZ3Zpbm5sanRwZ2RndXJ3XzIwMjYwNTEzMTMzMzUyLnBkZg==" class="md-list-addon-element">
+                                                <i class="md-list-addon-icon material-icons uk-text-primary md-36">picture_as_pdf</i>
+                                            </a>
+                                            <div class="md-list-content">
+                                                <span class="md-list-heading">Elección de Comité PPFF</span>
+                                                <span class="uk-text-small uk-text-muted">13 May 2026</span>
+                                                <span class="uk-text-small uk-text-muted">Recordatorio - Convocatoria a elección del Comité de Padres de Familia de Tercer Curso de Bachillerato Wyoming</span>
+                                            </div>
+                                        </li><li>
+                                            <a target="_blank" href="https://storage-api.educalinks.com.ec/descargar-archivo/MTAyOS1lZ2lsMXN0dWV3enQxbmwxZndwaW44eGJ4XzIwMjYwNTExMTUzNjMxLnBkZg==" class="md-list-addon-element">
+                                                <i class="md-list-addon-icon material-icons uk-text-primary md-36">picture_as_pdf</i>
+                                            </a>
+                                            <div class="md-list-content">
+                                                <span class="md-list-heading">Elección de Comité PPFF</span>
+                                                <span class="uk-text-small uk-text-muted">11 May 2026</span>
+                                                <span class="uk-text-small uk-text-muted">Convocatoria a elección del Comité de Padres de Familia de Tercer Curso de Bachillerato Wyoming</span>
+                                            </div>
+                                        </li>                  </ul>
+                  <div class="uk-modal plan_modal" id="plan_modal">
+                    <div class="uk-modal-dialog">
+
+                      <div id="modal-body">
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Educalinks -->
+    <form id="frm_actu" name="frm_actu" method="post" action="" enctype="multipart/form-data">
+      		<input type="hidden" id="ruta_imagenes_acad" name="ruta_imagenes_acad" value="https://americano.educalinks.com.ec/site_media/imagenes/acad" />
+			<input type="hidden" id="ruta_html_acad" name="ruta_html_acad" value="https://americano.educalinks.com.ec/modulos/acad" />
+			<input type="hidden" id="ruta_js_acad" name="ruta_js_acad" value="https://americano.educalinks.com.ec/site_media/js/acad" />
+			<input type="hidden" id="ruta_css_acad" name="ruta_css_acad" value="https://americano.educalinks.com.ec/site_media/css/acad" />
+			
+			<input type="hidden" id="ruta_imagenes_admisiones" name="ruta_imagenes_admisiones" value="https://americano.educalinks.com.ec/site_media/imagenes/admisiones" />
+			<input type="hidden" id="ruta_html_admisiones" name="ruta_html_admisiones" value="https://americano.educalinks.com.ec/modulos/admisiones" />
+			<input type="hidden" id="ruta_js_admisiones" name="ruta_js_admisiones" value="https://americano.educalinks.com.ec/site_media/js/admisiones" />
+			<input type="hidden" id="ruta_css_admisiones" name="ruta_css_admisiones" value="https://americano.educalinks.com.ec/site_media/css/admisiones" />
+			
+			<input type="hidden" id="ruta_imagenes_biblio" name="ruta_imagenes_biblio" value="https://americano.educalinks.com.ec/site_media/imagenes/biblio" />
+			<input type="hidden" id="ruta_html_biblio" name="ruta_html_biblio" value="https://americano.educalinks.com.ec/modulos/biblio" />
+			<input type="hidden" id="ruta_js_biblio" name="ruta_js_biblio" value="https://americano.educalinks.com.ec/site_media/js/biblio" />
+			<input type="hidden" id="ruta_css_biblio" name="ruta_css_biblio" value="https://americano.educalinks.com.ec/site_media/css/biblio" />
+			
+			<input type="hidden" id="ruta_imagenes_medic" name="ruta_imagenes_medic" value="https://americano.educalinks.com.ec/site_media/imagenes/medic" />
+			<input type="hidden" id="ruta_html_medic" name="ruta_html_medic" value="https://americano.educalinks.com.ec/modulos/medic" />
+			<input type="hidden" id="ruta_js_medic" name="ruta_js_medic" value="https://americano.educalinks.com.ec/site_media/js/medic" />
+			<input type="hidden" id="ruta_css_medic" name="ruta_css_medic" value="https://americano.educalinks.com.ec/site_media/css/medic" />
+			
+			<input type="hidden" id="ruta_imagenes_common" name="ruta_imagenes_common" value="https://americano.educalinks.com.ec/site_media/imagenes/common" />
+			<input type="hidden" id="ruta_html_common" name="ruta_html_common" value="https://americano.educalinks.com.ec/modulos/common" />
+			<input type="hidden" id="ruta_js_common" name="ruta_js_common" value="https://americano.educalinks.com.ec/site_media/js/common" />
+			<input type="hidden" id="ruta_css_common" name="ruta_css_common" value="https://americano.educalinks.com.ec/site_media/css/common" />
+			
+			<input type="hidden" id="ruta_imagenes_finan" name="ruta_imagenes_finan" value="https://americano.educalinks.com.ec/site_media/imagenes/finan" />
+			<input type="hidden" id="ruta_html_finan" name="ruta_html_finan" value="https://americano.educalinks.com.ec/modulos/finan" />
+			<input type="hidden" id="ruta_js_finan" name="ruta_js_finan" value="https://americano.educalinks.com.ec/site_media/js/finan" />
+			<input type="hidden" id="ruta_css_finan" name="ruta_css_finan" value="https://americano.educalinks.com.ec/site_media/css/finan" />    </form>
+    <!-- Modal Responder-->
+<div class="modal fade bs-example-modal-lg" id="mens_responder" tabindex="-1" role="dialog" aria-labelledby="myModal"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div id="div_mens_resp" class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+<div id="modal_document_aviso" class="new-features-modal uk-hidden">
+    <div class="new-features-modal__content">
+
+        <div class="uk-slidenav-position" style="height: 100%;" data-uk-slideshow="{animation:'scale'}">
+            <ul class="uk-slideshow">
+
+                <li><img src="/imagenes/popup-news/documentos-pendientes.png" alt=""></li>
+            </ul>
+            <a href="" class="uk-slidenav uk-slidenav-contrast uk-slidenav-previous"
+               data-uk-slideshow-item="previous"></a>
+            <a href="" class="uk-slidenav uk-slidenav-contrast uk-slidenav-next" data-uk-slideshow-item="next"></a>
+            <ul class="uk-dotnav uk-dotnav-contrast uk-position-bottom uk-flex-center">
+            </ul>
+        </div>
+
+        <div id="new-document-modal" class="new-features-modal__close">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                 stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </div>
+    </div>
+</div>
+
+
+<footer id="footer" style='font-size:small;text-align:center;'>
+    <strong>Desarrollado por <a target="_blank" href="http://www.links.com.ec">Links</a>. Copyright &copy;
+        2014-2026</strong> Todos los derechos reservados.
+</footer>
+
+<!-----fin------>
+
+    <!-- =============================== -->
+    <!-- MODAL NUEVO SERVICIO APP  -->
+    <div class="uk-modal" id="pop_up_repr" tabindex="-1" role="dialog" aria-labelledby="pop_up_repr">
+      <div class="uk-modal-dialog">
+        <div class="uk-modal-header">
+          <h3 class="uk-modal-title">Nuevo Servicio: <b>App gratuita</b> para <b>representantes</b> y
+            <b>estudiantes</b><i class="material-icons" data-uk-tooltip="{pos:'top'}" title="headline tooltip">&#xE8FD;</i>
+          </h3>
+        </div>
+
+        <button type="button" class="uk-modal-close uk-close"></button>
+        <img width='100%' src="../imagenes/" />
+
+        <div class="uk-modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Ocultar</button>
+        </div>
+      </div>
+    </div>
+    <!--  MODAL FALTAS Y ATRASOS =============================== -->
+    <div class="uk-modal" id="modal_faltas">
+      <div class="uk-modal-dialog uk-modal-dialog-large">
+        <div class="uk-modal-header" style="text-align: center;">
+          <h3 class="uk-modal-title">FALTAS Y ATRASOS</h3>
+        </div>
+        <div class="md-card-content">
+          <div class="uk-grid uk-grid-divider" data-uk-grid-margin="">
+            <div class="uk-width-medium-1-2 uk-row-first">
+              <div style="height:700px; overflow: scroll;">
+                <div class="timeline timeline-center timeline_small">
+                  <div class="timeline_item">
+                            <div class="timeline_icon timeline_icon_primary"><i class="material-icons">library_books</i></div>
+                            <div class="timeline_date">
+                                10 
+                            <span>Jul-2026</span>
+                            </div>
+                            <div class="timeline_content"> FALTAS JUSTIFICADAS</div>
+                        </div>
+                        <div class="timeline_item">
+                            <div class="timeline_icon timeline_icon_primary"><i class="material-icons">library_books</i></div>
+                            <div class="timeline_date">
+                                25 
+                            <span>Jun-2026</span>
+                            </div>
+                            <div class="timeline_content"> FALTAS JUSTIFICADAS</div>
+                        </div>
+                        <div class="timeline_item">
+                            <div class="timeline_icon timeline_icon_primary"><i class="material-icons">library_books</i></div>
+                            <div class="timeline_date">
+                                24 
+                            <span>Jun-2026</span>
+                            </div>
+                            <div class="timeline_content"> FALTAS JUSTIFICADAS</div>
+                        </div>
+                                        </div>
+              </div>
+            </div>
+            <div class="uk-width-medium-1-2">
+
+              <div class="uk-accordion" data-uk-accordion="">
+                <h3 class="uk-accordion-title">
+                  <a>
+                    <span class="uk-text-small uk-text-muted">
+                      <span class="uk-badge uk-badge-primary">ENE (Total 0 )</span> &nbsp; &nbsp;
+                      <i title="Faltas Injustificadas" class="material-icons md-color-red-900">cancel</i>F Injust: 0                      <i title="Faltas Justificadas" class="material-icons md-color-indigo-900">library_books</i>F Justif: 0                      <i title="Faltas Injustificadas" class="material-icons md-color-yellow-900">alarm_off</i>A Injust: 0                      <i title="Faltas Injustificadas" class="material-icons md-color-green-500">alarm_on</i>A Justif: 0                    </span>
+                  </a>
+                </h3>
+                <div class="uk-accordion-content">
+                  <table class="uk-table uk-table-hover"><td>Tipo</td><td>Fecha</td></table>                </div>
+
+                <h3 class="uk-accordion-title">
+                  <a>
+                    <span class="uk-text-small uk-text-muted">
+                      <span class="uk-badge uk-badge-primary">FEB (Total 0 )</span> &nbsp; &nbsp;
+                      <i title="Faltas Injustificadas" class="material-icons md-color-red-900">cancel</i>F Injust: 0                      <i title="Faltas Justificadas" class="material-icons md-color-indigo-900">library_books</i>F Justif: 0                      <i title="Faltas Injustificadas" class="material-icons md-color-yellow-900">alarm_off</i>A Injust: 0                      <i title="Faltas Injustificadas" class="material-icons md-color-green-500">alarm_on</i>A Justif: 0                    </span>
+
+                  </a>
+                </h3>
+                <div class="uk-accordion-content">
+                  <table class="uk-table uk-table-hover"><td>Tipo</td><td>Fecha</td></table>                </div>
+
+                <h3 class="uk-accordion-title">
+                  <a>
+
+                    <span class="uk-text-small uk-text-muted">
+                      <span class="uk-badge uk-badge-primary">MAR (Total 0 )</span> &nbsp; &nbsp;
+                      <i title="Faltas Injustificadas" class="material-icons md-color-red-900">cancel</i>F Injust: 0                      <i title="Faltas Justificadas" class="material-icons md-color-indigo-900">library_books</i>F Justif: 0                      <i title="Faltas Injustificadas" class="material-icons md-color-yellow-900">alarm_off</i>A Injust: 0                      <i title="Faltas Injustificadas" class="material-icons md-color-green-500">alarm_on</i>A Justif: 0
+                    </span>
+
+                  </a>
+                </h3>
+                <div class="uk-accordion-content">
+                  <table class="uk-table uk-table-hover"><td>Tipo</td><td>Fecha</td></table>                </div>
+
+                <h3 class="uk-accordion-title">
+                  <a>
+
+                    <span class="uk-text-small uk-text-muted">
+                      <span class="uk-badge uk-badge-primary">ABR (Total 0 )</span> &nbsp; &nbsp;
+                      <i title="Faltas Injustificadas" class="material-icons md-color-red-900">cancel</i>F Injust: 0                      <i title="Faltas Justificadas" class="material-icons md-color-indigo-900">library_books</i>F Justif: 0                      <i title="Faltas Injustificadas" class="material-icons md-color-yellow-900">alarm_off</i>A Injust: 0                      <i title="Faltas Injustificadas" class="material-icons md-color-green-500">alarm_on</i>A Justif: 0
+                    </span>
+
+                  </a>
+                </h3>
+                <div class="uk-accordion-content">
+                  <table class="uk-table uk-table-hover"><td>Tipo</td><td>Fecha</td></table>                </div>
+
+                <h3 class="uk-accordion-title">
+                  <a>
+                    <span class="uk-text-small uk-text-muted">
+                      <span class="uk-badge uk-badge-primary">MAY (Total 0 )</span> &nbsp; &nbsp;
+                      <i title="Faltas Injustificadas" class="material-icons md-color-red-900">cancel</i>F Injust: 0                      <i title="Faltas Justificadas" class="material-icons md-color-indigo-900">library_books</i>F Justif: 0                      <i title="Faltas Injustificadas" class="material-icons md-color-yellow-900">alarm_off</i>A Injust: 0                      <i title="Faltas Injustificadas" class="material-icons md-color-green-500">alarm_on</i>A Justif: 0
+                    </span>
+
+                  </a>
+                </h3>
+                <div class="uk-accordion-content">
+                  <table class="uk-table uk-table-hover"><td>Tipo</td><td>Fecha</td></table>                </div>
+
+                <h3 class="uk-accordion-title">
+                  <a>
+
+                    <span class="uk-text-small uk-text-muted">
+                      <span class="uk-badge uk-badge-primary">JUN (Total 2 )</span> &nbsp; &nbsp;
+                      <i title="Faltas Injustificadas" class="material-icons md-color-red-900">cancel</i>F Injust: 0                      <i title="Faltas Justificadas" class="material-icons md-color-indigo-900">library_books</i>F Justif: 2                      <i title="Faltas Injustificadas" class="material-icons md-color-yellow-900">alarm_off</i>A Injust: 0                      <i title="Faltas Injustificadas" class="material-icons md-color-green-500">alarm_on</i>A Justif: 0
+                    </span>
+
+                  </a>
+                </h3>
+                <div class="uk-accordion-content">
+                  <table class="uk-table uk-table-hover"><td>Tipo</td><td>Fecha</td><tr><td>FALTAS JUSTIFICADAS</td><td>25-Jun-2026</td></tr><tr><td>FALTAS JUSTIFICADAS</td><td>24-Jun-2026</td></tr></table>                </div>
+
+                <h3 class="uk-accordion-title">
+                  <a>
+                    <span class="uk-text-small uk-text-muted">
+                      <span class="uk-badge uk-badge-primary">JUL (Total 1 )</span> &nbsp; &nbsp;
+                      <i title="Faltas Injustificadas" class="material-icons md-color-red-900">cancel</i>F Injust: 0                      <i title="Faltas Justificadas" class="material-icons md-color-indigo-900">library_books</i>F Justif: 1                      <i title="Faltas Injustificadas" class="material-icons md-color-yellow-900">alarm_off</i>A Injust: 0                      <i title="Faltas Injustificadas" class="material-icons md-color-green-500">alarm_on</i>A Justif: 0
+                    </span>
+
+                  </a>
+                </h3>
+                <div class="uk-accordion-content">
+                  <table class="uk-table uk-table-hover"><td>Tipo</td><td>Fecha</td><tr><td>FALTAS JUSTIFICADAS</td><td>10-Jul-2026</td></tr></table>                </div>
+
+                <h3 class="uk-accordion-title">
+                  <a>
+
+                    <span class="uk-text-small uk-text-muted">
+                      <span class="uk-badge uk-badge-primary">AGO (Total 0 )</span> &nbsp; &nbsp;
+                      <i title="Faltas Injustificadas" class="material-icons md-color-red-900">cancel</i>F Injust: 0                      <i title="Faltas Justificadas" class="material-icons md-color-indigo-900">library_books</i>F Justif: 0                      <i title="Faltas Injustificadas" class="material-icons md-color-yellow-900">alarm_off</i>A Injust: 0                      <i title="Faltas Injustificadas" class="material-icons md-color-green-500">alarm_on</i>A Justif: 0
+                    </span>
+
+                  </a>
+                </h3>
+                <div class="uk-accordion-content">
+                  <table class="uk-table uk-table-hover"><td>Tipo</td><td>Fecha</td></table>                </div>
+
+                <h3 class="uk-accordion-title">
+                  <a>
+
+                    <span class="uk-text-small uk-text-muted">
+                      <span class="uk-badge uk-badge-primary">SEP (Total 0 )</span> &nbsp; &nbsp;
+                      <i title="Faltas Injustificadas" class="material-icons md-color-red-900">cancel</i>F Injust: 0                      <i title="Faltas Justificadas" class="material-icons md-color-indigo-900">library_books</i>F Justif: 0                      <i title="Faltas Injustificadas" class="material-icons md-color-yellow-900">alarm_off</i>A Injust: 0                      <i title="Faltas Injustificadas" class="material-icons md-color-green-500">alarm_on</i>A Justif: 0
+                    </span>
+
+                  </a>
+                </h3>
+                <div class="uk-accordion-content">
+                  <table class="uk-table uk-table-hover"><td>Tipo</td><td>Fecha</td></table>                </div>
+
+                <h3 class="uk-accordion-title">
+                  <a>
+
+                    <span class="uk-text-small uk-text-muted">
+                      <span class="uk-badge uk-badge-primary">OCT (Total 0 )</span> &nbsp; &nbsp;
+                      <i title="Faltas Injustificadas" class="material-icons md-color-red-900">cancel</i>F Injust: 0                      <i title="Faltas Justificadas" class="material-icons md-color-indigo-900">library_books</i>F Justif: 0                      <i title="Faltas Injustificadas" class="material-icons md-color-yellow-900">alarm_off</i>A Injust: 0                      <i title="Faltas Injustificadas" class="material-icons md-color-green-500">alarm_on</i>A Justif: 0
+                    </span>
+
+                  </a>
+                </h3>
+                <div class="uk-accordion-content">
+                  <table class="uk-table uk-table-hover"><td>Tipo</td><td>Fecha</td></table>                </div>
+
+                <h3 class="uk-accordion-title">
+                  <a>
+
+                    <span class="uk-text-small uk-text-muted">
+                      <span class="uk-badge uk-badge-primary">NOV (Total 0 )</span> &nbsp; &nbsp;
+                      <i title="Faltas Injustificadas" class="material-icons md-color-red-900">cancel</i>F Injust: 0                      <i title="Faltas Justificadas" class="material-icons md-color-indigo-900">library_books</i>F Justif: 0                      <i title="Faltas Injustificadas" class="material-icons md-color-yellow-900">alarm_off</i>A Injust: 0                      <i title="Faltas Injustificadas" class="material-icons md-color-green-500">alarm_on</i>A Justif: 0
+                    </span>
+
+                  </a>
+                </h3>
+                <div class="uk-accordion-content">
+                  <table class="uk-table uk-table-hover"><td>Tipo</td><td>Fecha</td></table>                </div>
+
+                <h3 class="uk-accordion-title">
+                  <a>
+                    <span class="uk-badge uk-badge-primary">DIC (Total 0 )</span> &nbsp;
+                    &nbsp;
+                    <span class="uk-text-small uk-text-muted"><i title="Faltas Injustificadas" class="material-icons md-color-red-900">cancel</i>F Injust: 0                      <i title="Faltas Justificadas" class="material-icons md-color-indigo-900">library_books</i>F Justif: 0                      <i title="Faltas Injustificadas" class="material-icons md-color-yellow-900">alarm_off</i>A Injust: 0                      <i title="Faltas Injustificadas" class="material-icons md-color-green-500">alarm_on</i>A Justif: 0
+                    </span>
+
+                  </a>
+                </h3>
+                <div class="uk-accordion-content">
+                  <table class="uk-table uk-table-hover"><td>Tipo</td><td>Fecha</td></table>                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="uk-modal-footer uk-text-right">
+          <a class="md-btn md-btn-primary" href="reportes_alumnos/alum_rep_falta_deta_pdf.php?alum_curs_para_codi=588008&nombre=LEMUS MEDINA ROGER DANIEL&curso=&paralelo=" target="_blank"><span class="fa fa-file-excel-o" style="color:green"></span> Historial faltas</a>
+          <button type="button" class="md-btn md-btn-flat uk-modal-close">Cerrar</button>
+        </div>
+      </div>
+    </div>
+    <!-- MODAL COMPANEROS DE CURSO =============================== -->
+    <div class="uk-modal" id="modal_header_footer">
+      <div class="uk-modal-dialog uk-modal-dialog-large">
+        <div style="text-align: center;" class="uk-modal-header">
+          <h3 class="uk-modal-title">COMPAÑEROS DE CLASES</h3>
+        </div>
+        <div class="uk-overflow-container">
+          <div class="uk-grid uk-grid-width-large-1-6 uk-grid-width-xlarge-1-6 uk-grid-medium" id="contact_list_v2" data-uk-grid-match="{target:'.md-card'}">
+                        
+              
+              <div id="div_foto_2026000151" class="uk-margin-medium-top ln-o">
+                <div style="border-color:" class="md-card md-card-hover">
+                  <div class="md-card-head">
+                    <div class="uk-text-center">
+                      <img class="md-card-head-avatar" title="CALDERON CARDENAS CARLOS EMILIO" src="/imagenes/nino.png" alt="">
+                    </div>
+                    <div class="md-card-head-text uk-text-center">
+                      <span style="font-weight: 700;color: " class="uk-text-truncate"> CALDERON CARDENAS</span>
+                      <span style="font-weight: 700;color: " class="uk-text-truncate">CARLOS EMILIO</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+            
+              
+              <div id="div_foto_2025000072" class="uk-margin-medium-top ln-o">
+                <div style="border-color:" class="md-card md-card-hover">
+                  <div class="md-card-head">
+                    <div class="uk-text-center">
+                      <img class="md-card-head-avatar" title="CARRION TRAVERSO LUKAS ANIBAL" src="/imagenes/nino.png" alt="">
+                    </div>
+                    <div class="md-card-head-text uk-text-center">
+                      <span style="font-weight: 700;color: " class="uk-text-truncate"> CARRION TRAVERSO</span>
+                      <span style="font-weight: 700;color: " class="uk-text-truncate">LUKAS ANIBAL</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+            
+              
+              <div id="div_foto_2015000699" class="uk-margin-medium-top ln-o">
+                <div style="border-color:" class="md-card md-card-hover">
+                  <div class="md-card-head">
+                    <div class="uk-text-center">
+                      <img class="md-card-head-avatar" title="CASTILLO CALVA HOMERO FERNANDO" src="/imagenes/nino.png" alt="">
+                    </div>
+                    <div class="md-card-head-text uk-text-center">
+                      <span style="font-weight: 700;color: " class="uk-text-truncate"> CASTILLO CALVA</span>
+                      <span style="font-weight: 700;color: " class="uk-text-truncate">HOMERO FERNANDO</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+            
+              
+              <div id="div_foto_2024000151" class="uk-margin-medium-top ln-o">
+                <div style="border-color:" class="md-card md-card-hover">
+                  <div class="md-card-head">
+                    <div class="uk-text-center">
+                      <img class="md-card-head-avatar" title="CHEN WU ZHAN HAO" src="/imagenes/nino.png" alt="">
+                    </div>
+                    <div class="md-card-head-text uk-text-center">
+                      <span style="font-weight: 700;color: " class="uk-text-truncate"> CHEN WU</span>
+                      <span style="font-weight: 700;color: " class="uk-text-truncate">ZHAN HAO</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+            
+              
+              <div id="div_foto_2015000625" class="uk-margin-medium-top ln-o">
+                <div style="border-color:" class="md-card md-card-hover">
+                  <div class="md-card-head">
+                    <div class="uk-text-center">
+                      <img class="md-card-head-avatar" title="ESPINOZA CRESPO BRONNY LUKA" src="/imagenes/nino.png" alt="">
+                    </div>
+                    <div class="md-card-head-text uk-text-center">
+                      <span style="font-weight: 700;color: " class="uk-text-truncate"> ESPINOZA CRESPO</span>
+                      <span style="font-weight: 700;color: " class="uk-text-truncate">BRONNY LUKA</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+            
+              
+              <div id="div_foto_2015001443" class="uk-margin-medium-top ln-o">
+                <div style="border-color:" class="md-card md-card-hover">
+                  <div class="md-card-head">
+                    <div class="uk-text-center">
+                      <img class="md-card-head-avatar" title="GUERRA TACO KRISTELL NICOLLE" src="/imagenes/nina.png" alt="">
+                    </div>
+                    <div class="md-card-head-text uk-text-center">
+                      <span style="font-weight: 700;color: " class="uk-text-truncate"> GUERRA TACO</span>
+                      <span style="font-weight: 700;color: " class="uk-text-truncate">KRISTELL NICOLLE</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+            
+              
+              <div id="div_foto_2022000043" class="uk-margin-medium-top ln-o">
+                <div style="border-color:#78739a;" class="md-card md-card-hover">
+                  <div class="md-card-head">
+                    <div class="uk-text-center">
+                      <img class="md-card-head-avatar" title="LEMUS MEDINA ROGER DANIEL" src="/imagenes/nino.png" alt="">
+                    </div>
+                    <div class="md-card-head-text uk-text-center">
+                      <span style="font-weight: 700;color: #78739a;" class="uk-text-truncate"> LEMUS MEDINA</span>
+                      <span style="font-weight: 700;color: #78739a;" class="uk-text-truncate">ROGER DANIEL</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+            
+              
+              <div id="div_foto_2022000183" class="uk-margin-medium-top ln-o">
+                <div style="border-color:" class="md-card md-card-hover">
+                  <div class="md-card-head">
+                    <div class="uk-text-center">
+                      <img class="md-card-head-avatar" title="MANZANO VILLOTA MARIA PAULA" src="/imagenes/nino.png" alt="">
+                    </div>
+                    <div class="md-card-head-text uk-text-center">
+                      <span style="font-weight: 700;color: " class="uk-text-truncate"> MANZANO VILLOTA</span>
+                      <span style="font-weight: 700;color: " class="uk-text-truncate">MARIA PAULA</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+            
+              
+              <div id="div_foto_2024000081" class="uk-margin-medium-top ln-o">
+                <div style="border-color:" class="md-card md-card-hover">
+                  <div class="md-card-head">
+                    <div class="uk-text-center">
+                      <img class="md-card-head-avatar" title="MOSQUERA CRESPO ANDREA CAROLINA " src="/imagenes/nina.png" alt="">
+                    </div>
+                    <div class="md-card-head-text uk-text-center">
+                      <span style="font-weight: 700;color: " class="uk-text-truncate"> MOSQUERA CRESPO</span>
+                      <span style="font-weight: 700;color: " class="uk-text-truncate">ANDREA CAROLINA </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+            
+              
+              <div id="div_foto_2015000631" class="uk-margin-medium-top ln-o">
+                <div style="border-color:" class="md-card md-card-hover">
+                  <div class="md-card-head">
+                    <div class="uk-text-center">
+                      <img class="md-card-head-avatar" title="OYARVIDE COELLO ESTHER GRISSEL" src="/imagenes/nina.png" alt="">
+                    </div>
+                    <div class="md-card-head-text uk-text-center">
+                      <span style="font-weight: 700;color: " class="uk-text-truncate"> OYARVIDE COELLO</span>
+                      <span style="font-weight: 700;color: " class="uk-text-truncate">ESTHER GRISSEL</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+            
+              
+              <div id="div_foto_2015000632" class="uk-margin-medium-top ln-o">
+                <div style="border-color:" class="md-card md-card-hover">
+                  <div class="md-card-head">
+                    <div class="uk-text-center">
+                      <img class="md-card-head-avatar" title="QUEZADA MERCHAN LEONARDO ANDRES" src="/imagenes/nino.png" alt="">
+                    </div>
+                    <div class="md-card-head-text uk-text-center">
+                      <span style="font-weight: 700;color: " class="uk-text-truncate"> QUEZADA MERCHAN</span>
+                      <span style="font-weight: 700;color: " class="uk-text-truncate">LEONARDO ANDRES</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+            
+              
+              <div id="div_foto_2015001259" class="uk-margin-medium-top ln-o">
+                <div style="border-color:" class="md-card md-card-hover">
+                  <div class="md-card-head">
+                    <div class="uk-text-center">
+                      <img class="md-card-head-avatar" title="SANCHEZ INTRIAGO EDITH VALENTINA" src="/imagenes/nina.png" alt="">
+                    </div>
+                    <div class="md-card-head-text uk-text-center">
+                      <span style="font-weight: 700;color: " class="uk-text-truncate"> SANCHEZ INTRIAGO</span>
+                      <span style="font-weight: 700;color: " class="uk-text-truncate">EDITH VALENTINA</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+            
+              
+              <div id="div_foto_2015000681" class="uk-margin-medium-top ln-o">
+                <div style="border-color:" class="md-card md-card-hover">
+                  <div class="md-card-head">
+                    <div class="uk-text-center">
+                      <img class="md-card-head-avatar" title="SILVA TERAN JOSE JOAQUIN" src="/imagenes/nina.png" alt="">
+                    </div>
+                    <div class="md-card-head-text uk-text-center">
+                      <span style="font-weight: 700;color: " class="uk-text-truncate"> SILVA TERAN</span>
+                      <span style="font-weight: 700;color: " class="uk-text-truncate">JOSE JOAQUIN</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+            
+              
+              <div id="div_foto_2025000163" class="uk-margin-medium-top ln-o">
+                <div style="border-color:" class="md-card md-card-hover">
+                  <div class="md-card-head">
+                    <div class="uk-text-center">
+                      <img class="md-card-head-avatar" title="TORRES TERAN DANIEL JOAQUIN " src="/imagenes/nino.png" alt="">
+                    </div>
+                    <div class="md-card-head-text uk-text-center">
+                      <span style="font-weight: 700;color: " class="uk-text-truncate"> TORRES TERAN</span>
+                      <span style="font-weight: 700;color: " class="uk-text-truncate">DANIEL JOAQUIN </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+            
+              
+              <div id="div_foto_2017000106" class="uk-margin-medium-top ln-o">
+                <div style="border-color:" class="md-card md-card-hover">
+                  <div class="md-card-head">
+                    <div class="uk-text-center">
+                      <img class="md-card-head-avatar" title="VALENCIA VALVERDE JESUS ANDRES" src="/imagenes/nino.png" alt="">
+                    </div>
+                    <div class="md-card-head-text uk-text-center">
+                      <span style="font-weight: 700;color: " class="uk-text-truncate"> VALENCIA VALVERDE</span>
+                      <span style="font-weight: 700;color: " class="uk-text-truncate">JESUS ANDRES</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+            
+              
+              <div id="div_foto_2025000149" class="uk-margin-medium-top ln-o">
+                <div style="border-color:" class="md-card md-card-hover">
+                  <div class="md-card-head">
+                    <div class="uk-text-center">
+                      <img class="md-card-head-avatar" title="ZHUANG MILTON" src="/imagenes/nino.png" alt="">
+                    </div>
+                    <div class="md-card-head-text uk-text-center">
+                      <span style="font-weight: 700;color: " class="uk-text-truncate"> ZHUANG</span>
+                      <span style="font-weight: 700;color: " class="uk-text-truncate">MILTON</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+                      </div>
+        </div>
+        <div class="uk-modal-footer uk-text-right">
+          <button type="button" class="md-btn md-btn-flat uk-modal-close">Cerrar</button>
+        </div>
+      </div>
+    </div>
+    <!-- MODAL INFORME DEL DIA =============================== -->
+    <div class="uk-modal" id="modal_informe">
+      <div class="uk-modal-dialog uk-modal-dialog-large">
+        <div style="text-align: center;" class="uk-modal-header">
+          <h3 class="uk-modal-title">INFORME DEL DÍA
+          </h3>
+        </div>
+        <div class="uk-grid uk-grid-divider" data-uk-grid-margin="">
+          <div class="uk-width-large-1-1 uk-row-first">
+            <div class="uk-grid uk-grid-medium" data-uk-grid-margin="">
+              <div class="uk-width-1-4 uk-row-first">
+                <ul class="uk-tab uk-tab-left" data-uk-tab="{connect:'#tabs_6'}">
+                  <li class="uk-active" aria-expanded="true"><a>Agenda&nbsp;&nbsp;<span class="uk-badge uk-badge-warning"> </span></a>
+                  </li>
+                                      <li aria-expanded="false"><a>Leccionario &nbsp;&nbsp;<span class="uk-badge uk-badge-warning"></span></a>
+                    </li>                   <li aria-expanded="false"><a>Observaciones &nbsp;&nbsp;<span class="uk-badge uk-badge-warning"></span></a></li>
+                  <li aria-expanded="false"><a>Faltas/Atrasos&nbsp;&nbsp;<span class="uk-badge uk-badge-warning">0</span></a></li>
+                </ul>
+              </div>
+              <div class="uk-width-3-4">
+                <ul id="tabs_6" class="uk-switcher uk-margin-small-top">
+                  <li aria-hidden="false" class="uk-active">
+                    <label><i class="material-icons md-24 uk-text-success">layers
+                      </i> Detalle de agenda del día de hoy.</label>
+                    <br />
+                    <div class="uk-overflow-container">
+                      <table class="uk-table uk-table-hover">
+                        <thead>
+                          <tr>
+                            <th class="uk-text-nowrap">Materia</th>
+                            <th class="uk-text-nowrap">Estado</th>
+                            <th class="uk-text-nowrap uk-text-right">Fecha Inicio</th>
+                            <th class="uk-text-nowrap uk-text-right">Fecha Fin</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                                                  </tbody>
+                      </table>
+                      <div class="uk-modal agenda_modal" id="agenda_modal">
+                        <div class="uk-modal-dialog">
+
+                          <div id="modal-body">
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+
+                  </li>
+                  <li aria-hidden="true">
+                    <label><i class="material-icons md-24 uk-text-success">layers
+                      </i> Detalle de Leccionario del día de hoy.</label>
+                    <br />
+                    <div class="uk-overflow-container">
+                      <table class="uk-table uk-table-hover">
+                        <thead>
+                          <tr>
+                            <th class="uk-text-nowrap">Materia</th>
+                            <th class="uk-text-nowrap">Descripción</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                                                  </tbody>
+                      </table>
+                      <div class="uk-modal plan_modal" id="plan_modal">
+                        <div class="uk-modal-dialog">
+
+                          <div id="modal-body">
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+
+                  </li>
+                  <li aria-hidden="true">
+                    <label><i class="material-icons md-24 uk-text-success">layers
+                      </i> Detalle de observaciones del día de hoy.</label>
+                    <br />
+                    <div class="uk-overflow-container">
+                      
+                      <div class="md-list-outside-inner">
+                        <ul class="md-list md-list-outside invoices_list" id="invoices_list">
+                          
+                        </ul>
+                      </div>
+
+                    </div>
+                  </li>
+                  <li aria-hidden="true">
+                    <label><i class="material-icons md-24 uk-text-success">layers
+                      </i> Detalle de faltas/atrasos del día de hoy.</label>
+                    <br />
+                    <div class="uk-overflow-container">
+                      <div class="timeline timeline-center timeline_small">
+                                              </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="uk-modal-footer uk-text-right">
+          <button type="button" class="md-btn md-btn-flat uk-modal-close">Cerrar</button>
+        </div>
+      </div>
+    </div>
+
+        <!-- =============================== -->
+    <!-- MODAL INFORME DEL DIA SIGUIENTE =============================== -->
+    <div class="uk-modal" id="modal_informe_dia_sgte">
+      <div class="uk-modal-dialog uk-modal-dialog-large">
+        <div style="text-align: center;" class="uk-modal-header">
+          <h3 class="uk-modal-title">AGENDA DEL DÍA DE MAÑANA
+          </h3>
+        </div>
+        <div class="uk-grid uk-grid-divider" data-uk-grid-margin="">
+          <div class="uk-width-large-1-1 uk-row-first">
+            <div class="uk-grid uk-grid-medium" data-uk-grid-margin="">
+              <div class="uk-width-1-4 uk-row-first">
+                <ul class="uk-tab uk-tab-left" data-uk-tab="{connect:'#tabs_R'}">
+                  <li class="uk-active" aria-expanded="true"><a>Agenda</a></li>
+                                      <li aria-expanded="false"><a>Leccionario</a></li>                 </ul>
+              </div>
+              <div class="uk-width-3-4">
+                <ul id="tabs_R" class="uk-switcher uk-margin-small-top">
+                  <li aria-hidden="false" class="uk-active">
+                    <label><i class="material-icons md-24 uk-text-success">layers
+                      </i> Detalle de agenda para el día de mañana.</label>
+                    <br />
+                    <div class="uk-overflow-container">
+                      <table class="uk-table uk-table-hover">
+                        <thead>
+                          <tr>
+                            <th class="uk-text-nowrap">Materia</th>
+                            <th class="uk-text-nowrap">Estado</th>
+                            <th class="uk-text-nowrap uk-text-right">Fecha Inicio</th>
+                            <th class="uk-text-nowrap uk-text-right">Fecha Fin</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                                                  </tbody>
+                      </table>
+                      <div class="uk-modal agenda_modal" id="agenda_modal">
+                        <div class="uk-modal-dialog">
+
+                          <div id="modal-body">
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+
+                  </li>
+                  <li aria-hidden="true">
+                    <label><i class="material-icons md-24 uk-text-success">layers
+                      </i> Detalle de leccionario para el día de mañana.</label>
+                    <br />
+                    <div class="uk-overflow-container">
+                      <table class="uk-table uk-table-hover">
+                        <thead>
+                          <tr>
+                            <th class="uk-text-nowrap">Materia</th>
+                            <th class="uk-text-nowrap">Descripción</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                                                  </tbody>
+                      </table>
+                      <div class="uk-modal plan_modal" id="plan_modal">
+                        <div class="uk-modal-dialog">
+
+                          <div id="modal-body">
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="uk-modal-footer uk-text-right">
+          <button type="button" class="md-btn md-btn-flat uk-modal-close">Cerrar</button>
+        </div>
+      </div>
+    </div>
+    <!---->
+    <!---->
+
+    <div id="modal_rend" class="uk-modal">
+      <div class="uk-modal-dialog" style="background-color: #77749a;">
+        <a class="uk-modal-close uk-close" style="background-color: white;"></a>
+        <h1 style="color: white;">Informativo</h1>
+        <p style="color: white;"> Las notas se van actualizando conforme los docentes realizan el ingreso. </p>
+        <p style="color: white;"> Los globos de notas en el gráfico indican el máximo y el mínimo. </p>
+      </div>
+    </div>
+
+    <!-- modal terminos y condiciones -->
+    <div class="uk-modal" id="modal_large_term" aria-hidden="true" style="display: none; overflow-y: auto;">
+      <div class="uk-modal-dialog uk-modal-dialog-large" style="top: 203px;">
+
+        <!--  <div class="uk-modal-header">
+            <h2 class="uk-modal-title uk-text-center">Inicio del periodo 2026 - 2027 y solicitud de acceso a Plataforma </h2>
+        </div> -->
+
+        <!-- <div class="uk-grid">
+            <div class="uk-width-medium-4-6">
+                <p>
+                Declaro que acepto y conozco las políticas, términos y condiciones académicas y financieras de la matriculación en la {{Unidad Educativa Particular Bilingüe Ecomundo}}, estipuladas en el <a href="#">Contrato Educativo</a>; así mismo, solicito mis claves de acceso a la Plataforma Digital indicada por la unidad educativa y consiento que mi representado inicie las clases de acuerda al calendario escolar de la institución.
+                </p>
+                
+                <p>
+                <input type="checkbox" name="acepta_terminos" id="acepta_terminos">
+                <label for="acepta_terminos">Aceptar términos y condiciones</label>
+                </p>
+                
+                
+                <a href="#" class="uk-margin-top">Más Información</a>
+            </div>
+            <div class="uk-width-medium-2-6">
+                
+            </div>
+        </div>
+
+        <div class="uk-modal-footer uk-text-right">
+            <button type="button" class="md-btn md-btn-primary uk-modal-close"> <i class="material-icons">done</i> Aceptar</button>
+        </div> -->
+
+        <div class="md-card-content large-padding">
+
+          <h2 class="heading_b ingenium-color-blue" style="font-weight:600">Inicio del período
+            lectivo 2026 - 2027 y solicitud de accesos a
+            Plataformas</h2>
+          <div class="uk-grid " data-uk-grid-margin="">
+            <div class="uk-width-medium-2-3 uk-row-first">
+              <div class="uk-grid" data-uk-grid-margin="">
+                <div class="uk-width-medium-1-1 uk-row-first">
+                  <p class="uk-text-muted" style="text-align: justify">
+                    Declaro que acepto y conozco las políticas, términos y
+                    condiciones académicas y financieras de la matriculación en
+                    la Unidad Educativa Americano de Guayaquil, estipuladas
+                    en el <a title="Ver documento adjunto" onclick="window.open('../admin/convenio_matricula/americano/1029/contrato_pdf.php?alum_curs_para_codi=588008','_blank')">Contrato Educativo</a>; así mismo, solicito mis claves de acceso
+                    a la Plataforma digital indicada por la unidad educativa y
+                    consiento que mi representado
+                                                        inicie las clases de acuerdo al calendario escolar de la institución.                    <br><br>
+                    <input type="checkbox" id="term_condiciones" name="term_condiciones">
+                    <a>Aceptar términos y condiciones</a>
+                    <br><br>
+                    <strong>Más Información</strong>
+                  <p style="text-align: justify"></p>
+                  </p>
+
+                </div>
+                <div class="uk-width-medium-1-1 uk-row-first" style="text-align: left">
+
+                  <button id="btn_aceptar" disabled="" class="md-btn md-btn-success md-btn-wave-light waves-effect waves-button waves-light disabled" type="button">ACEPTAR
+                  </button>
+
+                </div>
+              </div>
+            </div>
+            <div class="uk-width-medium-1-3">
+              <img style="max-height: 500px;border" class="uk-margin-bottom" src="../../../imagenes/term_cond.png">
+
+
+            </div>
+          </div>
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    
+    
+    
+    <!-- =============================== -->
+    <!-- =============================== -->
+    <input name="mens_de" type="hidden" id="mens_de" value='2022000043' />
+    <input name="mens_de_tipo" type="hidden" id="mens_de_tipo" value='A' />
+    <script src="js/agendas.js"></script>
+    
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0JZR8RQXXZ"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-0JZR8RQXXZ', {
+        'user_id': 'A_'
+    });
+</script>
+<!-- End Google Analytics -->
+
+
+<!-- jQuery 2.1.4 -->
+<script src="../../includes/common/plugins/jQuery/jQuery-2.1.4.min.js"></script>
+<!-- jQuery UI 1.11.4 -->
+<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+    $.widget.bridge('uibutton', $.ui.button);
+</script>
+<!-- Bootstrap 3.3.5
+<script src="../../includes/common/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../includes/common/plugins/select2/select2.full.min.js"></script>
+<!-- DataTables
+<script src="../../../includes/common/plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="../../../includes/common/plugins/datatables/dataTables.bootstrap.min.js"></script>
+<!-- Buttons
+<script src="//cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script>
+<script src="/cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+<script src="//cdn.datatables.net/buttons/1.3.1/js/dataTables.buttons.min.js"></script>
+<script src="//cdn.datatables.net/buttons/1.3.1/js/buttons.bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/pdfmake.min.js"></script>
+<script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/vfs_fonts.js"></script>
+<script src="//cdn.datatables.net/buttons/1.3.1/js/buttons.html5.min.js"></script>
+<script src="//cdn.datatables.net/buttons/1.3.1/js/buttons.print.min.js"></script>
+<script src="//cdn.datatables.net/buttons/1.3.1/js/buttons.colVis.min.js"></script>
+
+<!-- Morris.js charts
+<script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+<script src="../../includes/common/plugins/morris/morris.min.js?6408804881198510453"></script>-->
+<!-- JSPDF para PDF
+<script src="http://mrrio.github.io/jsPDF/dist/jspdf.debug.js"></script>
+<!-- Sparkline
+<script src="../../includes/common/plugins/sparkline/jquery.sparkline.min.js"></script>
+<!-- jvectormap
+<script src="../../includes/common/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
+<script src="../../includes/common/plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+<!-- jQuery Knob Chart
+<script src="../../includes/common/plugins/knob/jquery.knob.js"></script>
+<!-- daterangepicker
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js"></script>
+<script src="../../includes/common/plugins/daterangepicker/daterangepicker.js"></script>
+<!-- datepicker
+<script src="../../includes/common/plugins/datepicker/bootstrap-datepicker.js"></script>
+<!-- Bootstrap WYSIHTML5
+<script src="../../includes/common/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
+<!-- Slimscroll
+<script src="../../includes/common/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+<!-- FastClick
+<script src="../../includes/common/plugins/fastclick/fastclick.min.js"></script>
+<!-- AdminLTE App
+<script src="../../includes/common/dist/js/app.min.js"></script>-->
+<!-- iCheck
+<script src="../../includes/common/plugins/iCheck/icheck.min.js"></script>
+<!-- AdminLTE for demo purposes
+<script src="../../includes/common/dist/js/demo.js"></script>
+<!-- Slick Carousel
+<script type="text/javascript" src="../includes/common/slick/slick.min.js"></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
+<script src="//cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/src/js/bootstrap-datetimepicker.js"></script>
+<script src="../../framework/js/bootstrap3-typeahead.js"></script>
+
+
+<script src="../../includes/common/maskmoney/src/jquery.maskMoney.js" type="text/javascript"></script>
+<script src="../../includes/common/bootstrap-validator-master/js/validator.js" type="text/javascript"></script>
+-->
+<script src="js/general.js?6408804881198510453"></script>
+<script src="js/alumnos.js?6408804881198510453"></script>
+<script src="js/posts.js?6408804881198510453"></script>
+<script src="js/activar_licencia.js?6408804881198510453"></script>
+
+<script type="text/javascript" src="../../framework/funciones_new.js?6408804881198510453"></script>
+<!--<script src="../../framework/funciones_mensajes_repre.js?6408804881198510453"></script>-->
+
+<script src="js/menu.js?6408804881198510453"></script>
+<script src="../../framework/ckeditor/ckeditor.js"></script>
+<!-- fullCalendar 2.2.5
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
+<script src="../includes/common/plugins/fullcalendar/fullcalendar.min.js"></script>
+<script src='../includes/common/plugins/fullcalendar/locale/es.js'></script>-->
+
+<!--<script src="../../site_media/js/common/general.js"></script>
+<script src="../../site_media/js/common/mensajeria.js"></script>-->
+
+
+<!-- New Template Altair -->
+
+<!-- common functions -->
+<script src="../../dist/assets/js/common.min.js"></script>
+<!-- uikit functions -->
+<script src="../../dist/assets/js/uikit_custom.min.js"></script>
+<!-- altair common functions/helpers -->
+<script src="../../dist/assets/js/altair_admin_common.min.js"></script>
+
+<script src="../../includes/common/growl/jquery.growl.js" type="text/javascript"></script>
+    
+<!--<script src="https://desk.zoho.com/portal/api/feedbackwidget/113798000017929052?orgId=640765502&displayType=popout"></script> -->
+
+<!-- Start of linkssupport Zendesk Widget script -->
+<!-- <script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=af62c2f9-0a53-40dd-909c-222363612120"> </script> -->
+<!-- End of linkssupport Zendesk Widget script -->
+
+
+
+
+
+
+
+    
+
+   
+
+    <script type="text/javascript">
+      $('#modal_closeSesion').click(function() {
+
+        window.location = '../../salir.php';
+      });
+    </script>
+    <!-- google web fonts -->
+    <!-- google web fonts -->
+
+
+    <script>
+      WebFontConfig = {
+        google: {
+          families: [
+            'Source+Code+Pro:400,700:latin',
+            'Roboto:400,300,500,700,400italic:latin'
+          ]
+        }
+      };
+      (function() {
+        var wf = document.createElement('script');
+        wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+          '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+        wf.type = 'text/javascript';
+        wf.async = 'true';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(wf, s);
+      })();
+    </script>
+    <!-- page specific plugins -->
+    <!-- d3 -->
+    <script src="../../dist/bower_components/d3/d3.min.js"></script>
+    <!-- metrics graphics (charts) -->
+    <script src="../../dist/bower_components/metrics-graphics/dist/metricsgraphics.min.js"></script>
+    <!-- chartist (charts) -->
+    <script src="../../dist/bower_components/chartist/dist/chartist.min.js"></script>
+    <script src="../../dist/bower_components/maplace-js/dist/maplace.min.js"></script>
+    <!-- peity (small charts) -->
+    <script src="../../dist/bower_components/peity/jquery.peity.min.js"></script>
+    <!-- easy-pie-chart (circular statistics) -->
+    <script src="../../dist/bower_components/jquery.easy-pie-chart/dist/jquery.easypiechart.min.js"></script>
+    <!-- countUp -->
+    <script src="../../dist/bower_components/countUp.js/dist/countUp.min.js"></script>
+    <!-- handlebars.js -->
+    <script src="../../dist/bower_components/handlebars/handlebars.min.js"></script>
+    <script src="../../dist/assets/js/custom/handlebars_helpers.min.js"></script>
+    <!-- CLNDR -->
+    <script src="../../dist/bower_components/clndr/clndr.min.js"></script>
+    <!--  dashbord functions -->
+    <script src="../../dist/assets/js/pages/dashboard.min.js"></script>
+    <!-- page specific plugins -->
+    <!-- echarts -->
+    <script src="../../dist/bower_components/echarts/dist/echarts.min.js"></script>
+
+    <!-- datatables -->
+    <script src="../../dist/bower_components/datatables/media/js/jquery.dataTables.min.js"></script>
+    <!-- datatables custom integration -->
+
+    <script src="../../dist/assets/js/custom/datatables/datatables.uikit.min.js"></script>
+
+
+
+    <script type="text/javascript">
+      $(document).ready(function() {
+        
+        //UIkit.modal("#modal_large_term").show();
+
+        var table1 = $("#dt_agenda").DataTable({
+          paging: true,
+          lengthChange: false,
+          ordering: false,
+          searching: false,
+          language: {
+            url: '//cdn.datatables.net/plug-ins/1.10.8/i18n/Spanish.json'
+          }
+        });
+        table1.page.len(7).draw();
+      });
+
+      
+
+
+      
+      
+      $("#omitirRegPlaca").click(function() {
+          $("#new-add-placas").addClass("uk-hidden");
+          document.getElementsByTagName("html")[0].style.overflow = "auto";
+      })
+
+    </script>
+
+    <script>
+      //=========== NUEVA FUNCIONLIDAD CUADRO RENDIMIENTO =============
+      var cabecera
+      var notas
+      var notasPG
+
+      responseArray = [];
+      var data = new FormData();
+      data.append('opc', 'chart_notas');
+
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '../alumnos/script_set_alum.php', false);
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+
+          responseArray = xhr.response;
+          x = JSON.parse(responseArray);
+
+          /*console.log("RESPONSE", x);
+          console.log("cabeceraGrafico", x['cabeceraGrafico']);
+          console.log("notasGrafico", x['notasGrafico']);
+          console.log("notasGraficoPG", x['notasGraficoPG']);*/
+          cabecera = x['cabeceraGrafico'];
+          notas = x['notasGrafico'];
+          notasPG = x['notasGraficoPG'];
+
+        }
+      };
+      xhr.send(data);
+
+
+      //===================================================================    
+      var nombre = null;
+      $('.textHorario').text(nombre);
+      $('.textHorario2').text(nombre);
+
+      function printDiv(nombreDiv) {
+        var objeto = document.getElementById(nombreDiv); //obtenemos el objeto a imprimir
+        var ventana = window.open('', '_blank'); //abrimos una ventana vacía nueva
+        ventana.document.write(objeto.innerHTML); //imprimimos el HTML del objeto en la nueva ventana
+        ventana.document.close(); //cerramos el documento
+        ventana.print(); //imprimimos la ventana
+        ventana.close(); //cerramos la ventana
+      }
+
+
+
+
+      var titulo = '';
+
+      $(function() {
+        altair_charts_echarts.chart_notas();
+      });
+
+      altair_charts_echarts = {
+        chart_notas: function() {
+          var dom = document.getElementById("chart_notas"),
+            myChart = echarts.init(dom),
+            app = {};
+
+          var option = option = {
+            title: {
+              text: titulo,
+              subtext: 'Prom. Generales'
+            },
+            tooltip: {
+              trigger: 'axis'
+            },
+            legend: {
+              data: ['A', 'C']
+            },
+            toolbox: {
+              show: true,
+              feature: {
+                dataView: {
+                  show: true,
+                  readOnly: false
+                },
+                magicType: {
+                  show: true,
+                  type: ['line', 'bar']
+                },
+                restore: {
+                  show: false
+                },
+                saveAsImage: {
+                  show: true
+                }
+              }
+            },
+            calculable: true,
+            xAxis: [{
+              type: 'category',
+              data: cabecera
+            }],
+            yAxis: [{
+              type: 'value'
+            }],
+            series: [{
+                name: 'A',
+                type: 'bar',
+                data: notas,
+                markPoint: {
+                  data: [{
+                      type: 'max',
+                      name: 'PROM ALUM'
+                    },
+                    {
+                      type: 'min',
+                      name: 'PROM ALUM'
+                    }
+                  ]
+                },
+                markLine: {
+                  data: [{
+                    type: 'average',
+                    name: 'RANGO'
+                  }]
+                }
+              },
+
+              {
+                name: 'C',
+                type: 'bar',
+                data: notasPG,
+                markPoint: {
+                  data: [{
+                      type: 'max',
+                      name: 'PROM CURSO'
+                    },
+                    {
+                      type: 'min',
+                      name: 'PROM CURSO'
+                    }
+                  ]
+                },
+                markLine: {
+                  data: [{
+                    type: 'average',
+                    name: 'RANGO'
+                  }]
+                }
+              }
+            ]
+          };
+
+          if (option && typeof option === "object") {
+            myChart.setOption(option, true);
+            $window.on('debouncedresize', function() {
+              myChart.resize()
+            });
+          }
+        }
+      };
+
+      $(function() {
+        // if (isHighDensity()) {
+        //     $.getScript("../../dist/assets/js/custom/dense.min.js", function (data) {
+        //         // enable hires images
+        //         altair_helpers.retina_images();
+        //     });
+        // }
+        if (Modernizr.touch) {
+          // fastClick (touch devices)
+          FastClick.attach(document.body);
+        }
+      });
+      $window.load(function() {
+        // ie fixes
+        altair_helpers.ie_fix();
+      });
+    </script>
+    <script>
+      $(function() {
+        var $switcher = $('#style_switcher'),
+          $switcher_toggle = $('#style_switcher_toggle'),
+          $theme_switcher = $('#theme_switcher'),
+          $mini_sidebar_toggle = $('#style_sidebar_mini'),
+          $slim_sidebar_toggle = $('#style_sidebar_slim'),
+          $boxed_layout_toggle = $('#style_layout_boxed'),
+          $accordion_mode_toggle = $('#accordion_mode_main_menu'),
+          $html = $('html'),
+          $body = $('body');
+
+
+        $switcher_toggle.click(function(e) {
+          e.preventDefault();
+          $switcher.toggleClass('switcher_active');
+        });
+
+        $theme_switcher.children('li').click(function(e) {
+          e.preventDefault();
+          var $this = $(this),
+            this_theme = $this.attr('data-app-theme');
+
+          $theme_switcher.children('li').removeClass('active_theme');
+          $(this).addClass('active_theme');
+          $html
+            .removeClass('app_theme_a app_theme_b app_theme_c app_theme_d app_theme_e app_theme_f app_theme_g app_theme_h app_theme_i app_theme_dark')
+            .addClass(this_theme);
+
+          if (this_theme == '') {
+            localStorage.removeItem('altair_theme');
+            $('#kendoCSS').attr('href', 'bower_components/kendo-ui/styles/kendo.material.min.css');
+          } else {
+            localStorage.setItem("altair_theme", this_theme);
+            if (this_theme == 'app_theme_dark') {
+              $('#kendoCSS').attr('href', '../../dist/bower_components/kendo-ui/styles/kendo.materialblack.min.css')
+            } else {
+              $('#kendoCSS').attr('href', '../../dist/bower_components/kendo-ui/styles/kendo.material.min.css');
+            }
+          }
+
+        });
+
+        // hide style switcher
+        $document.on('click keyup', function(e) {
+          if ($switcher.hasClass('switcher_active')) {
+            if (
+              (!$(e.target).closest($switcher).length) ||
+              (e.keyCode == 27)
+            ) {
+              $switcher.removeClass('switcher_active');
+            }
+          }
+        });
+
+        // get theme from local storage
+        if (localStorage.getItem("altair_theme") !== null) {
+          $theme_switcher.children('li[data-app-theme=' + localStorage.getItem("altair_theme") + ']').click();
+        }
+
+
+        // toggle mini sidebar
+
+        // change input's state to checked if mini sidebar is active
+        if ((localStorage.getItem("altair_sidebar_mini") !== null && localStorage.getItem("altair_sidebar_mini") == '1') || $body.hasClass('sidebar_mini')) {
+          $mini_sidebar_toggle.iCheck('check');
+        }
+
+        $mini_sidebar_toggle
+          .on('ifChecked', function(event) {
+            $switcher.removeClass('switcher_active');
+            localStorage.setItem("altair_sidebar_mini", '1');
+            localStorage.removeItem('altair_sidebar_slim');
+            location.reload(true);
+          })
+          .on('ifUnchecked', function(event) {
+            $switcher.removeClass('switcher_active');
+            localStorage.removeItem('altair_sidebar_mini');
+            location.reload(true);
+          });
+
+        // toggle slim sidebar
+
+        // change input's state to checked if mini sidebar is active
+        if ((localStorage.getItem("altair_sidebar_slim") !== null && localStorage.getItem("altair_sidebar_slim") == '1') || $body.hasClass('sidebar_slim')) {
+          $slim_sidebar_toggle.iCheck('check');
+        }
+
+        $slim_sidebar_toggle
+          .on('ifChecked', function(event) {
+            $switcher.removeClass('switcher_active');
+            localStorage.setItem("altair_sidebar_slim", '1');
+            localStorage.removeItem('altair_sidebar_mini');
+            location.reload(true);
+          })
+          .on('ifUnchecked', function(event) {
+            $switcher.removeClass('switcher_active');
+            localStorage.removeItem('altair_sidebar_slim');
+            location.reload(true);
+          });
+
+        // toggle boxed layout
+
+        if ((localStorage.getItem("altair_layout") !== null && localStorage.getItem("altair_layout") == 'boxed') || $body.hasClass('boxed_layout')) {
+          $boxed_layout_toggle.iCheck('check');
+          $body.addClass('boxed_layout');
+          $(window).resize();
+        }
+
+        $boxed_layout_toggle
+          .on('ifChecked', function(event) {
+            $switcher.removeClass('switcher_active');
+            localStorage.setItem("altair_layout", 'boxed');
+            location.reload(true);
+          })
+          .on('ifUnchecked', function(event) {
+            $switcher.removeClass('switcher_active');
+            localStorage.removeItem('altair_layout');
+            location.reload(true);
+          });
+
+        // main menu accordion mode
+        if ($sidebar_main.hasClass('accordion_mode')) {
+          $accordion_mode_toggle.iCheck('check');
+        }
+
+        $accordion_mode_toggle
+          .on('ifChecked', function() {
+            $sidebar_main.addClass('accordion_mode');
+          })
+          .on('ifUnchecked', function() {
+            $sidebar_main.removeClass('accordion_mode');
+          });
+
+
+      });
+    </script>
+    <!--modal video liceo naval guayaquil-->
+
+    <div class="md-card-toolbar">
+      <div class="md-card-toolbar-actions">
+
+      </div>
+      <h3 class="md-card-toolbar-heading-text">
+        Información
+      </h3>
+      <div class="md-card-toolbar-actions">
+        <!--<i data-uk-modal="{target:'#myModalPre'}"
+                                   class="md-icon material-icons uk-hidden">help</i>-->
+        <i data-uk-modal="{target:'#myModalVideo'}" class="md-icon material-icons uk-hidden">videocam</i>
+      </div>
+    </div>
+
+
+
+  </div>
+  </div>
+
+
+  <div class="uk-modal fade" id="modal_alum_pagos" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="uk-modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header" id="modal_alum_cuenta_ask_header">
+          <h4 class="modal-title" id="myModalLabel">Colegio Americano de Guayaquil INFORMA:</h4>
+        </div>
+        <div class="modal-body" id="modal_alum_pagos_body">
+        </div>
+        <div class="modal-footer" id="modal_alum_pagos_footer">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="uk-modal fade" id="modal_repr_aviso" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="uk-modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header" id="modal_alum_cuenta_ask_header">
+          <h3 class="modal-title" style="text-align: center;font-size: 22px;" id="myModalLabel">Ecomundo Informa:</h3>
+        </div>
+        <div class="modal-body" id="modal_repr_aviso_body">
+        </div>
+        <div class="modal-footer" id="modal_repr_aviso_footer">
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+    
+  <script>
+      function guardar_registro_placa(flag){
+        var repr_placa_1 = document.getElementById('repr_placa_1').value;
+        var repr_placa_2 = document.getElementById('repr_placa_2').value;
+        var repr_placa_3 = document.getElementById('repr_placa_3').value;
+        var repr_placa_4 = document.getElementById('repr_placa_4').value;
+        if (flag) {
+          if (!repr_placa_1 || repr_placa_1 == '') {            
+            alert('Debe ingresar la primera placa')
+            //$.growl.error({ title: "Educalinks informa:", message: 'Debe ingresar una placa' });
+            return;
+          }
+        }
+        var data = new FormData();
+        data.append('opc', 'set_regi_placa');
+        data.append('repr_placa_1', repr_placa_1);
+        data.append('repr_placa_2', repr_placa_2);
+        data.append('repr_placa_3', repr_placa_3);
+        data.append('repr_placa_4', repr_placa_4);
+        data.append('response_repre', flag);
+        
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '../alumnos/script_set_alum.php', false);
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState == 4 && xhr.status == 200) {
+            responseArray = xhr.response;           
+            if(flag){
+                if (responseArray == 'OK') {
+                    alert('Registro realizado correctamente');
+                    $("#new-add-placas").addClass("uk-hidden");
+                    document.getElementsByTagName("html")[0].style.overflow = "auto";
+                }else{
+                    alert('Ha ocurrido un error, intente en unos minutos nuevamente.');
+                }
+            }
+          }
+        };
+        xhr.send(data);
+
+    }
+    </script>
+    <script>
+      function irAReserva() {
+          window.location.href = "preinscripcion.php";
+      }
+      UIkit.modal('#myModalPre').show();
+</script>
+</body>
+
+</html>

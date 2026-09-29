@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#FF5C00">
+<meta name="description" content="Mi Agenda — tu centro académico personal sobre Educalinks">
+<title>Mi Agenda — Colegio Americano</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="img/icon-192.png">
+<link rel="apple-touch-icon" href="img/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<!-- ==================== PANTALLA DE LOGIN ==================== -->
+<div id="pantalla-login" class="login-screen oculto">
+  <div class="login-box">
+    <div class="login-logo">📚</div>
+    <h1 class="login-tit">Mi Agenda</h1>
+    <p class="login-sub">Colegio Americano de Guayaquil</p>
+    <form id="form-login">
+      <label class="lbl">Usuario (cédula)
+        <input id="login-usuario" type="text" autocomplete="username" required>
+      </label>
+      <label class="lbl">Contraseña
+        <input id="login-clave" type="password" autocomplete="current-password" required>
+      </label>
+      <label class="lbl-chk"><input type="checkbox" id="login-recordar"> Recuérdame en este dispositivo</label>
+      <div id="login-error" class="login-error oculto" role="alert"></div>
+      <button id="btn-login" class="btn btn-l" type="submit">Iniciar sesión</button>
+      <div class="login-divider">
+        <span>O</span>
+      </div>
+      <button id="btn-invitado" class="btn btn-inv" type="button" data-accion="invitado">👤 Entrar como invitado</button>
+    </form>
+    <p class="login-nota">🔒 Tus credenciales se validan directamente contra Educalinks y no salen de tu PC.</p>
+  </div>
+</div>
+
+<!-- ==================== APP ==================== -->
+<div id="app" class="oculto">
+
+  <header class="top">
+    <div class="brand">📚 Mi Agenda</div>
+    <div class="buscar">
+      <span class="lupa" aria-hidden="true">🔎</span>
+      <input id="buscador" type="search" placeholder="Buscar tareas, notas, documentos… ( / o Ctrl+K )" autocomplete="off" readonly data-accion="pal-open" aria-label="Búsqueda global">
+      <div id="resultados" role="listbox" aria-label="Resultados de búsqueda"></div>
+    </div>
+    <div class="acciones">
+      <button class="icon-btn" data-accion="enfoque" title="Modo enfoque (F)" aria-label="Modo enfoque">🔭</button>
+      <button class="icon-btn" id="btn-refresh" data-accion="refresh-manual" title="Actualizar datos (R)" aria-label="Actualizar datos">↻</button>
+      <button class="icon-btn" id="btn-campana" data-accion="camp-bell" title="Novedades" aria-label="Novedades">🔔<span class="badge-nov" id="badge-novedades" role="status" aria-live="polite">0</span></button>
+      <button class="icon-btn" data-accion="ajustes" title="Ajustes" aria-label="Ajustes">⚙️</button>
+      <button class="icon-btn" data-accion="salir" title="Cerrar sesión" aria-label="Cerrar sesión">⏻</button>
+    </div>
+  </header>
+
+  <div id="franja" class="franja" role="status" aria-live="polite"><span class="spi"></span> Cargando…</div>
+  <div id="banner-offline" class="banner-offline oculto" data-accion="reintentar" title="Toca para reintentar">📴 Modo sin conexión — mostrando los últimos datos guardados · ✅ Reintentar</div>
+  <div id="ptr" class="ptr" aria-hidden="true">↻</div>
+
+  <nav class="tabs" aria-label="Vistas principales">
+    <button class="tab activa" data-tab="inicio">🏠 Inicio</button>
+    <button class="tab" data-tab="semana">📅 Semana</button>
+    <button class="tab" data-tab="materias">📚 Materias</button>
+    <button class="tab" data-tab="pendientes">📝 Pendientes</button>
+    <button class="tab" data-tab="rendimiento">📊 Rendimiento</button>
+    <button class="tab" data-tab="mas">⋯ Más</button>
+  </nav>
+
+  <main>
+    <section id="vista-inicio" class="vista activa" aria-label="Inicio">
+      <div id="contenido-inicio">
+        <div class="skel" style="height:98px"></div>
+        <div class="skel" style="height:86px"></div>
+        <div class="skel" style="height:130px"></div>
+        <div class="skel" style="height:130px"></div>
+      </div>
+    </section>
+
+    <section id="vista-semana" class="vista" aria-label="Mi semana">
+      <div class="nav-semana">
+        <button data-accion="sem-prev" title="Semana anterior" aria-label="Semana anterior">‹</button>
+        <div class="rango" id="rango-semana">…</div>
+        <button data-accion="sem-next" title="Semana siguiente" aria-label="Semana siguiente">›</button>
+        <button class="hoy" data-accion="sem-hoy">Hoy</button>
+      </div>
+      <div id="contenido-semana">
+        <div class="skel" style="height:76px"></div>
+        <div class="skel" style="height:76px"></div>
+        <div class="skel" style="height:76px"></div>
+        <div class="skel" style="height:150px"></div>
+      </div>
+    </section>
+
+    <section id="vista-materias" class="vista" aria-label="Materias">
+      <div id="contenido-materias">
+        <div class="skel" style="height:90px"></div>
+        <div class="skel" style="height:90px"></div>
+        <div class="skel" style="height:90px"></div>
+      </div>
+    </section>
+
+    <section id="vista-pendientes" class="vista" aria-label="Mis pendientes">
+      <div id="contenido-pendientes">
+        <div class="skel" style="height:60px"></div>
+        <div class="skel" style="height:76px"></div>
+        <div class="skel" style="height:76px"></div>
+        <div class="skel" style="height:76px"></div>
+      </div>
+    </section>
+
+    <section id="vista-rendimiento" class="vista" aria-label="Rendimiento">
+      <div id="contenido-rendimiento">
+        <div class="skel" style="height:90px"></div>
+        <div class="skel" style="height:120px"></div>
+        <div class="skel" style="height:120px"></div>
+      </div>
+    </section>
+
+    <section id="vista-mas" class="vista" aria-label="Más">
+      <div id="contenido-mas"></div>
+    </section>
+
+    <section id="vista-calendario" class="vista" aria-label="Calendario">
+      <button class="btn ghost mini volver-arriba" data-accion="ir-mas">← Volver a Más</button>
+      <div id="contenido-calendario">
+        <div class="skel" style="height:300px"></div>
+      </div>
+    </section>
+
+    <section id="vista-evaluaciones" class="vista" aria-label="Evaluaciones">
+      <button class="btn ghost mini volver-arriba" data-accion="ir-mas">← Volver a Más</button>
+      <div id="contenido-evaluaciones">
+        <div class="skel" style="height:90px"></div>
+        <div class="skel" style="height:120px"></div>
+      </div>
+    </section>
+
+    <section id="vista-comunicados" class="vista" aria-label="Comunicados">
+      <button class="btn ghost mini volver-arriba" data-accion="ir-mas">← Volver a Más</button>
+      <div id="contenido-comunicados">
+        <div class="skel" style="height:72px"></div>
+        <div class="skel" style="height:72px"></div>
+        <div class="skel" style="height:72px"></div>
+      </div>
+    </section>
+
+    <section id="vista-documentos" class="vista" aria-label="Documentos del aula virtual">
+      <button class="btn ghost mini volver-arriba" data-accion="ir-mas">← Volver a Más</button>
+      <div id="contenido-documentos">
+        <div class="skel" style="height:72px"></div>
+        <div class="skel" style="height:72px"></div>
+      </div>
+    </section>
+
+    <section id="vista-estudio" class="vista" aria-label="Estudio">
+      <button class="btn ghost mini volver-arriba" data-accion="ir-mas">← Volver a Más</button>
+      <div id="contenido-estudio">
+        <div class="skel" style="height:120px"></div>
+        <div class="skel" style="height:120px"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>Datos obtenidos de Educalinks · Uso personal</footer>
+
+  <nav class="bottom-nav" aria-label="Navegación principal">
+    <button class="bnav-btn activa" data-tab="inicio"><span class="bi">🏠</span>Inicio</button>
+    <button class="bnav-btn" data-tab="semana"><span class="bi">📅</span>Semana</button>
+    <button class="bnav-btn" data-tab="pendientes"><span class="bi">📝</span>Pendientes</button>
+    <button class="bnav-btn" data-tab="rendimiento"><span class="bi">📊</span>Rendimiento</button>
+    <button class="bnav-btn" data-tab="mas"><span class="bi">⋯</span>Más</button>
+  </nav>
+
+  <div id="panel-campana" class="panel-campana" role="dialog" aria-label="Novedades">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem">
+      <strong>🔔 Novedades</strong>
+      <button class="x" data-accion="camp-cerrar" aria-label="Cerrar">✕</button>
+    </div>
+    <div id="campana-lista" role="status" aria-live="polite"></div>
+  </div>
+
+  <div id="overlay-ajustes" class="overlay" role="dialog" aria-label="Ajustes">
+    <div class="drawer" style="max-width:480px">
+      <h3>⚙️ Ajustes <button class="x" data-accion="ajustes-cerrar" aria-label="Cerrar">✕</button></h3>
+      <div id="cuerpo-ajustes"></div>
+    </div>
+  </div>
+
+  <div id="overlay-dia" class="overlay" role="dialog" aria-label="Detalle del día">
+    <div class="drawer" style="max-width:500px">
+      <h3 id="dia-titulo"></h3>
+      <div id="dia-lista"></div>
+    </div>
+  </div>
+
+  <div id="overlay-materia" class="overlay" role="dialog" aria-label="Detalle de materia">
+    <div class="drawer" style="max-width:560px">
+      <h3 id="materia-titulo"></h3>
+      <div id="materia-detalle"></div>
+    </div>
+  </div>
+
+  <div id="overlay-info" class="overlay" role="dialog" aria-label="Detalle">
+    <div class="drawer" style="max-width:480px">
+      <h3 id="info-titulo"></h3>
+      <div id="info-cuerpo"></div>
+    </div>
+  </div>
+
+  <div id="overlay-examen" class="overlay" role="dialog" aria-label="Plan de estudio del examen">
+    <div class="drawer" style="max-width:520px">
+      <h3 id="examen-titulo"></h3>
+      <div id="examen-detalle"></div>
+    </div>
+  </div>
+
+  <div id="overlay-flash" class="overlay" role="dialog" aria-label="Repaso de flashcards">
+    <div class="drawer drawer-flash">
+      <div id="flash-cuerpo"></div>
+    </div>
+  </div>
+
+  <div id="overlay-nuevaflash" class="overlay" role="dialog" aria-label="Nueva flashcard">
+    <div class="drawer" style="max-width:440px">
+      <h3>🃏 Nueva flashcard <button class="x" data-accion="flash-cerrar" aria-label="Cerrar">✕</button></h3>
+      <label class="lbl">Pregunta / frente
+        <textarea id="flash-frente" rows="2" placeholder="Ej. ¿Fórmula de la velocidad?"></textarea>
+      </label>
+      <label class="lbl">Respuesta / reverso
+        <textarea id="flash-reverso" rows="3" placeholder="Ej. v = d/t"></textarea>
+      </label>
+      <label class="lbl">Materia
+        <input id="flash-materia" type="text" list="dl-mats" placeholder="Opcional">
+        <datalist id="dl-mats"></datalist>
+      </label>
+      <div style="display:flex;gap:.5rem;margin-top:.4rem;flex-wrap:wrap">
+        <button class="btn" data-accion="flash-guardar">💾 Guardar</button>
+        <button class="btn ghost" data-accion="flash-cerrar">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="overlay-nota" class="overlay" role="dialog" aria-label="Nota personal">
+    <div class="drawer" style="max-width:460px">
+      <h3>✎ Nota personal <button class="x" data-accion="nota-cerrar" aria-label="Cerrar">✕</button></h3>
+      <p id="nota-contexto" class="sub"></p>
+      <textarea id="nota-texto" rows="4" placeholder="Escribe un recordatorio sobre esta actividad…"></textarea>
+      <div style="display:flex;gap:.5rem;margin-top:.7rem;flex-wrap:wrap">
+        <button class="btn" data-accion="nota-guardar">💾 Guardar</button>
+        <button class="btn ghost" data-accion="nota-eliminar">🗑️ Eliminar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="overlay-rec" class="overlay" role="dialog" aria-label="Recordatorio">
+    <div class="drawer" style="max-width:420px">
+      <h3>⏰ Recordatorio <button class="x" data-accion="rec-cerrar" aria-label="Cerrar">✕</button></h3>
+      <p id="rec-contexto" class="sub"></p>
+      <div class="rec-opciones">
+        <button class="btn ghost" data-accion="rec-set" data-min="15">15 min antes</button>
+        <button class="btn ghost" data-accion="rec-set" data-min="60">1 hora antes</button>
+        <button class="btn ghost" data-accion="rec-set" data-min="1440">1 día antes</button>
+        <button class="btn ghost" data-accion="rec-set" data-min="0">🗑️ Quitar</button>
+      </div>
+      <p class="sub" style="margin-top:.6rem">💡 El aviso llega mientras la app esté abierta en el navegador.</p>
+    </div>
+  </div>
+
+  <div id="overlay-palette" class="overlay overlay-pal" role="dialog" aria-label="Paleta de comandos">
+    <div class="drawer drawer-pal">
+      <div class="pal-caja">
+        <span class="pal-ico" aria-hidden="true">⌘K</span>
+        <input id="pal-input" type="text" placeholder="Buscar o escribir un comando…" autocomplete="off" aria-label="Paleta de comandos">
+        <button class="x" data-accion="pal-cerrar" aria-label="Cerrar">✕</button>
+      </div>
+      <div id="pal-lista" class="pal-lista" role="listbox"></div>
+      <p class="pal-pie"><span class="kbd">↑</span><span class="kbd">↓</span> mover · <span class="kbd">Enter</span> abrir · <span class="kbd">Esc</span> cerrar</p>
+    </div>
+  </div>
+
+  <div id="overlay-enfoque" class="overlay overlay-enf" role="dialog" aria-label="Modo enfoque">
+    <div id="enfoque-contenido" class="enf-cont"></div>
+  </div>
+
+  <div id="overlay-tarea" class="overlay" role="dialog" aria-label="Nuevo pendiente personal">
+    <div class="drawer" style="max-width:430px">
+      <h3>✏️ Nuevo pendiente personal <button class="x" data-accion="tarea-cerrar" aria-label="Cerrar">✕</button></h3>
+      <label class="lbl">Título<input id="pt-titulo" type="text" placeholder="Ej. Leer el capítulo 3"></label>
+      <label class="lbl">Fecha (opcional)<input id="pt-fecha" type="date"></label>
+      <label class="lbl">Materia (opcional)
+        <input id="pt-materia" type="text" list="dl-mats" placeholder="Empieza a escribir…">
+        <datalist id="dl-mats"></datalist>
+      </label>
+      <div style="display:flex;gap:.5rem;margin-top:.4rem;flex-wrap:wrap">
+        <button class="btn" data-accion="pt-guardar">💾 Guardar</button>
+      </div>
+      <p class="sub" style="margin-top:.5rem">Los pendientes personales solo se guardan en este dispositivo.</p>
+    </div>
+  </div>
+
+  <div id="toasts" aria-live="polite" role="status"></div>
+</div>
+
+<script src="js/login.js"></script>
+<script src="js/app.js"></script>
+<script src="js/pwa.js"></script>
+</body>
+</html>

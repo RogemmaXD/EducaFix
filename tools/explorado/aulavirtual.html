@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>EL | UE CAG</title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Remove Tap Highlight on Windows Phone IE -->
+    <meta name="msapplication-tap-highlight" content="no" />
+
+    <link rel="icon" type="image/png" href="../../../../../dist/assets/img/favicon_16x16.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="../../../../../dist/assets/img/favicon_32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="../../../../../dist/assets/img/favicon_64x64.png" sizes="64x64">
+
+    <!-- <link href="https://fonts.googleapis.com/css?family=Montserrat:100,300,400,600,700,900" rel="stylesheet"> -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- additional styles for plugins -->
+    <!-- weather icons -->
+    <link rel="stylesheet" href="../../../../dist/bower_components/weather-icons/css/weather-icons.min.css" media="all">
+    <!-- metrics graphics (charts) -->
+    <link rel="stylesheet" href="../../../../dist/bower_components/metrics-graphics/dist/metricsgraphics.css">
+    <!-- chartist -->
+    <link rel="stylesheet" href="../../../../dist/bower_components/chartist/dist/chartist.min.css">
+
+    <!-- uikit -->
+    <link rel="stylesheet" href="../../../../dist/bower_components/uikit/css/uikit.almost-flat.min.css" media="all">
+
+    <!-- flag icons -->
+    <link rel="stylesheet" href="../../../../dist/assets/icons/flags/flags.min.css" media="all">
+
+    <!-- style switcher -->
+    <link rel="stylesheet" href="../../../../dist/assets/css/style_switcher.min.css" media="all">
+
+    <!-- altair admin -->
+    <!-- minificar y actualizar en Producción-->
+    <link rel="stylesheet" href="../../../../dist/assets/css/main.css" media="all">
+
+    <!-- themes -->
+    <link rel="stylesheet" href="../../../../dist/assets/css/themes/themes_combined.min.css" media="all">
+
+    <!-- altair admin -->
+    <link rel="stylesheet" href="../../../../dist/assets/css/style_educalinks.css" media="all">
+    <link rel="stylesheet" href="../../../../dist/assets/css/animate.min.css" media="all">
+
+    <link rel="stylesheet" href="../../../../dist/assets/css/perfect-scrollbar.css" media="all">
+
+    <link href="../../../../includes/common/growl/jquery.growl.css" rel="stylesheet" type="text/css" />
+
+    <!-- custom css -->
+    <link rel="stylesheet" href="../../../../dist/assets/css/utils.css">
+</head><head>
+    <script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
+</head>
+<body class="disable_transitions sidebar_main_open sidebar_main_swipe footer_active aulavirtual">
+
+<!-- <pre>
+
+</pre> -->
+<script>
+    function imgErrora(image) { image.onerror = ""; image.src = "/imagenes/nino.png"; return true; }
+</script>
+<form name="frm_menu" id="frm_menu" action="../general/" enctype="multipart/form-data" method="post">
+    <header id="header_main">
+        <div class="header_main_content" >
+            <nav class="uk-navbar">
+
+
+                <!-- main sidebar switch -->
+                <a href="#" id="sidebar_main_toggle" class="sSwitch sSwitch_left" }>
+                    <span class="sSwitchIcon"></span>
+                </a>
+
+                
+                <img class="uk-hidden-medium uk-hidden-small" src="../../../../imagenes/logo-ingenium-01.png" alt=""
+                         style="width: 150px;"/>
+
+                <img class="uk-hidden-xlarge uk-hidden-large" src="../../../imagenes/logo-ingenium-mobile.png" alt=""
+                style="height:55px"/>
+                <!--
+                                <a style="line-height: 45px;" href="index.php"
+                                   class="sSidebar_hide sidebar_logo_large uk-hidden-small ">
+                                    <img class="logo_light" src="../../../../includes/common/logos/LOGO_EDUCALINKS_white.png" alt=""
+                                         style="width: 190px;"/>
+                                </a>
+                -->
+
+                <!-- <a style="line-height: 45px;" href="index.php"
+                   class="sSidebar_hide sidebar_logo_large uk-hidden-xlarge uk-hidden-large uk-hidden-medium">
+                    <img class="logo_light" src="includes/common/logos/logo_educalinks_small.png" alt=""
+                         style="width: 50px;"/>
+                </a>
+                <div style="padding-top:13px; display:inline-block;">
+                                            <a style="color: #fff;" class="uk-hidden-small"><i
+                                    class="material-icons md-24 md-light">event_available</i></i>&nbsp;Período: 2026 - 2027                        </a>
+                                    </div> -->
+
+                <!-- Navbar Responsive -->
+                <div class="uk-navbar-flip uk-hidden-xlarge uk-hidden-large">
+                    <ul class="uk-navbar-nav user_actions">
+                        
+                        <!-- Icono Clase en Linea -->
+                        
+                        <li data-uk-dropdown="{mode:click,pos:bottom-right}">
+                            <a href="#" class="user_action_image uk-text-truncate">
+                                <img class="md-user-image" src="" alt="" onerror="imgErrora(this)"/>
+                            </a>
+                            <div class="uk-dropdown uk-dropdown-xlarge">
+                                <ul class="uk-nav js-uk-prevent">
+                                    
+
+                                    <li><a href="admin_pass.php">Contraseña</a>
+                                    <li><a href="../../logout/">Cerrar Sesión</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="uk-navbar-flip uk-hidden-small uk-hidden-medium">
+                    <ul class="uk-navbar-nav user_actions">
+
+                        
+                        
+                        <!-- <li data-uk-dropdown="{mode:click,pos:bottom-right}">
+                            <a href="#" class="user_action_image uk-text-truncate">
+                                <img class="md-user-image"
+                                     src="/imagenes/default.jpg" alt=""/>&nbsp;&nbsp;ROGER DANIEL                            </a>
+                            <div class="uk-dropdown uk-dropdown-xlarge">
+                                <ul class="uk-nav js-uk-prevent">
+                                    <li><a href="admin_pass.php">Contraseña </a>
+                                    <li><a href="../../salir.php">Cerrar Sesión</a></li>
+                                </ul>
+                            </div>
+                        </li> -->
+
+                                                <!--
+                        <li class="uk-hidden-small" data-uk-dropdown="{mode:click,pos:bottom-right}">
+                            <a href="#" class="user_action_icon"><i class="material-icons md-24 ingenium-color-blue"></i><span
+                                        class="uk-badge">7</span></a>
+                            <div class="uk-dropdown uk-dropdown-xlarge">
+                                <div class="md-card-content">
+                                    <ul class="uk-tab uk-tab-grid"
+                                        data-uk-tab="{connect:'#header_alerts',animation:'slide-horizontal'}">
+                                        <li class="uk-width-1-1 uk-active"><a href="#"
+                                                                              class="js-uk-prevent uk-text-small">Mensajes
+                                                (7)</a></li>
+                                    </ul>
+                                    <ul id="header_alerts" class="uk-switcher uk-margin">
+                                        <li>
+                                            <ul class="md-list md-list-addon">
+
+                                                                                                        \
+                                                        <li>
+                                                            <div class="md-list-addon-element">
+                                                                <span class="md-user-letters md-bg-purple">M</span>
+                                                            </div>
+                                                            <div class="md-list-content">
+                                                                <span class="md-list-heading"><a>Recordatorio: Encuesta de percepci&oacute;n de los estudiantes sobre los docentes</a></span>
+                                                                <span class="uk-text-small uk-text-muted">ANDREA LORENA PRADO TORAL</span>
+                                                                <small>
+                                                                    <i class='fa fa-clock-o'></i>15/09/2026                                                                </small>
+                                                            </div>
+                                                        </li>
+                                                                                                                \
+                                                        <li>
+                                                            <div class="md-list-addon-element">
+                                                                <span class="md-user-letters md-bg-purple">M</span>
+                                                            </div>
+                                                            <div class="md-list-content">
+                                                                <span class="md-list-heading"><a>Tu opini&oacute;n es importante: Encuesta de percepci&oacute;n al docente</a></span>
+                                                                <span class="uk-text-small uk-text-muted">ANDREA LORENA PRADO TORAL</span>
+                                                                <small>
+                                                                    <i class='fa fa-clock-o'></i>11/09/2026                                                                </small>
+                                                            </div>
+                                                        </li>
+                                                                                                                \
+                                                        <li>
+                                                            <div class="md-list-addon-element">
+                                                                <span class="md-user-letters md-bg-purple">M</span>
+                                                            </div>
+                                                            <div class="md-list-content">
+                                                                <span class="md-list-heading"><a>Tu opini&oacute;n es importante: Encuesta de percepci&oacute;n al docente</a></span>
+                                                                <span class="uk-text-small uk-text-muted">ANDREA LORENA PRADO TORAL</span>
+                                                                <small>
+                                                                    <i class='fa fa-clock-o'></i>11/09/2026                                                                </small>
+                                                            </div>
+                                                        </li>
+                                                                                                                \
+                                                        <li>
+                                                            <div class="md-list-addon-element">
+                                                                <span class="md-user-letters md-bg-purple">M</span>
+                                                            </div>
+                                                            <div class="md-list-content">
+                                                                <span class="md-list-heading"><a>Recordatorio de entrega ? Evaluaci&oacute;n Interna de F&iacute;sica IB - TERCER CURSO BGU "WYOMING"</a></span>
+                                                                <span class="uk-text-small uk-text-muted">FLAVIO EMILIO ARGUELLO ROMAN</span>
+                                                                <small>
+                                                                    <i class='fa fa-clock-o'></i>06/08/2026                                                                </small>
+                                                            </div>
+                                                        </li>
+                                                                                                                \
+                                                        <li>
+                                                            <div class="md-list-addon-element">
+                                                                <span class="md-user-letters md-bg-purple">M</span>
+                                                            </div>
+                                                            <div class="md-list-content">
+                                                                <span class="md-list-heading"><a>Recepci&oacute;n del segundo borrador de Monograf&iacute;a - TERCER CURSO BGU "WYOMING"</a></span>
+                                                                <span class="uk-text-small uk-text-muted">FLAVIO EMILIO ARGUELLO ROMAN</span>
+                                                                <small>
+                                                                    <i class='fa fa-clock-o'></i>21/07/2026                                                                </small>
+                                                            </div>
+                                                        </li>
+                                                                                                                \
+                                                        <li>
+                                                            <div class="md-list-addon-element">
+                                                                <span class="md-user-letters md-bg-purple">M</span>
+                                                            </div>
+                                                            <div class="md-list-content">
+                                                                <span class="md-list-heading"><a>Seguimiento al avance de la Investigaci&oacute;n de F&iacute;sica IB - TERCER CURSO BGU "WYOMING"</a></span>
+                                                                <span class="uk-text-small uk-text-muted">FLAVIO EMILIO ARGUELLO ROMAN</span>
+                                                                <small>
+                                                                    <i class='fa fa-clock-o'></i>21/07/2026                                                                </small>
+                                                            </div>
+                                                        </li>
+                                                                                                                \
+                                                        <li>
+                                                            <div class="md-list-addon-element">
+                                                                <span class="md-user-letters md-bg-purple">M</span>
+                                                            </div>
+                                                            <div class="md-list-content">
+                                                                <span class="md-list-heading"><a>Retroalimentaci&oacute;n sobre los IB Mocks ? Completar formulario - TERCER CURSO BGU "WYOMING"</a></span>
+                                                                <span class="uk-text-small uk-text-muted">FLAVIO EMILIO ARGUELLO ROMAN</span>
+                                                                <small>
+                                                                    <i class='fa fa-clock-o'></i>21/07/2026                                                                </small>
+                                                            </div>
+                                                        </li>
+                                                        
+
+                                            </ul>
+                                            <div class="uk-text-center uk-margin-top uk-margin-small-bottom">
+                                                <a href="mensajes.php"
+                                                   class="md-btn md-btn-flat md-btn-flat-primary js-uk-prevent">Ver
+                                                    todos mensajes</a>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+-->
+                        <li>
+                            
+                            
+
+
+                        </li>
+
+                        <li class="uk-hidden-small">
+                            <a href="#" id="sidebar_secondary_toggle" class="user_action_icon  sidebar_secondary_check"><i
+                                        class="material-icons md-24 ingenium-color-blue">&#xE7F4;</i><span class="uk-badge"
+                                                                                                style="background: #07C3A8;color:#fff">0</span></a>
+                        </li>
+
+                        <li data-uk-dropdown="{mode:click,pos:bottom-right}">
+                            <a href="#" class="user_action_image uk-text-truncate">
+                                <img class="md-user-image"
+                                     src="/imagenes/default.jpg" alt="" onerror="imgErrora(this)" />&nbsp;&nbsp;
+                            </a>
+                            <div class="uk-dropdown uk-dropdown-xlarge">
+                                <!-- <ul class="uk-nav js-uk-prevent">
+                                    <li><a href="admin_pass.php">Contraseña</a>
+                                    <li><a href="../../salir.php">Cerrar Sesión</a></li>
+                                </ul> -->
+                                <div class="uk-container-center uk-margin-top uk-margin-bottom">
+                                    <div class="uk-text-center ">
+                                        <img class="md-user-image" style="width:auto;height:60px" src="/imagenes/default.jpg" alt="" onerror="imgErrora(this)" />
+                                        <p class="uk-text-center">ROGER DANIEL</p>
+                                    </div>
+                                    <div class="uk-margin-bottom" style="display:flex;">
+                                        <div class="uk-text-center" style="width:50%">
+                                            <a class="uk-text-muted" style="background:#f2f2f2;border-radius:1rem;" href="admin_pass.php"><i class="material-icons">lock</i> Contraseña</a>
+                                        </div>
+                                        <div class="uk-text-center" style="width:50%">
+                                            <a class="uk-text-muted" style="background:#f2f2f2;border-radius:1rem;" href="/logout/"> <i class="material-icons">exit_to_app</i> Cerrar Sesión</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+</form>
+
+
+<!-- secondary sidebar -->
+<aside id="sidebar_secondary" class="tabbed_sidebar">
+    <ul class="uk-tab uk-tab-icons uk-tab-grid"
+        data-uk-tab="{connect:'#dashboard_sidebar_tabs', animation:'slide-horizontal'}">
+        <li class="uk-active uk-width-1-1"><a href="#"><i class="material-icons  md-light">date_range</i> Eventos y
+                Circulares</a></li>
+    </ul>
+
+    <div class="scrollbar-inner">
+        <ul id="dashboard_sidebar_tabs" class="uk-switcher">
+            <li>
+                <div class="timeline timeline_small uk-margin-bottom">
+
+                                    </div>
+            </li>
+        </ul>
+    </div>
+
+    <button type="button" class="chat_sidebar_close uk-close"></button>
+    <div class="chat_submit_box">
+        <div class="uk-input-group">
+            <input type="text" class="md-input" name="submit_message" id="submit_message" placeholder="Send message">
+            <span class="uk-input-group-addon">
+                    <a href="#"><i class="material-icons md-24">&#xE163;</i></a>
+                </span>
+        </div>
+    </div>
+
+</aside>
+<!-- secondary sidebar end -->
+
+
+<!-- Modal Vista mensaje-->
+<div class="modal fade bd-example-modal-lg" id="modal_leer_ext" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div id="modal_main_ext" width="100%" class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+<!-- Modal Responder-->
+<div class="modal fade bs-example-modal-lg" id="mens_responder" tabindex="-1" role="dialog" aria-labelledby="myModal"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div id="div_mens_resp" class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal eliminar-->
+
+
+<div class="uk-modal modal_sms" id="modal_del_sms" aria-hidden="true">
+    <div class="uk-modal-dialog">
+        <div class="uk-modal-header">
+            <h3 class="uk-modal-title">Educalinks<i class="material-icons"></i></h3>
+            <input type='hidden' id='hd_del_mes_codi' name='hd_del_mes_codi' value=''/>
+        </div>
+        <p>¿Eliminar mensaje? Pasará a la bandeja de mensajes eliminados. </p>
+        <div class="uk-modal-footer uk-text-right">
+            <button data-uk-modal="{target:'#modal_del_sms'}" type="button" class="md-btn md-btn-flat uk-modal-close"
+            ">No Eliminar</button>
+            <button type="button" onclick="elimina_mensaje_followed()" class="md-btn md-btn-flat md-btn-flat-primary">
+                Eliminar
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<div class="uk-modal" id="ModalPeriodos" aria-hidden="true">
+    <div class="uk-modal-dialog">
+        <div class="uk-container uk-container-center">
+            <div class="uk-grid" data-uk-grid-margin="">
+                <div class="uk-width-medium-1-1" style="text-align: -webkit-center;">
+                    <img width="300px" src="../../imagenes/logo_inicial.png" alt="Educalinks">
+                </div>
+            </div>
+            <br/>
+            <div class="scroll-wrapper scrollbar-inner">
+                <div class="scrollbar-inner scroll-content scroll-scrolly_visible">
+                    <ul class="md-list md-list-outside invoices_list" id="invoices_list">
+                        <li class="heading_list">Seleccione un periodo</li>
+                                                    <li class="md-list-item-active" style="background:#ffb48c">
+                            <a onClick="periodo_cambio_repre(1029);"
+                               class="md-list-content">
+                                                                    <span class="uk-badge uk-badge-primary">ACTIVO</span>
+                                                                <span class="md-list-heading uk-text-truncate">VER PERIODO LECTIVO 2026 - 2027                            </a>
+                            </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    function envio_mensaje_nuevo() {
+
+        if (validar_envio()) {
+
+            tipo = document.getElementById('mens_tipo').value;
+            cc = document.getElementById('mens_cc_usua').value;
+
+            url = 'mensajes_nuevo_script_envio.php';
+
+            mens_ok = 0;
+            mens_ko = 0;
+            mm = 0;
+            i = 1;
+
+            var jsonArr = [];
+
+            while (i <= cc) {
+
+                if (document.getElementById('ch_' + tipo + '_' + i) != null) {
+                    if (document.getElementById('ch_' + tipo + '_' + i).checked) {
+                        jsonArr.push({
+                            mens_para: document.getElementById('ch_' + tipo + '_' + i).value,
+                            mens_para_tipo: tipo,
+                            mens_alum_codi: document.getElementById('ch_' + tipo + '_' + i).getAttribute("data-alum-codi")
+                        });
+                    }
+
+                }
+                i += 1;
+
+            }
+            var data = new FormData();
+            data.append('mens_de', document.getElementById('mens_de').value);
+            data.append('mens_de_tipo', document.getElementById('mens_de_tipo').value);
+            //data.append('mens_para', document.getElementById('ch_'+ tipo + '_' + i).value);
+            //data.append('mens_para_tipo', tipo);
+            data.append('mens_dest', JSON.stringify(jsonArr));
+            data.append('mens_titu', document.getElementById('mens_titu').value);
+            data.append('mens_deta', CKEDITOR.instances.mens_deta.getData());
+            data.append('DO', 'ADD');
+
+            var xhr_mensaje = new XMLHttpRequest();
+            xhr_mensaje.open('POST', url, true);
+            //xhr_mensaje.setRequestHeader("Content-Type", "application/json");
+            xhr_mensaje.onload = function () {
+                // do something to response
+                //console.log(this.responseText);
+            };
+            xhr_mensaje.onreadystatechange = function () {
+                if (xhr_mensaje.readyState == 4 && xhr_mensaje.status == 200) {
+                    obj = JSON.parse(xhr_mensaje.responseText);
+                    if (obj.tipo == "error") {
+                        $.growl.error({title: "Error: ", message: obj.mensaje});
+
+                    } else //if(obj.tipo == "warning")
+                    {
+                        var repr = "";
+                        obj.forEach(function (repr) {
+                            if (repr.tipo == "warning") {
+                                repr = repr + "</br>" + repr + ", ";
+                            }
+                        });
+                        if (repr == "") {
+                            $.growl.notice({title: "Información: ", message: "Mensajes enviados con éxito"});
+                            //$('#envio_mensaje').button('reset');
+                            //$('#nuev_mens').modal('hide');
+                        } else {
+                            $.growl.warning({
+                                title: "Advertencia: "
+                                ,
+                                duration: 5600
+                                ,
+                                size: 'large'
+                                ,
+                                message: "Mail no enviado a los siguientes representantes: <b>" + repr + "</b></br>verificiar formato de e-mail."
+                            });
+                            //$('#envio_mensaje').button('reset');
+                            //$('#nuev_mens').modal('hide');
+                        }
+                    }
+
+                }
+            }
+            xhr_mensaje.send(data);
+
+        }
+
+    }
+
+    function validar_envio_respuesta() {
+        if (document.getElementById('mens_titu').value == '') {
+            $.growl.warning({title: "Educalinks informa ", message: "Por favor, escriba un título para el mensaje. "});
+
+        }
+        if (CKEDITOR.instances.mens_deta.getData() == '') {
+            if (confirm("No hay texto en el detalle del mensaje, desea enviar de todas formas?") == false) {
+
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function envio_mensaje_resp(mens_para, mens_para_tipo) {
+
+        //$('#responder_mensaje').button('loading');
+
+        if (validar_envio_respuesta()) {
+
+            url = 'mensajes_nuevo_script_envio.php';
+
+
+            var data = new FormData();
+            data.append('mens_de', document.getElementById('mens_de').value);
+            data.append('mens_de_tipo', document.getElementById('mens_de_tipo').value);
+            data.append('mens_para', mens_para);
+            data.append('mens_para_tipo', mens_para_tipo);
+            data.append('mens_titu', document.getElementById('mens_titu').value);
+            data.append('mens_deta', CKEDITOR.instances.mens_deta.getData());
+            data.append('DO', 'RESP');
+
+            var xhr_mensaje = new XMLHttpRequest();
+            xhr_mensaje.open('POST', url, true);
+            //xhr_mensaje.setRequestHeader("Content-Type", "application/json");
+            xhr_mensaje.onload = function () {
+                // do something to response
+                console.log(this.responseText);
+            };
+            xhr_mensaje.onreadystatechange = function () {
+                if (xhr_mensaje.readyState == 4 && xhr_mensaje.status == 200) {
+                    obj = JSON.parse(xhr_mensaje.responseText);
+                    if (obj.tipo == "error") {
+                        $.growl.error({title: "Error: ", message: obj.mensaje});
+                        $('#responder_mensaje').button('reset');
+                    } else //if(obj.tipo == "warning")
+                    {
+                        var repr = "";
+                        obj.forEach(function (entry) {
+                            if (entry.tipo == "warning") {
+                                repr = repr + "</br>" + entry.repr + ", ";
+                            }
+                        });
+                        if (repr == "") {
+                            $.growl.notice({title: "Información: ", message: "Mensajes enviados con éxito"});
+                            $('#responder_mensaje').button('reset');
+                            $('#mens_responder').modal('hide');
+                        } else {
+                            $.growl.warning({
+                                title: "Advertencia: "
+                                ,
+                                duration: 5600
+                                ,
+                                message: "Mail no enviado al representante: <b>" + repr + "</b></br>verificiar formato de e-mail."
+                            });
+                            $('#responder_mensaje').button('reset');
+                            $('#mens_responder').modal('hide');
+                        }
+                    }
+
+                }
+            }
+            xhr_mensaje.send(data);
+
+        }
+
+    }
+</script>
+<aside id="sidebar_main">
+    <div class="sidebar_main_header">
+        <div class="sidebar_actions">
+            <br/>
+            <div style="text-align: center" class=" uk-margin-top">
+                <img style="max-height: 100px;" class="" src="../../../../imagenes/clientes/americano/logo-blanco.png">
+            </div>
+        </div>
+    </div>
+    <div class="menu_section">
+        <ul>
+            <li class="current_section" title=" Inicio">
+            <a href="/alumnos/aulavirtual/">
+                <span class="menu_icon"><i class="material-icons">&#xE871;</i></span>
+                <span class="menu_title">Inicio</span>
+            </a>
+            </li>
+            <!--
+            <li class="current_section" title="Tablero de Trabajo">
+                <a href="/alumnos/aulavirtual/tablero/">
+                    <span class="menu_icon"><i class="material-icons">&#xe431;</i></span>
+                    <span class="menu_title">Tablero de Trabajo</span>
+                </a>
+            </li>
+            -->
+            <li class="" title="Tareas">
+                <a href="/alumnos/aulavirtual/agenda/">
+                    <span class="menu_icon"><i class="material-icons">today</i></span>
+                    <span class="menu_title">Agenda</span>
+                </a>
+            </li>
+                            <li class="" title="Evaluaciones">
+                    <a href="/alumnos/aulavirtual/evaluaciones/">
+                        <span class="menu_icon"><i class="material-icons">live_help</i></span>
+                        <span class="menu_title">Evaluaciones</span>
+                    </a>
+                </li>
+                <li class="" title="Foros">
+                    <a href="/alumnos/aulavirtual/foros/">
+                        <span class="menu_icon"><i class="material-icons">forum</i></span>
+                        <span class="menu_title">Foros</span>
+                    </a>
+                </li>
+                        <li class="" title="Materiales">
+                <a href="/alumnos/aulavirtual/materiales/">
+                    <span class="menu_icon"><i class="material-icons">import_contacts</i></span>
+                    <span class="menu_title">Materiales</span>
+                </a>
+            </li>
+
+           <!--  <li class=" " title="Clases">
+                <a href="/alumnos/aulavirtual/cuadernos/">
+                    <span class="menu_icon"><i class="material-icons">developer_board</i></span>
+                    <span class="menu_title">Cuaderno</span>
+                </a>
+            </li> -->
+                            <li class="" title="Planificación">
+                    <a href="/alumnos/aulavirtual/planificacion/">
+                        <span class="menu_icon"><i class="material-icons">folder_special</i></span>
+                        <span class="menu_title">Planificación</span>
+                    </a>
+                </li>
+                        <li class="" title="Asistencia">
+                <a href="/alumnos/aulavirtual/asistencia/">
+                    <span class="menu_icon"><i class="material-icons">local_library</i></span>
+                    <span class="menu_title">Asistencia </span>
+		
+                </a>
+            </li>
+			
+                            <li class="" title="Agenda">
+                    <a href="/alumnos/aulavirtual/grabaciones/">
+                        <span class="menu_icon"><i class="material-icons">videocam</i></span>
+                        <span class="menu_title">Grabaciones</span>
+                    </a>
+                </li>
+            			
+
+            <div class="uk-text-center">
+                <br><br>
+                <a class="md-btn md-btn-primary md-btn-wave-light waves-effect waves-button waves-light"
+                   href="../../../../alumnos/materias.php"><i class="material-icons">keyboard_backspace</i>&nbsp&nbsp <small>Ir a Mis Clases</small></a>
+            </div>
+            <br><br><br><br>
+        </ul>
+    </div>
+</aside>
+
+
+  <div id="page_content">
+
+    <div id="page_heading">
+      <h1>MATEMATICA</h1>
+      <span class="uk-text-muted uk-text-upper uk-text-small">TABLERO EN HORARIO NO DISPONIBLE</span>
+    </div>
+
+    <div class="placeholder-nocontent" style="margin-top: 1.5rem;">
+
+      <img style="display: block;
+                        width: 90%;
+                        max-width: 400px;
+                        margin-left: auto;
+                        margin-right: auto;" src="../../../imagenes/schedule-placeholder.jpg" alt="">
+
+              <p class="suggestion-text" style="margin-top: 1rem;">¡No hay horarios disponibles! <br> Pero puedes consultar tu <a href="/alumnos/aulavirtual/planificacion/">planificación</a></p>
+          </div>
+  </div>
+
+<style>
+  .agenda-detalle-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .agenda-detalle-footer-text {
+    font-size: 0.8rem;
+    color: #757575;
+  }
+</style>
+
+<!-- =============================== -->
+<input name="mens_de" type="hidden" id="mens_de" value='2022000043' />
+<input name="mens_de_tipo" type="hidden" id="mens_de_tipo" value='A' />
+<!-- Latest compiled and minified JQuery
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>-->
+<!-- Google Analytics -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async
+        src="https://www.googletagmanager.com/gtag/js?id=G-0JZR8RQXXZ"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+    gtag('config', 'G-0JZR8RQXXZ', {
+        'user_id': 'A_'
+    });
+</script>
+<!-- End Google Analytics -->
+
+    <!-- function imgErrora(image) { image.onerror = ""; image.src = "/imagenes/default.png"; return true; } -->
+</script>
+<!-- End Google Analytics -->
+<!-- jQuery 2.1.4 -->
+<script src="../../../../includes/common/plugins/jQuery/jQuery-2.1.4.min.js"></script>
+<!-- jQuery UI 1.11.4 -->
+<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+    $.widget.bridge('uibutton', $.ui.button);
+</script>
+<script src="/alumnos/js/general.js?7692703121009126598"></script>
+<script src="/alumnos/js/posts.js?7692703121009126598"></script>
+<script src="/alumnos/js/activar_licencia.js?7692703121009126598"></script>
+
+<script type="text/javascript" src="../../../framework/funciones_new.js?7692703121009126598"></script>
+<script src="../../../framework/funciones_mensajes_repre.js?7692703121009126598"></script>
+
+<script src="/alumnos/js/menu.js?7692703121009126598"></script>
+<script src="../../../framework/ckeditor/ckeditor.js"></script>
+
+<!-- common functions -->
+<script src="../../../../dist/assets/js/common.min.js"></script>
+<!-- uikit functions -->
+<script src="../../../../dist/assets/js/uikit_custom.min.js"></script>
+<!-- altair common functions/helpers -->
+<script src="../../../../dist/assets/js/altair_admin_common.min.js"></script>
+<script src="../../../../dist/assets/js/perfect-scrollbar.min.js"></script>
+
+<script src="../../../../includes/common/growl/jquery.growl.js" type="text/javascript"></script>
+
+<script src="../../../../dist/assets/js/custom/turn/js/basic.js"></script>
+
+
+<input type="hidden" id="socket_url_alumno" value="">
+<input type="hidden" id="socket_url" value="">
+
+<input type="hidden" id="socket_curs_para_mate_prof_codi" value="6239">
+<input type="hidden" id="socket_nombre" value="ROGER DANIEL">
+<input type="hidden" id="socket_dbname" value="Educalinks_americano">
+<input type="hidden" id="socket_alum_curs_para_mate_prof_codi"
+       value="">
+
+    
+<!--<script src="https://desk.zoho.com/portal/api/feedbackwidget/113798000017929052?orgId=640765502&displayType=popout"></script> -->
+
+<!-- Start of linkssupport Zendesk Widget script -->
+<!-- <script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=af62c2f9-0a53-40dd-909c-222363612120"> </script> -->
+<!-- End of linkssupport Zendesk Widget script -->
+
+
+<script src="../../../../../dist/assets/js/pages/components_cards.min.js"></script>
+<script src="../../../../dist/assets/js/pages/page_help.min.js"></script>
+
+<script type="text/javascript">
+  var codigo = '0';
+  var count1 = '0';
+</script>
+
+<script type="text/javascript" src="../../../alumnos/js/control_clase.js"></script>
+<!-- MODAL VER LISTA ARCHIVOS -->
+<div class="uk-modal" id="md-lista-archivos" role="dialog">
+    <div class="uk-modal-dialog" style="width: 1440px; max-width: 30%;">
+        <!-- Modal content-->
+        <div class="modal-content">
+
+            <h2 class="uk-modal-title" style="text-align: center; margin-bottom: 1.5rem;">Lista de Materiales</h2>
+
+            <div class="modal-body-edit" id="modal-body-lista-archivos">
+                <table  class="uk-table uk-table-hover uk-table-divider">
+                    <thead>
+                    <tr>
+                        <th  style="display: none">Nombre Archivo</th>
+                        <th>Archivo</th>
+                        <th>Descargar</th>
+                    </tr>
+                    </thead>
+                    <tbody id="table-documentos-modal">
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="uk-modal-footer uk-text-right" style="margin-top: 0;">
+                <button type="button" class="md-btn md-btn-flat uk-modal-close">Cerrar</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>
+
+<script type="text/javascript">
+
+    function modListaMateriales($mater_nom_archivos){
+
+        var $array_mater_nom_archivos = new Array();
+
+        $array_mater_nom_archivos = $mater_nom_archivos.split(";");
+
+        $("#table-documentos-modal").empty();
+
+        var aux = 0;
+        for (x=0;x<$array_mater_nom_archivos.length;x++){
+            var $extension =  $array_mater_nom_archivos[x].split('.')
+
+            aux ++;
+
+            var $nomb_file = btoa($array_mater_nom_archivos[x]);
+
+            var $ruta_descarga = "https://storage-api.educalinks.com.ec/descargar-archivo/"+$nomb_file;
+
+            var fila="<tr><td  style='display: none'>"+$array_mater_nom_archivos[x]+"</td>     <td>"+"Archivo "+aux+"."+$extension[1]+"</td>    <td>"+" <a class='md-btn md-btn-flat md-btn-secondary' target='_blank' title='Descargar archivo' href='"+$ruta_descarga+"'><i class='material-icons'>file_download</i></a> " +"</td></tr>";
+            var filaTable = document.createElement("TR");
+            filaTable.innerHTML=fila;
+            document.getElementById("table-documentos-modal").appendChild(filaTable);
+
+        }
+
+
+    }
+
+    function modListaMateriales_antiguos($mater_nom_archivos){
+
+        var $array_mater_nom_archivos = new Array();
+
+        $array_mater_nom_archivos = $mater_nom_archivos.split(";");
+
+        $("#table-documentos-modal").empty();
+
+        var aux = 0;
+        for (x=0;x<$array_mater_nom_archivos.length;x++){
+            var $extension =  $array_mater_nom_archivos[x].split('.')
+
+            aux ++;
+
+            var $nomb_file =$array_mater_nom_archivos[x];
+
+            var $ruta_descarga = "../../../files/americano/1029/"+$nomb_file;
+
+            var fila="<tr><td  style='display: none'>"+$array_mater_nom_archivos[x]+"</td>     <td>"+"Archivo "+aux+"."+$extension[1]+"</td>    <td>"+" <a class='md-btn md-btn-flat md-btn-secondary' target='_blank' title='Descargar archivo' href='"+$ruta_descarga+"'><i class='material-icons'>file_download</i></a> " +"</td></tr>";
+            var filaTable = document.createElement("TR");
+            filaTable.innerHTML=fila;
+            document.getElementById("table-documentos-modal").appendChild(filaTable);
+
+        }
+
+
+    }
+</script>

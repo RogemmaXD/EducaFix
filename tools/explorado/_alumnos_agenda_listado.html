@@ -1,0 +1,4153 @@
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>EL | UE CAG</title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Remove Tap Highlight on Windows Phone IE -->
+    <meta name="msapplication-tap-highlight" content="no" />
+
+    <link rel="icon" type="image/png" href="../../../dist/assets/img/favicon_16x16.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="../../../dist/assets/img/favicon_32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="../../../dist/assets/img/favicon_64x64.png" sizes="64x64">
+
+    <!-- <link href="https://fonts.googleapis.com/css?family=Montserrat:100,300,400,600,700,900" rel="stylesheet"> -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- additional styles for plugins -->
+    <!-- weather icons -->
+    <link rel="stylesheet" href="../../dist/bower_components/weather-icons/css/weather-icons.min.css" media="all">
+    <!-- metrics graphics (charts) -->
+    <link rel="stylesheet" href="../../dist/bower_components/metrics-graphics/dist/metricsgraphics.css">
+    <!-- chartist -->
+    <link rel="stylesheet" href="../../dist/bower_components/chartist/dist/chartist.min.css">
+
+    <!-- uikit -->
+    <link rel="stylesheet" href="../../dist/bower_components/uikit/css/uikit.almost-flat.min.css" media="all">
+
+    <!-- flag icons -->
+    <link rel="stylesheet" href="../../dist/assets/icons/flags/flags.min.css" media="all">
+
+    <!-- style switcher -->
+    <link rel="stylesheet" href="../../dist/assets/css/style_switcher.min.css" media="all">
+
+    <!-- minificar y actualizar en Producción-->
+    <!-- <link rel="stylesheet" href="../../../../../dist/assets/css/main.css" media="all"> -->
+    <link rel="stylesheet" href="../../../../dist/assets/css/main.css" media="all">
+
+    <!-- themes -->
+    <link rel="stylesheet" href="../../dist/assets/css/themes/themes_combined.min.css" media="all">
+
+    <!-- altair admin -->
+    <link rel="stylesheet" href="../../../../dist/assets/css/style_educalinks.css" media="all">
+
+    <link href="../../includes/common/growl/jquery.growl.css" rel="stylesheet" type="text/css" />
+
+    <link rel="stylesheet" href="../../../../dist/assets/css/utils.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js" type="text/javascript"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js" type="text/javascript"></script>
+    <link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="Stylesheet" type="text/css" /><div class="uk-grid">
+  <div class="uk-width-1-4">
+    <select class="md-input uk-form-width-medium" id="nombresUnicos" onclick=" $('#nombresUnicos').on('change', function () {
+  var value =  $(this).val() === 'all' ? '' : $(this).val();
+ 
+
+  $('#table_agen_list').DataTable().columns(3).search(value).draw();
+});">
+      <option value="all">Todas las materias</option>
+              <option value="MATEMATICA">MATEMATICA</option>
+              <option value="EDUCACIÓN FÍSICA">EDUCACIÓN FÍSICA</option>
+              <option value="HISTORY">HISTORY</option>
+              <option value="COMPUTACIÓN">COMPUTACIÓN</option>
+              <option value="QUÍMICA / CHEMISTRY">QUÍMICA / CHEMISTRY</option>
+              <option value="BIOLOGÍA">BIOLOGÍA</option>
+              <option value="IB ENGLISH">IB ENGLISH</option>
+              <option value="THEORY OF KNOWLEDGE">THEORY OF KNOWLEDGE</option>
+              <option value="EVALUACIÓN DEL COMPORTAMIENTO">EVALUACIÓN DEL COMPORTAMIENTO</option>
+              <option value="CIVICA Y ACOMPAÑAMIENTO INTEGRAL EN EL AULA">CIVICA Y ACOMPAÑAMIENTO INTEGRAL EN EL AULA</option>
+              <option value="FÍSICA">FÍSICA</option>
+              <option value="LENGUA Y LITERATURA">LENGUA Y LITERATURA</option>
+              <option value="PSICOPEDAGOGIA DECE">PSICOPEDAGOGIA DECE</option>
+              <option value="INSPECCION            ">INSPECCION            </option>
+              <option value="DECE     ">DECE     </option>
+              <option value="DECE     ">DECE     </option>
+          </select>
+  </div>
+  <div class="uk-width-1-4">
+    <select class="md-input uk-form-width-medium" name="tipo" id="tipo" onclick=" $('#tipo').on('change', function () {
+        var value =  $(this).val() === 'all' ? '' : $(this).val();
+      
+        $('#table_agen_list').DataTable().columns(4).search(value).draw();
+
+      });">
+      <option value="">
+        Todos
+      </option>
+                <option value="94">
+            PARCIAL I - 94          </option>
+                <option value="165">
+            RECUPERACION PARCIAL 1 - 165          </option>
+                <option value="166">
+            MEJORAMIENTO PARCIAL 1 - 166          </option>
+                <option value="95">
+            PARCIAL II - 95          </option>
+                <option value="167">
+            RECUPERACION PARCIAL 2 - 167          </option>
+                <option value="168">
+            MEJORAMIENTO PARCIAL 2 - 168          </option>
+                <option value="96">
+            EXAMEN QUIMESTRAL - 96          </option>
+                <option value="169">
+            RECUPERACION - 169          </option>
+                <option value="97">
+            MEJORAMIENTO - 97          </option>
+                <option value="93">
+            QUIMESTRE I - 93          </option>
+                <option value="99">
+            PARCIAL I - 99          </option>
+                <option value="172">
+            RECUPERACION Q2 PARCIAL 1 - 172          </option>
+                <option value="173">
+            MEJORAMIENTO Q2 PARCIAL 1 - 173          </option>
+                <option value="100">
+            PARCIAL II - 100          </option>
+                <option value="174">
+            RECUPERACION Q2 PARCIAL 2 - 174          </option>
+                <option value="175">
+            MEJORAMIENTO Q2 PARCIAL 2 - 175          </option>
+                <option value="101">
+            EXAMEN QUIMESTRAL - 101          </option>
+                <option value="178">
+            RECUPERACION - 178          </option>
+                <option value="102">
+            MEJORAMIENTO - 102          </option>
+                <option value="98">
+            QUIMESTRE II - 98          </option>
+          </select>
+  </div>
+
+
+</div>
+
+<table id="table_agen_list" class="table table-striped table table-hover display responsive nowrap" style='color:#2d3c4a;'>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th></th>
+      <th></th>
+      <th>Asignatura</th>
+      <th style="width: 0 !important;display:none;">peri_dist_codi</th>
+      <th>Nombre</th>
+      <th>Calificación</th>
+      <th>Fecha inicio</th>
+      <th>Fecha fin</th>
+      <th>Estado</th>
+    </tr>
+  </thead>
+  <tbody>
+          <tr onclick="agen_view_alum('modal-body', '16296', '#b9b9b9', '342042', '7809')">
+        <td>1</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          MATEMATICA        </td>
+        <td style="width: 0 !important; display:none;">96</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Examen del Primer Quimestre          </div>
+        </td>
+        <td align="center">
+          4.90        </td>
+        <td>06-09-2026 </td>
+        <td>06-09-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '14888', '#b9b9b9', '306006', '7809')">
+        <td>2</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          MATEMATICA        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Trabajo grupal          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>28-08-2026 </td>
+        <td>28-08-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '14887', '#b9b9b9', '305990', '7809')">
+        <td>3</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          MATEMATICA        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Actividad en clases          </div>
+        </td>
+        <td align="center">
+          9.00        </td>
+        <td>28-08-2026 </td>
+        <td>28-08-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '13618', '#b9b9b9', '277404', '7809')">
+        <td>4</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          MATEMATICA        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Lección # 2: Correlación lineal y Regresión lineal.          </div>
+        </td>
+        <td align="center">
+          4.00        </td>
+        <td>24-08-2026 </td>
+        <td>24-08-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '13725', '#b9b9b9', '279934', '7809')">
+        <td>5</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          MATEMATICA        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Rúbrica del Proyecto del II Parcial-Primer Quimestre          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>20-08-2026 </td>
+        <td>27-08-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '13615', '#b9b9b9', '277336', '7809')">
+        <td>6</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          MATEMATICA        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Tarea # 2: Correlación lineal y Regresión lineal.          </div>
+        </td>
+        <td align="center">
+          8.00        </td>
+        <td>19-08-2026 </td>
+        <td>24-08-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '11530', '#b9b9b9', '226257', '7809')">
+        <td>7</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          MATEMATICA        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Lección # 1: Estadística descriptiva.          </div>
+        </td>
+        <td align="center">
+          7.00        </td>
+        <td>30-07-2026 </td>
+        <td>30-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '11529', '#b9b9b9', '226241', '7809')">
+        <td>8</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          MATEMATICA        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Tarea # 1: Estadistica descriptiva          </div>
+        </td>
+        <td align="center">
+          8.00        </td>
+        <td>28-07-2026 </td>
+        <td>03-08-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '9259', '#b9b9b9', '169023', '7809')">
+        <td>9</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          MATEMATICA        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Examen Parcial          </div>
+        </td>
+        <td align="center">
+          5.00        </td>
+        <td>05-07-2026 </td>
+        <td>05-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '9258', '#b9b9b9', '169007', '7809')">
+        <td>10</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          MATEMATICA        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Trabajo Grupal          </div>
+        </td>
+        <td align="center">
+          9.00        </td>
+        <td>05-07-2026 </td>
+        <td>05-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '9256', '#b9b9b9', '168962', '7809')">
+        <td>11</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          MATEMATICA        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Trabajos en clases(Cuaderno)          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>05-07-2026 </td>
+        <td>05-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '9247', '#b9b9b9', '168722', '7809')">
+        <td>12</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          MATEMATICA        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Lección #2 de Trigonometría          </div>
+        </td>
+        <td align="center">
+          6.50        </td>
+        <td>18-06-2026 </td>
+        <td>18-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '6192', '#b9b9b9', '95358', '7809')">
+        <td>13</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          MATEMATICA        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Tarea # 2 de Trigonometría          </div>
+        </td>
+        <td align="center">
+          8.00        </td>
+        <td>11-06-2026 </td>
+        <td>16-06-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '3816', '#b9b9b9', '35796', '7809')">
+        <td>14</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          MATEMATICA        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Lección # 1: Trigonometría          </div>
+        </td>
+        <td align="center">
+          4.50        </td>
+        <td>27-05-2026 </td>
+        <td>27-05-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '3505', '#b9b9b9', '27675', '7809')">
+        <td>15</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          MATEMATICA        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Tarea de Trigonometría          </div>
+        </td>
+        <td align="center">
+          8.00        </td>
+        <td>19-05-2026 </td>
+        <td>27-05-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '16077', '#b9b9b9', '336363', '7814')">
+        <td>16</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          EDUCACIÓN FÍSICA        </td>
+        <td style="width: 0 !important; display:none;">96</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Evaluación del desempeño deportivo integral y trabajo en equipo.          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>31-08-2026 </td>
+        <td>04-09-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '15824', '#b9b9b9', '330303', '7814')">
+        <td>17</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          EDUCACIÓN FÍSICA        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Evaluación integral de baloncesto.          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>24-08-2026 </td>
+        <td>28-08-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '14124', '#b9b9b9', '289692', '7814')">
+        <td>18</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          EDUCACIÓN FÍSICA        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Partido rápido 5v5 de ida y vuelta por juegos internos.          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>17-08-2026 </td>
+        <td>21-08-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '14126', '#b9b9b9', '289724', '7814')">
+        <td>19</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          EDUCACIÓN FÍSICA        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Fundamentos de baloncesto.          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>10-08-2026 </td>
+        <td>14-08-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '14123', '#b9b9b9', '289676', '7814')">
+        <td>20</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          EDUCACIÓN FÍSICA        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Práctica guiada: Partidos con reglas y consignas simples.          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>03-08-2026 </td>
+        <td>07-08-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '14125', '#b9b9b9', '289708', '7814')">
+        <td>21</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          EDUCACIÓN FÍSICA        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Dinámica de juego y aplicación de fundamentos.          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>27-07-2026 </td>
+        <td>31-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '9578', '#b9b9b9', '177985', '7814')">
+        <td>22</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          EDUCACIÓN FÍSICA        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Examen del Parcial          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>29-06-2026 </td>
+        <td>03-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '5952', '#b9b9b9', '89241', '7814')">
+        <td>23</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          EDUCACIÓN FÍSICA        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Desempeño Práctico: Partidos de Voleibol en Clase.          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>08-06-2026 </td>
+        <td>12-06-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '8225', '#b9b9b9', '143498', '7814')">
+        <td>24</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          EDUCACIÓN FÍSICA        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Curvas en la cancha de fútbol          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>01-06-2026 </td>
+        <td>05-06-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '6798', '#b9b9b9', '109895', '7814')">
+        <td>25</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          EDUCACIÓN FÍSICA        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Práctica guiada: Rutina de tren inferior.          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>01-06-2026 </td>
+        <td>05-06-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '6796', '#b9b9b9', '109850', '7814')">
+        <td>26</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          EDUCACIÓN FÍSICA        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Tren inferior y resistencia.          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>18-05-2026 </td>
+        <td>22-05-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '16300', '#b9b9b9', '342146', '7813')">
+        <td>27</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          HISTORY        </td>
+        <td style="width: 0 !important; display:none;">96</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            EXAMEN QUIMESTRE 1          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>06-09-2026 </td>
+        <td>06-09-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '14527', '#b9b9b9', '296959', '7813')">
+        <td>28</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          HISTORY        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            VIETNAM PRESENTATION          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>25-08-2026 </td>
+        <td>25-08-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '14215', '#b9b9b9', '292158', '7813')">
+        <td>29</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          HISTORY        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            NOTES FROM VIETNAM PRESENTATIONS          </div>
+        </td>
+        <td align="center">
+          8.00        </td>
+        <td>24-08-2026 </td>
+        <td>24-08-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '14214', '#b9b9b9', '292142', '7813')">
+        <td>30</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          HISTORY        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            VIETNAM - ORAL PRESENTATIONS          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>24-08-2026 </td>
+        <td>24-08-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '14213', '#b9b9b9', '292126', '7813')">
+        <td>31</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          HISTORY        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Notebook          </div>
+        </td>
+        <td align="center">
+          8.00        </td>
+        <td>24-08-2026 </td>
+        <td>24-08-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '12077', '#b9b9b9', '239946', '7813')">
+        <td>32</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          HISTORY        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            READING CHECK          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>03-08-2026 </td>
+        <td>03-08-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '10992', '#b9b9b9', '213026', '7813')">
+        <td>33</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          HISTORY        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            KOREAN WAR          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>30-07-2026 </td>
+        <td>30-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '10986', '#b9b9b9', '212878', '7813')">
+        <td>34</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          HISTORY        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            KOREAN WAR TIMELINE          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>16-07-2026 </td>
+        <td>20-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '9135', '#b9b9b9', '165723', '7813')">
+        <td>35</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          HISTORY        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            FINAL EVALUATION          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>03-07-2026 </td>
+        <td>03-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '8884', '#b9b9b9', '159480', '7813')">
+        <td>36</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          HISTORY        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            STEPS 4- 8          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>02-07-2026 </td>
+        <td>02-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '8875', '#b9b9b9', '159249', '7813')">
+        <td>37</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          HISTORY        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            reinforcement          </div>
+        </td>
+        <td align="center">
+          7.00        </td>
+        <td>02-07-2026 </td>
+        <td>02-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '6171', '#b9b9b9', '94754', '7813')">
+        <td>38</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          HISTORY        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            QUIZ- THE BREAKDOWN OF THE GRAND ALLIANCE- STEP 4- TO 7          </div>
+        </td>
+        <td align="center">
+          7.00        </td>
+        <td>15-06-2026 </td>
+        <td>15-06-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '6392', '#b9b9b9', '99959', '7813')">
+        <td>39</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          HISTORY        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Activity in pairs          </div>
+        </td>
+        <td align="center">
+          1.00        </td>
+        <td>12-06-2026 </td>
+        <td>12-06-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '4729', '#b9b9b9', '58901', '7813')">
+        <td>40</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          HISTORY        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            The breakdown of the Grand ALLIANCE          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>04-06-2026 </td>
+        <td>04-06-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '4104', '#b9b9b9', '43216', '7813')">
+        <td>41</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          HISTORY        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            COLD WAR INFOGRAPHIC          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>22-05-2026 </td>
+        <td>22-05-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '16002', '#b9b9b9', '334511', '7819')">
+        <td>42</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          COMPUTACIÓN        </td>
+        <td style="width: 0 !important; display:none;">96</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Midterm  Exam  ( Titanic Data Lab — Workshop Overview)          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>31-08-2026 </td>
+        <td>03-09-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '14463', '#b9b9b9', '295957', '7819')">
+        <td>43</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+                      <a title="25-08-2026 09:47:52">
+              <i class="material-icons">check</i>
+            </a>
+          
+        </td>
+        <td>
+          COMPUTACIÓN        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            CP.2.0  Data Categorizarion + Conditional Functions          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>19-08-2026 </td>
+        <td>04-09-2026</td>
+        <td align="center">
+                          Entregado <i class="material-icons" style="color: #1eae98;">check_circle</i>
+              
+                    </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '12945', '#b9b9b9', '260780', '7819')">
+        <td>44</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+                      <a title="14-08-2026 11:15:23">
+              <i class="material-icons">check</i>
+            </a>
+          
+        </td>
+        <td>
+          COMPUTACIÓN        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            A.2.1 Math Functions (Screen time dataset -Session 2)          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>11-08-2026 </td>
+        <td>14-08-2026</td>
+        <td align="center">
+                          Atrasado <i class="material-icons" style="color: #f71a1a;">info</i>
+              
+                    </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '12274', '#b9b9b9', '244362', '7819')">
+        <td>45</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+                      <a title="04-08-2026 09:34:51">
+              <i class="material-icons">check</i>
+            </a>
+          
+        </td>
+        <td>
+          COMPUTACIÓN        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            H.2.1 Logic (Screen time dataset -Session 1)          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>03-08-2026 </td>
+        <td>07-08-2026</td>
+        <td align="center">
+                          Entregado <i class="material-icons" style="color: #1eae98;">check_circle</i>
+              
+                    </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '11041', '#b9b9b9', '214311', '7819')">
+        <td>46</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+                      <a title="21-07-2026 09:40:44">
+              <i class="material-icons">check</i>
+            </a>
+          
+        </td>
+        <td>
+          COMPUTACIÓN        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            C.2.1 Math Functions (SESSION 2)          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>21-07-2026 </td>
+        <td>23-07-2026</td>
+        <td align="center">
+                          Entregado <i class="material-icons" style="color: #1eae98;">check_circle</i>
+              
+                    </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '10456', '#b9b9b9', '199933', '7819')">
+        <td>47</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+                      <a title="14-07-2026 09:36:47">
+              <i class="material-icons">check</i>
+            </a>
+          
+        </td>
+        <td>
+          COMPUTACIÓN        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            G.2.1  Logical Functions (SESSION 2)          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>13-07-2026 </td>
+        <td>17-07-2026</td>
+        <td align="center">
+                          Entregado <i class="material-icons" style="color: #1eae98;">check_circle</i>
+              
+                    </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '9343', '#b9b9b9', '171275', '7819')">
+        <td>48</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          COMPUTACIÓN        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            G.1.1 Performance Avg          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>05-07-2026 </td>
+        <td>05-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '9341', '#b9b9b9', '171224', '7819')">
+        <td>49</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          COMPUTACIÓN        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            C.1.3 Logical Functions          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>05-07-2026 </td>
+        <td>05-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '9340', '#b9b9b9', '171208', '7819')">
+        <td>50</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          COMPUTACIÓN        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            C.1.2 Functions RECAP          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>05-07-2026 </td>
+        <td>05-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '8200', '#b9b9b9', '142814', '7819')">
+        <td>51</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+                      <a title="30-06-2026 09:33:05">
+              <i class="material-icons">check</i>
+            </a>
+          
+        </td>
+        <td>
+          COMPUTACIÓN        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            A.1  Math Functions          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>30-06-2026 </td>
+        <td>30-06-2026</td>
+        <td align="center">
+                          Entregado <i class="material-icons" style="color: #1eae98;">check_circle</i>
+              
+                    </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '3547', '#b9b9b9', '28781', '7819')">
+        <td>52</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+                      <a title="22-05-2026 11:45:16">
+              <i class="material-icons">check</i>
+            </a>
+          
+        </td>
+        <td>
+          COMPUTACIÓN        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            C.1.1 Formulas  RECAP          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>11-05-2026 </td>
+        <td>22-05-2026</td>
+        <td align="center">
+                          Entregado <i class="material-icons" style="color: #1eae98;">check_circle</i>
+              
+                    </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '16212', '#b9b9b9', '339820', '7811')">
+        <td>53</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          QUÍMICA / CHEMISTRY        </td>
+        <td style="width: 0 !important; display:none;">96</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Examen Quimestral           </div>
+        </td>
+        <td align="center">
+          5.10        </td>
+        <td>04-09-2026 </td>
+        <td>04-09-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '14638', '#b9b9b9', '299769', '7811')">
+        <td>54</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          QUÍMICA / CHEMISTRY        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Actuación en clase           </div>
+        </td>
+        <td align="center">
+          7.00        </td>
+        <td>26-08-2026 </td>
+        <td>26-08-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '12636', '#b9b9b9', '253161', '7811')">
+        <td>55</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          QUÍMICA / CHEMISTRY        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Actividad de cierre de parcial           </div>
+        </td>
+        <td align="center">
+          8.30        </td>
+        <td>07-08-2026 </td>
+        <td>14-08-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '11870', '#b9b9b9', '234901', '7811')">
+        <td>56</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          QUÍMICA / CHEMISTRY        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Leccion 1 Redox           </div>
+        </td>
+        <td align="center">
+          2.00        </td>
+        <td>30-07-2026 </td>
+        <td>05-08-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '10822', '#b9b9b9', '208702', '7811')">
+        <td>57</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          QUÍMICA / CHEMISTRY        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Leccion sobre Acidos y bases           </div>
+        </td>
+        <td align="center">
+          6.00        </td>
+        <td>17-07-2026 </td>
+        <td>23-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '8950', '#b9b9b9', '161032', '7811')">
+        <td>58</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          QUÍMICA / CHEMISTRY        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Laboratoro de titulación           </div>
+        </td>
+        <td align="center">
+          4.00        </td>
+        <td>10-07-2026 </td>
+        <td>17-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '8951', '#b9b9b9', '161048', '7811')">
+        <td>59</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          QUÍMICA / CHEMISTRY        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Actividad evaluada sobre pH, autoionización del agua, fuerza de ionización de acidos y bases          </div>
+        </td>
+        <td align="center">
+          4.00        </td>
+        <td>03-07-2026 </td>
+        <td>10-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '8959', '#b9b9b9', '161259', '7811')">
+        <td>60</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          QUÍMICA / CHEMISTRY        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Tarea          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>02-07-2026 </td>
+        <td>02-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '8293', '#b9b9b9', '145144', '7811')">
+        <td>61</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          QUÍMICA / CHEMISTRY        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Examen 1er Parcial           </div>
+        </td>
+        <td align="center">
+          6.00        </td>
+        <td>30-06-2026 </td>
+        <td>30-06-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '8240', '#b9b9b9', '143864', '7811')">
+        <td>62</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          QUÍMICA / CHEMISTRY        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Actuación en clase          </div>
+        </td>
+        <td align="center">
+          6.00        </td>
+        <td>30-06-2026 </td>
+        <td>30-06-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '10565', '#b9b9b9', '202785', '7811')">
+        <td>63</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          QUÍMICA / CHEMISTRY        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Pivot: Titulación acido base          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>26-06-2026 </td>
+        <td>03-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '6057', '#b9b9b9', '91915', '7811')">
+        <td>64</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          QUÍMICA / CHEMISTRY        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Laboratorio sobre Equilibrio           </div>
+        </td>
+        <td align="center">
+          0.10        </td>
+        <td>05-06-2026 </td>
+        <td>12-06-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '4842', '#b9b9b9', '61651', '7811')">
+        <td>65</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          QUÍMICA / CHEMISTRY        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Lección sobre Cinética           </div>
+        </td>
+        <td align="center">
+          8.60        </td>
+        <td>29-05-2026 </td>
+        <td>05-06-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '3961', '#b9b9b9', '39393', '7811')">
+        <td>66</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          QUÍMICA / CHEMISTRY        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Actividad calificada sobre cinética           </div>
+        </td>
+        <td align="center">
+          6.60        </td>
+        <td>22-05-2026 </td>
+        <td>27-05-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '3765', '#b9b9b9', '34422', '7811')">
+        <td>67</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          QUÍMICA / CHEMISTRY        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Actividad Pivot: Cinética química          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>15-05-2026 </td>
+        <td>15-05-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '16696', '#b9b9b9', '351596', '7812')">
+        <td>68</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          BIOLOGÍA        </td>
+        <td style="width: 0 !important; display:none;">99</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Preguntas basadas en datos:          </div>
+        </td>
+        <td align="center">
+          -        </td>
+        <td>23-09-2026 </td>
+        <td>30-09-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '16693', '#b9b9b9', '351524', '7812')">
+        <td>69</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          BIOLOGÍA        </td>
+        <td style="width: 0 !important; display:none;">99</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Estructura del tubulomproximal           </div>
+        </td>
+        <td align="center">
+          -        </td>
+        <td>22-09-2026 </td>
+        <td>29-09-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '15938', '#b9b9b9', '332891', '7812')">
+        <td>70</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          BIOLOGÍA        </td>
+        <td style="width: 0 !important; display:none;">96</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            EXAMEN QUIMETRAL I          </div>
+        </td>
+        <td align="center">
+          6.00        </td>
+        <td>02-09-2026 </td>
+        <td>02-09-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '14549', '#b9b9b9', '297524', '7812')">
+        <td>71</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          BIOLOGÍA        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Refuerzo a lecciones          </div>
+        </td>
+        <td align="center">
+          7.25        </td>
+        <td>25-08-2026 </td>
+        <td>25-08-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '14174', '#b9b9b9', '291085', '7812')">
+        <td>72</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          BIOLOGÍA        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Trabajo de Investigacion: Enfermedades geneticas hereditarias          </div>
+        </td>
+        <td align="center">
+          9.00        </td>
+        <td>24-08-2026 </td>
+        <td>24-08-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '12330', '#b9b9b9', '245783', '7812')">
+        <td>73</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          BIOLOGÍA        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Trabajo de Investigacion Examen Parcial 2          </div>
+        </td>
+        <td align="center">
+          9.00        </td>
+        <td>17-08-2026 </td>
+        <td>17-08-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '11832', '#b9b9b9', '233908', '7812')">
+        <td>74</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          BIOLOGÍA        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Leccion: Herencia y Reproduccion          </div>
+        </td>
+        <td align="center">
+          5.00        </td>
+        <td>03-08-2026 </td>
+        <td>03-08-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '11827', '#b9b9b9', '233785', '7812')">
+        <td>75</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          BIOLOGÍA        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Herencia y Genetica y Reproduccion           </div>
+        </td>
+        <td align="center">
+          9.50        </td>
+        <td>31-07-2026 </td>
+        <td>31-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '12027', '#b9b9b9', '238777', '7812')">
+        <td>76</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          BIOLOGÍA        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Ejercicio de Chi cuadrado          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>27-07-2026 </td>
+        <td>27-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '10531', '#b9b9b9', '201939', '7812')">
+        <td>77</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          BIOLOGÍA        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Practique questions          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>20-07-2026 </td>
+        <td>20-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '9112', '#b9b9b9', '165128', '7812')">
+        <td>78</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          BIOLOGÍA        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            ejercicios de genetica           </div>
+        </td>
+        <td align="center">
+          9.75        </td>
+        <td>03-07-2026 </td>
+        <td>03-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '9111', '#b9b9b9', '165112', '7812')">
+        <td>79</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          BIOLOGÍA        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Herencia          </div>
+        </td>
+        <td align="center">
+          9.75        </td>
+        <td>03-07-2026 </td>
+        <td>03-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '8517', '#b9b9b9', '150891', '7812')">
+        <td>80</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          BIOLOGÍA        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Examen cierre de primer parcial primer quimestre          </div>
+        </td>
+        <td align="center">
+          6.00        </td>
+        <td>01-07-2026 </td>
+        <td>01-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '7758', '#b9b9b9', '131890', '7812')">
+        <td>81</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          BIOLOGÍA        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Ejercicios de genetica, explicación en la pizarra de temas de herencia y preparacion de trabajos a exponer          </div>
+        </td>
+        <td align="center">
+          9.75        </td>
+        <td>24-06-2026 </td>
+        <td>24-06-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '5743', '#b9b9b9', '84145', '7812')">
+        <td>82</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          BIOLOGÍA        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Ejercicios del gen a la proteina y de la proteina al gen          </div>
+        </td>
+        <td align="center">
+          7.00        </td>
+        <td>01-06-2026 </td>
+        <td>01-06-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '4692', '#b9b9b9', '58105', '7812')">
+        <td>83</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          BIOLOGÍA        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Lección: traducción del ADN          </div>
+        </td>
+        <td align="center">
+          9.50        </td>
+        <td>28-05-2026 </td>
+        <td>28-05-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '4298', '#b9b9b9', '48061', '7812')">
+        <td>84</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          BIOLOGÍA        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Transcripción del ADN          </div>
+        </td>
+        <td align="center">
+          3.50        </td>
+        <td>22-05-2026 </td>
+        <td>29-05-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '7682', '#b9b9b9', '130336', '7812')">
+        <td>85</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          BIOLOGÍA        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            LECCION DE REPLICACION DEL ADN          </div>
+        </td>
+        <td align="center">
+          5.16        </td>
+        <td>15-05-2026 </td>
+        <td>15-05-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '15880', '#b9b9b9', '331466', '7820')">
+        <td>86</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          IB ENGLISH        </td>
+        <td style="width: 0 !important; display:none;">96</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            I TERM EXAM          </div>
+        </td>
+        <td align="center">
+          8.50        </td>
+        <td>01-09-2026 </td>
+        <td>01-09-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '14924', '#b9b9b9', '307079', '7820')">
+        <td>87</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          IB ENGLISH        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            INTERNAL ORAL ASSESSMENT PARTIAL EXAM          </div>
+        </td>
+        <td align="center">
+          7.00        </td>
+        <td>28-08-2026 </td>
+        <td>28-08-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '13662', '#b9b9b9', '278527', '7820')">
+        <td>88</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          IB ENGLISH        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Activity #3: IOA examiner          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>12-08-2026 </td>
+        <td>17-08-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '13665', '#b9b9b9', '278606', '7820')">
+        <td>89</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          IB ENGLISH        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Activity #2:  INTERNAL ORAL ASSESSMENT Examiner practice          </div>
+        </td>
+        <td align="center">
+          5.00        </td>
+        <td>11-08-2026 </td>
+        <td>17-08-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '12252', '#b9b9b9', '243772', '7820')">
+        <td>90</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          IB ENGLISH        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Activity #1 IOA part 1-3          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>03-08-2026 </td>
+        <td>03-08-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '11036', '#b9b9b9', '214195', '7820')">
+        <td>91</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          IB ENGLISH        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            GW #1 THEMES          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>21-07-2026 </td>
+        <td>21-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '10499', '#b9b9b9', '201143', '7820')">
+        <td>92</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          IB ENGLISH        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Quiz #1          </div>
+        </td>
+        <td align="center">
+          9.25        </td>
+        <td>20-07-2026 </td>
+        <td>20-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '11049', '#b9b9b9', '214522', '7820')">
+        <td>93</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          IB ENGLISH        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            HOMEWORK #1          </div>
+        </td>
+        <td align="center">
+          7.00        </td>
+        <td>20-07-2026 </td>
+        <td>27-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '14731', '#b9b9b9', '302051', '7820')">
+        <td>94</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          IB ENGLISH        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            DUAL           </div>
+        </td>
+        <td align="center">
+          8.89        </td>
+        <td>14-07-2026 </td>
+        <td>26-08-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '9778', '#b9b9b9', '182984', '7820')">
+        <td>95</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          IB ENGLISH        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Conceptual Understanding          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>07-07-2026 </td>
+        <td>07-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '9603', '#b9b9b9', '178609', '7820')">
+        <td>96</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          IB ENGLISH        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Theme Questions          </div>
+        </td>
+        <td align="center">
+          7.00        </td>
+        <td>06-07-2026 </td>
+        <td>13-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '8299', '#b9b9b9', '145298', '7820')">
+        <td>97</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          IB ENGLISH        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            EXAMEN          </div>
+        </td>
+        <td align="center">
+          8.55        </td>
+        <td>30-06-2026 </td>
+        <td>30-06-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '5629', '#b9b9b9', '81347', '7820')">
+        <td>98</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          IB ENGLISH        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            DUAL: You must complete all the activities up to Journal 6          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>05-06-2026 </td>
+        <td>18-06-2026</td>
+        <td align="center">
+                        Pendiente <i class="material-icons" style="color: #ffc107;">watch_later</i>
+                    </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '4533', '#b9b9b9', '54097', '7820')">
+        <td>99</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          IB ENGLISH        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Quiz #3 Text types           </div>
+        </td>
+        <td align="center">
+          8.50        </td>
+        <td>04-06-2026 </td>
+        <td>04-06-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '5209', '#b9b9b9', '70898', '7820')">
+        <td>100</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          IB ENGLISH        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            TEXT TYPES          </div>
+        </td>
+        <td align="center">
+          9.00        </td>
+        <td>02-06-2026 </td>
+        <td>02-06-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '3452', '#b9b9b9', '26306', '7820')">
+        <td>101</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          IB ENGLISH        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Hw#1 Idioms          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>28-05-2026 </td>
+        <td>28-05-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '3851', '#b9b9b9', '36679', '7820')">
+        <td>102</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          IB ENGLISH        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Paper 1 Writing          </div>
+        </td>
+        <td align="center">
+          8.50        </td>
+        <td>28-05-2026 </td>
+        <td>28-05-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '4038', '#b9b9b9', '41487', '7820')">
+        <td>103</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          IB ENGLISH        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Group work text types          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>22-05-2026 </td>
+        <td>22-05-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '3534', '#b9b9b9', '28458', '7820')">
+        <td>104</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          IB ENGLISH        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Activity Extracts          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>19-05-2026 </td>
+        <td>19-05-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '3533', '#b9b9b9', '28442', '7820')">
+        <td>105</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          IB ENGLISH        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Activity Paper 1 Writing          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>19-05-2026 </td>
+        <td>19-05-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '2561', '#b9b9b9', '3460', '7820')">
+        <td>106</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          IB ENGLISH        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            IB THEMES          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>12-05-2026 </td>
+        <td>12-05-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '15925', '#b9b9b9', '332564', '7821')">
+        <td>107</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          THEORY OF KNOWLEDGE        </td>
+        <td style="width: 0 !important; display:none;">96</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Nota de evaluación quimestral          </div>
+        </td>
+        <td align="center">
+          9.50        </td>
+        <td>02-09-2026 </td>
+        <td>02-09-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '15420', '#b9b9b9', '319502', '7821')">
+        <td>108</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          THEORY OF KNOWLEDGE        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Desarrollo de proyecto en clases          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>09-08-2026 </td>
+        <td>17-08-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '12339', '#b9b9b9', '245999', '7821')">
+        <td>109</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          THEORY OF KNOWLEDGE        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Proyecto de unidad          </div>
+        </td>
+        <td align="center">
+          9.50        </td>
+        <td>03-08-2026 </td>
+        <td>18-08-2026</td>
+        <td align="center">
+                        Pendiente <i class="material-icons" style="color: #ffc107;">watch_later</i>
+                    </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '11821', '#b9b9b9', '233631', '7821')">
+        <td>110</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+                      <a title="03-08-2026 14:05:26">
+              <i class="material-icons">check</i>
+            </a>
+          
+        </td>
+        <td>
+          THEORY OF KNOWLEDGE        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Entrevistas a IA's - Resultados y Reflexión          </div>
+        </td>
+        <td align="center">
+          9.00        </td>
+        <td>29-07-2026 </td>
+        <td>03-08-2026</td>
+        <td align="center">
+                          Entregado <i class="material-icons" style="color: #1eae98;">check_circle</i>
+              
+                    </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '11649', '#b9b9b9', '229327', '7821')">
+        <td>111</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+                      <a title="28-07-2026 14:34:30">
+              <i class="material-icons">check</i>
+            </a>
+          
+        </td>
+        <td>
+          THEORY OF KNOWLEDGE        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Proyecto de unidad - Fase 1 y 2          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>22-07-2026 </td>
+        <td>28-07-2026</td>
+        <td align="center">
+                          Entregado <i class="material-icons" style="color: #1eae98;">check_circle</i>
+              
+                    </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '10520', '#b9b9b9', '201657', '7821')">
+        <td>112</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+                      <a title="14-07-2026 14:18:52">
+              <i class="material-icons">check</i>
+            </a>
+          
+        </td>
+        <td>
+          THEORY OF KNOWLEDGE        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Infografía sobre Apriencias, interpretación y conocimiento          </div>
+        </td>
+        <td align="center">
+          9.00        </td>
+        <td>14-07-2026 </td>
+        <td>14-07-2026</td>
+        <td align="center">
+                          Entregado <i class="material-icons" style="color: #1eae98;">check_circle</i>
+              
+                    </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '10518', '#b9b9b9', '201613', '7821')">
+        <td>113</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+                      <a title="14-07-2026 14:19:31">
+              <i class="material-icons">check</i>
+            </a>
+          
+        </td>
+        <td>
+          THEORY OF KNOWLEDGE        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Hechos, apariencias e interpretaciones          </div>
+        </td>
+        <td align="center">
+          9.00        </td>
+        <td>14-07-2026 </td>
+        <td>14-07-2026</td>
+        <td align="center">
+                          Entregado <i class="material-icons" style="color: #1eae98;">check_circle</i>
+              
+                    </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '14335', '#b9b9b9', '293401', '7821')">
+        <td>114</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          THEORY OF KNOWLEDGE        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Participación en clase durante la unidad          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>01-07-2026 </td>
+        <td>24-08-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '8317', '#b9b9b9', '145765', '7821')">
+        <td>115</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          THEORY OF KNOWLEDGE        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Calificación de avance de mini proyecto          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>30-06-2026 </td>
+        <td>30-06-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '6950', '#b9b9b9', '113057', '7821')">
+        <td>116</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          THEORY OF KNOWLEDGE        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Presentación no textual de ideas sobre artículo acerca del conocimiento          </div>
+        </td>
+        <td align="center">
+          9.50        </td>
+        <td>16-06-2026 </td>
+        <td>17-06-2026</td>
+        <td align="center">
+                        Pendiente <i class="material-icons" style="color: #ffc107;">watch_later</i>
+                    </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '6866', '#b9b9b9', '111607', '7821')">
+        <td>117</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          THEORY OF KNOWLEDGE        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            2da jornada - Desarrollo de proyecto de Unidad          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>15-06-2026 </td>
+        <td>15-06-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '6022', '#b9b9b9', '91084', '7821')">
+        <td>118</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          THEORY OF KNOWLEDGE        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Desarrollo de proyecto de Unidad: Deconstruyendo textos          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>08-06-2026 </td>
+        <td>09-06-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '4509', '#b9b9b9', '53440', '7821')">
+        <td>119</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          THEORY OF KNOWLEDGE        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Cuadro explicativo - Límites del conocimiento          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>26-05-2026 </td>
+        <td>01-06-2026</td>
+        <td align="center">
+                        Pendiente <i class="material-icons" style="color: #ffc107;">watch_later</i>
+                    </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '3491', '#b9b9b9', '27103', '7821')">
+        <td>120</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+                      <a title="18-05-2026 22:55:25">
+              <i class="material-icons">check</i>
+            </a>
+          
+        </td>
+        <td>
+          THEORY OF KNOWLEDGE        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Texto codificado          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>18-05-2026 </td>
+        <td>18-05-2026</td>
+        <td align="center">
+                          Atrasado <i class="material-icons" style="color: #f71a1a;">info</i>
+              
+                    </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '8165', '#b9b9b9', '141896', '7821')">
+        <td>121</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          THEORY OF KNOWLEDGE        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Participación en clases a lo largo del parcial          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>04-05-2026 </td>
+        <td>30-06-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '16226', '#b9b9b9', '340188', '7816')">
+        <td>122</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          EVALUACIÓN DEL COMPORTAMIENTO        </td>
+        <td style="width: 0 !important; display:none;">96</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Comportamiento          </div>
+        </td>
+        <td align="center">
+          A        </td>
+        <td>04-09-2026 </td>
+        <td>04-09-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '15050', '#b9b9b9', '310410', '7816')">
+        <td>123</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          EVALUACIÓN DEL COMPORTAMIENTO        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Evaluación del comportamiento del 2do parcial          </div>
+        </td>
+        <td align="center">
+          A        </td>
+        <td>28-08-2026 </td>
+        <td>28-08-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '8286', '#b9b9b9', '144985', '7816')">
+        <td>124</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          EVALUACIÓN DEL COMPORTAMIENTO        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Evaluación de comportamiento          </div>
+        </td>
+        <td align="center">
+          A        </td>
+        <td>30-06-2026 </td>
+        <td>04-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '15069', '#b9b9b9', '310883', '7863')">
+        <td>125</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          CIVICA Y ACOMPAÑAMIENTO INTEGRAL EN EL AULA        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            AIA          </div>
+        </td>
+        <td align="center">
+          A+        </td>
+        <td>28-08-2026 </td>
+        <td>28-08-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '8750', '#b9b9b9', '156741', '7863')">
+        <td>126</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          CIVICA Y ACOMPAÑAMIENTO INTEGRAL EN EL AULA        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            AIA          </div>
+        </td>
+        <td align="center">
+          A+        </td>
+        <td>02-07-2026 </td>
+        <td>03-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '15873', '#b9b9b9', '331298', '9444')">
+        <td>127</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          FÍSICA        </td>
+        <td style="width: 0 !important; display:none;">96</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Examen del primer quimestre          </div>
+        </td>
+        <td align="center">
+          5.50        </td>
+        <td>01-09-2026 </td>
+        <td>01-09-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '13643', '#b9b9b9', '278060', '9444')">
+        <td>128</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          FÍSICA        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Actividad de cierre del parcial – Mi Guía IB: Unidad E          </div>
+        </td>
+        <td align="center">
+          9.00        </td>
+        <td>24-08-2026 </td>
+        <td>26-08-2026</td>
+        <td align="center">
+                        Pendiente <i class="material-icons" style="color: #ffc107;">watch_later</i>
+                    </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '13287', '#b9b9b9', '269084', '9444')">
+        <td>129</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          FÍSICA        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Lección#2          </div>
+        </td>
+        <td align="center">
+          5.00        </td>
+        <td>21-08-2026 </td>
+        <td>21-08-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '11462', '#b9b9b9', '224528', '9444')">
+        <td>130</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          FÍSICA        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Lección 1: E1 y E2          </div>
+        </td>
+        <td align="center">
+          5.00        </td>
+        <td>03-08-2026 </td>
+        <td>03-08-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '11459', '#b9b9b9', '224453', '9444')">
+        <td>131</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          FÍSICA        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Deber 2 (Kerboodle)          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>27-07-2026 </td>
+        <td>03-08-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '11230', '#b9b9b9', '219311', '9444')">
+        <td>132</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          FÍSICA        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Actividad en clase 2 (pivot)          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>27-07-2026 </td>
+        <td>27-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '10932', '#b9b9b9', '211497', '9444')">
+        <td>133</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          FÍSICA        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Tarea 1-Lectura asignada: E.1 Structure of the atom (Kerboodle)          </div>
+        </td>
+        <td align="center">
+          8.00        </td>
+        <td>20-07-2026 </td>
+        <td>27-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '10679', '#b9b9b9', '205192', '9444')">
+        <td>134</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          FÍSICA        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Actividad grupal 1 (calificada)          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>16-07-2026 </td>
+        <td>17-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '9117', '#b9b9b9', '165251', '9444')">
+        <td>135</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          FÍSICA        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Examen p1P1          </div>
+        </td>
+        <td align="center">
+          5.40        </td>
+        <td>03-07-2026 </td>
+        <td>03-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '5912', '#b9b9b9', '88253', '9444')">
+        <td>136</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          FÍSICA        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Lección #2          </div>
+        </td>
+        <td align="center">
+          8.50        </td>
+        <td>12-06-2026 </td>
+        <td>12-06-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '5252', '#b9b9b9', '72022', '9444')">
+        <td>137</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          FÍSICA        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Physics 1.3. Vector Directions for a Current-Carrying Wire in a Magnetic Field          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>02-06-2026 </td>
+        <td>04-06-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '5253', '#b9b9b9', '72038', '9444')">
+        <td>138</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          FÍSICA        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Physics 1.2. Force on a Current-Carrying Conductor in a Magnetic Field          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>02-06-2026 </td>
+        <td>03-06-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '4374', '#b9b9b9', '49950', '9444')">
+        <td>139</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          FÍSICA        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Lección 1: Potencial gravitacional y movimiento orbital          </div>
+        </td>
+        <td align="center">
+          9.50        </td>
+        <td>02-06-2026 </td>
+        <td>02-06-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '4373', '#b9b9b9', '49934', '9444')">
+        <td>140</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          FÍSICA        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Actividad grupal 1: Energía y potencial gravitacional          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>27-05-2026 </td>
+        <td>27-05-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '3681', '#b9b9b9', '32204', '9444')">
+        <td>141</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          FÍSICA        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Actividad individual 1 — Superposición de campos          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>21-05-2026 </td>
+        <td>21-05-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '3489', '#b9b9b9', '27060', '9444')">
+        <td>142</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          FÍSICA        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Physics 1.1. Forces and Electric Charge I: Force vs Distance (Deber 1)          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>19-05-2026 </td>
+        <td>29-05-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '16012', '#b9b9b9', '334741', '9457')">
+        <td>143</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          LENGUA Y LITERATURA        </td>
+        <td style="width: 0 !important; display:none;">96</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            EXAMEN LENGUA Y LITERATURA WYOMING           </div>
+        </td>
+        <td align="center">
+          8.65        </td>
+        <td>03-09-2026 </td>
+        <td>03-09-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '14849', '#b9b9b9', '304956', '9457')">
+        <td>144</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          LENGUA Y LITERATURA        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            EXPOSICIÓN INTERTEXTUALIDAD          </div>
+        </td>
+        <td align="center">
+          9.00        </td>
+        <td>17-08-2026 </td>
+        <td>21-08-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '11837', '#b9b9b9', '234035', '9457')">
+        <td>145</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          LENGUA Y LITERATURA        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            LECCION COMO AGUA PARA CHOCOLATE          </div>
+        </td>
+        <td align="center">
+          8.00        </td>
+        <td>04-08-2026 </td>
+        <td>04-08-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '11175', '#b9b9b9', '217842', '9457')">
+        <td>146</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          LENGUA Y LITERATURA        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            PROYECTO DEL LIBRO A LA COCINA          </div>
+        </td>
+        <td align="center">
+          9.00        </td>
+        <td>22-07-2026 </td>
+        <td>07-08-2026</td>
+        <td align="center">
+                        Pendiente <i class="material-icons" style="color: #ffc107;">watch_later</i>
+                    </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '15536', '#b9b9b9', '322455', '9457')">
+        <td>147</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          LENGUA Y LITERATURA        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            TALLER 1_NOTA DE LECCION 1          </div>
+        </td>
+        <td align="center">
+          9.00        </td>
+        <td>13-07-2026 </td>
+        <td>17-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '9937', '#b9b9b9', '187266', '9457')">
+        <td>148</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          LENGUA Y LITERATURA        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Taller 1. Intertextualidad. ¿Cómo se conectan los textos continuos y discontinuos?          </div>
+        </td>
+        <td align="center">
+          9.00        </td>
+        <td>13-07-2026 </td>
+        <td>16-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '14848', '#b9b9b9', '304940', '9457')">
+        <td>149</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          LENGUA Y LITERATURA        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            REVISIÓN DE LA CARPETA          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>06-07-2026 </td>
+        <td>06-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '15538', '#b9b9b9', '322499', '9457')">
+        <td>150</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          LENGUA Y LITERATURA        </td>
+        <td style="width: 0 !important; display:none;">95</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            USO GUIADO DE LA IA          </div>
+        </td>
+        <td align="center">
+          7.00        </td>
+        <td>06-07-2026 </td>
+        <td>10-07-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '9299', '#b9b9b9', '170123', '9457')">
+        <td>151</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          LENGUA Y LITERATURA        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            EVALUACION SUMATIVA WY IPIQ          </div>
+        </td>
+        <td align="center">
+          7.00        </td>
+        <td>30-06-2026 </td>
+        <td>30-06-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '7882', '#b9b9b9', '134989', '9457')">
+        <td>152</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          LENGUA Y LITERATURA        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Taller Literario           </div>
+        </td>
+        <td align="center">
+          8.00        </td>
+        <td>12-06-2026 </td>
+        <td>25-06-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '7681', '#b9b9b9', '130320', '9457')">
+        <td>153</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          LENGUA Y LITERATURA        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Trabajo Grupal 2_ Como agua para chocolate          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>08-06-2026 </td>
+        <td>12-06-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '5393', '#b9b9b9', '75604', '9457')">
+        <td>154</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          LENGUA Y LITERATURA        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            TAREA REPRESENTACIÓN Y COMENTARIO BREVE DE FRAGMENTOS LITERARIOS LITERARIOS          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>04-06-2026 </td>
+        <td>13-06-2026</td>
+        <td align="center">
+                        Pendiente <i class="material-icons" style="color: #ffc107;">watch_later</i>
+                    </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '7379', '#b9b9b9', '122472', '9457')">
+        <td>155</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          LENGUA Y LITERATURA        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Actividad lúdica          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>02-06-2026 </td>
+        <td>02-06-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '3761', '#b9b9b9', '34320', '9457')">
+        <td>156</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          LENGUA Y LITERATURA        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Lección 1_ Análisis del texto literario.           </div>
+        </td>
+        <td align="center">
+          8.00        </td>
+        <td>29-05-2026 </td>
+        <td>29-05-2026</td>
+        <td align="center">
+                        Pendiente <i class="material-icons" style="color: #ffc107;">watch_later</i>
+                    </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '3774', '#b9b9b9', '34668', '9457')">
+        <td>157</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          LENGUA Y LITERATURA        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            Trabajo grupal 1. SOR JUANA INÉS DE LA CRUZ          </div>
+        </td>
+        <td align="center">
+          8.00        </td>
+        <td>15-05-2026 </td>
+        <td>15-05-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+          <tr onclick="agen_view_alum('modal-body', '7376', '#b9b9b9', '122405', '9457')">
+        <td>158</td>
+        <td>
+          <a title="Calificado">
+                          <i class="md-list-addon-icon material-icons uk-text-warning">star</i>
+                      </a>
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          LENGUA Y LITERATURA        </td>
+        <td style="width: 0 !important; display:none;">94</td>
+        <td>
+          <div style="width: 350px; text-wrap: balance;">
+            La carta          </div>
+        </td>
+        <td align="center">
+          10.00        </td>
+        <td>11-05-2026 </td>
+        <td>11-05-2026</td>
+        <td align="center">
+                      -
+                  </td>
+      </tr>
+      </tbody>
+</table>

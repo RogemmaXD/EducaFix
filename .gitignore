@@ -1,0 +1,8 @@
+backend/venv/
+backend/.env
+backend/historial.db
+backend/historial_*.db
+backend/sesiones.db
+backend/secret.key
+__pycache__/
+*.pyc
