@@ -496,7 +496,7 @@ html.oscuro .skel::after{background:linear-gradient(90deg,transparent,rgba(255,2
 .home-item .nom{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .home-item select{display:none}
 .home-item .mini-switch{margin-left:auto}
-.racha{background:linear-gradient(120deg,hsla(24,100%,50%,.14),hsla(350,100%,60%,.1)), var(--card);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid hsla(24,100%,50%,.3)}
+.racha{background:linear-gradient(120deg,hsla(var(--a-h),80%,50%,.06),hsla(var(--a-h),80%,50%,.03)), var(--card);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid hsla(var(--a-h),60%,50%,.18)}
 .racha-tit{display:flex;align-items:center;gap:.55rem;font-size:1rem;font-weight:800;letter-spacing:-.01em}
 .racha-num{font-size:2.3rem;font-weight:800;letter-spacing:-.035em;color:var(--acento-4,hsl(24,100%,50%));font-variant-numeric:tabular-nums;line-height:1}
 .racha-sub{font-size:.75rem;color:var(--texto2);font-weight:700}
@@ -847,7 +847,7 @@ html[data-card="solido"] .s7{background:var(--bg-surface);backdrop-filter:none;-
    ====================================================== */
 .saludo-mini{padding:.7rem .9rem}
 .saludo-mini .saludo-fila{display:flex;align-items:center;gap:.7rem}
-.saludo-mini::after{font-size:1.6rem;right:.8rem;top:.6rem}
+.saludo-mini::after{display:none}
 .alertas-fila{display:flex;gap:.4rem;flex-wrap:wrap;margin:.5rem 0 .1rem}
 .alerta-chip{background:hsla(0,84%,58%,.1);color:var(--error);border-color:hsla(0,84%,58%,.3);cursor:pointer;font-size:.74rem}
 .prio-cab .chev{border:none;background:none;color:inherit;cursor:pointer;font-size:.85rem;padding:.25rem .45rem;border-radius:.5rem;margin-left:.2rem;transition:background var(--ease) .18s}

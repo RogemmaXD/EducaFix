@@ -268,6 +268,15 @@
     var star = FAV['e:' + id];
     var subtn = (SUBT[id] || []).length;
     var icoDet = compacta ? '<span class="np-mark"></span>' : '';
+    if (compacta) {
+      /* cards compactas (bloques de Inicio, Semana): solo lo esencial */
+      return '<span class="acc">' +
+        '<button class="acc-btn ' + (h ? 'on' : '') + '" data-accion="hecha" data-id="' + esc(id) + '" title="' + (h ? 'Quitar hecha' : 'Hecha') + '">✓</button>' +
+        (esPersonal ? '' :
+          '<button class="acc-btn ' + (star ? 'on' : '') + '" data-accion="ev-star" data-id="' + esc(id) + '" title="Marcar como importante">⭐</button>' +
+          '<button class="acc-btn ' + (tieneRec ? 'on' : '') + '" data-accion="rec" data-id="' + esc(id) + '" title="Recordatorio">⏰</button>') +
+        '</span>';
+    }
     return '<span class="acc">' +
       '<button class="acc-btn ' + (h ? 'on' : '') + '" data-accion="hecha" data-id="' + esc(id) + '" title="' + (h ? 'Quitar hecha' : 'Hecha') + '">✓</button>' +
       (esPersonal ?
@@ -746,7 +755,7 @@
     var crit = semanaCritica();
     if (atras.length || crit) {
       alertas = '<div class="alertas-fila">' +
-        (atras.length ? '<button class="chip alerta-chip" data-accion="ir-pend">⚠️ ' + atras.length + ' atrasada(s) →</button>' : '') +
+        (atras.length ? '<button class="chip alerta-chip" data-accion="ir-pend">⚠️ ' + atras.length + ' ' + (atras.length === 1 ? 'atrasada' : 'atrasadas') + ' →</button>' : '') +
         (crit ? '<span class="chip alerta-chip" role="status">🔥 ' + crit.n + ' evaluaciones entre ' + fmtCorta(crit.desde) + ' y ' + fmtCorta(crit.hasta) + '</span>' : '') +
         '</div>';
     }
@@ -904,16 +913,18 @@
     var pctSem = Math.min(100, Math.round(comp / Math.max(1, metaSem) * 100));
     return '<div class="tarjeta racha">' +
       '<div class="racha-fila"><span class="racha-flama">🔥</span><div><div class="racha-num">' + Math.min(racha, ultimoPendiente < 0 ? 0 : racha) + '</div>' +
-      '<div class="racha-sub">días sin pendientes atrasados</div></div>' +
+      '<div class="racha-sub">' + (racha === 1 ? 'día' : 'días') + ' sin pendientes atrasados</div></div>' +
       '<div style="flex:1"></div>' +
       '<div style="text-align:right"><div class="racha-num" style="font-size:1.5rem">' + comp + '<span style="font-size:.8rem;color:var(--texto2)">/' + metaSem + '</span></div>' +
       '<div class="racha-sub">pendientes esta semana</div></div></div>' +
       '<div class="pend-barra"><div class="pb-track"><div class="pb-fill" style="width:' + pctSem + '%"></div></div>' +
       '<span class="pb-lbl" aria-live="polite">' + pctSem + '%</span></div>' +
-      '<div class="meta-p">' +
-      '<div class="s-t" style="margin-top:.45rem"><span><strong>Meta del periodo</strong>: <span class="mono">' + fmtNum(meta, 1) + '</span></span>' +
-      '<span class="' + (pro != null ? sisColor(pro) : '') + ' mono" style="font-weight:800">' + fmtNum(pro, 2) + '</span></div>' +
-      '<div class="meta-track"><div class="meta-llen" style="width:' + fillPct + '%"></div>' +
+      '<div class="meta-p" style="display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;margin-top:.6rem;background:var(--bg-subtle);border:1px solid var(--border-subtle);border-radius:var(--radio-s);padding:.55rem .75rem">' +
+      '<span style="font-size:.82rem"><strong>Meta del periodo:</strong> <span class="mono" style="font-weight:800">' + fmtNum(meta, 1) + '</span></span>' +
+      '<span style="flex:1"></span>' +
+      '<span class="' + (pro != null ? sisColor(pro) : '') + ' mono" style="font-weight:800;font-size:1.05rem">' + fmtNum(pro, 2) + '</span>' +
+      '</div>' +
+      '<div class="meta-track" style="margin-top:.5rem"><div class="meta-llen" style="width:' + fillPct + '%"></div>' +
       '<div class="meta-needle" style="left:' + metaPct + '%"></div></div>' +
       (porEncima ? '<div class="sub" style="color:var(--verde);font-weight:700;margin-top:.3rem">🎉 Por encima de tu meta.</div>' : '') +
       '</div>' +
@@ -3213,7 +3224,7 @@
   function evFechaLinda(e) {
     var n = diasRestantes(e);
     if (n == null) return 'Sin fecha';
-    if (n < 0) return '⚠ Atrasada ' + Math.abs(n) + ' día(s) · ' + esc(e.fecha_inicio || '');
+    if (n < 0) return '⚠ Atrasada ' + Math.abs(n) + ' ' + (Math.abs(n) === 1 ? 'día' : 'días') + ' · ' + esc(e.fecha_inicio || '');
     if (n === 0) return 'HOY · ' + esc(e.fecha_inicio || '');
     if (n === 1) return 'Mañana · ' + esc(e.fecha_inicio || '');
     return esc(e.fecha_inicio || '') + ' · en ' + n + ' días';
@@ -3810,7 +3821,7 @@
       '<p class="sub" style="margin-top:.5rem">Sesiones de ' + (cfg.pomoFocus || 25) + ' min con descansos de ' + (cfg.pomoPause || 5) + ' min.</p>' +
       '</div>' +
       '<div class="pomo-card"><h2 class="seccion" style="margin-top:0">📈 Mi estudio</h2>' +
-      '<div class="stat"><div class="s-t"><b>🔥 Racha de estudio</b><span>' + rachaEstudio() + ' día(s)</span></div></div>' +
+      '<div class="stat"><div class="s-t"><b>🔥 Racha de estudio</b><span>' + rachaEstudio() + (rachaEstudio() === 1 ? ' día' : ' días') + '</span></div></div>' +
       '<div class="stat"><div class="s-t"><b>Esta semana</b><span>' + semanaMin + ' min</span></div></div>' +
       '<div class="stat"><div class="s-t"><b>Historia total</b><span>' + totMin + ' min (' + SESIONES.length + ' sesiones)</span></div></div>' +
       '<h2 class="seccion" style="font-size:.8rem">Minutos por día de la semana (histórico)</h2>' +
