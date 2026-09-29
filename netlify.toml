@@ -1,9 +1,19 @@
-# EducaFix en Netlify: solo publicamos el frontend estático.
-# El backend (FastAPI) se despliega aparte (Render/Railway/Fly/VPS) y se
-# conecta configurando su URL en frontend/js/api-config.js
+# EducaFix en Netlify.
+# El frontend es estatico y la API (FastAPI en Render) se accede a traves
+# del PROXY de Netlify: el navegador solo habla con educafix.netlify.app
+# (mismo origen: sin CORS, sin cookies cross-site, y funciona en redes
+# que bloquean onrender.com, porque el salto Netlify->Render es
+# servidor-a-servidor).
 [build]
   publish = "frontend"
   command = ""
 
-# El .ics y las descargas viven en el backend; el frontend los abre
-# con la URL absoluta desde JS, así que no hacen falta redirecciones.
+# Proxy de la API: /api/* -> backend de Render (config en js/api-config.js
+# debe quedar vacio, mismo origen)
+[[redirects]]
+  from = "/api/*"
+  to = "https://educafix.onrender.com/api/:splat"
+  status = 200
+  force = true
+
+# El .ics tambien viaja por /api/* (incluido arriba)

@@ -36,22 +36,33 @@ app = FastAPI(title="API EducaFix", version="7.0.0")
 # Las entradas con comodin (*.netlify.app) se convierten a regex.
 _ORIGENES_RAW = [o.strip().rstrip("/") for o in
                  os.getenv("CORS_ORIGINS", "*").split(",") if o.strip()]
-_ORIGENES_EXACTOS = [o for o in _ORIGENES_RAW if "*" not in o]
-_ORIGENES_COMODIN = [o for o in _ORIGENES_RAW if "*" in o]
-# Modo hibrido (frontend en Netlify + API en otro dominio): las cookies
-# de sesion deben viajar cross-site, lo que exige SameSite=None + Secure.
-_CROSS_SITE = sorted(_ORIGENES_RAW) != ["*"]
-if not _ORIGENES_EXACTOS and not _ORIGENES_COMODIN:
-    _ORIGENES_EXACTOS = ["*"]
-    _CROSS_SITE = False
+_PERMITIR_TODO = sorted(_ORIGENES_RAW) == ["*"]
+_PUBLICA = bool(os.getenv("PUBLICA"))
 
-# regex combinada para origenes con comodin: https://*.netlify.app
-_ORIGEN_REGEX = None
-if _ORIGENES_COMODIN:
-    partes = "|".join(
-        re.escape(o).replace(r"\*", "[A-Za-z0-9._-]+")
-        for o in _ORIGENES_COMODIN)
-    _ORIGEN_REGEX = f"^({partes})$"
+# Modo hibrido (frontend en Netlify + API en otro dominio): las cookies de
+# sesion viajan cross-site, lo que exige SameSite=None + Secure y CORS con
+# credenciales (que requiere origen explicito: el comodin total no sirve).
+if _PERMITIR_TODO and not _PUBLICA:
+    # local / todo-en-uno: sin CORS y sin cookies cross-site
+    _ORIGENES_EXACTOS = ["*"]
+    _ORIGEN_REGEX = None
+    _CROSS_SITE = False
+elif _PERMITIR_TODO and _PUBLICA:
+    # publica sin origenes explicitos: aceptar cualquier origen con eco
+    # (la API igual exige credenciales Educalinks propias de cada usuario)
+    _ORIGENES_EXACTOS = []
+    _ORIGEN_REGEX = r".*"
+    _CROSS_SITE = True
+else:
+    _ORIGENES_EXACTOS = [o for o in _ORIGENES_RAW if "*" not in o]
+    _ORIGENES_COMODIN = [o for o in _ORIGENES_RAW if "*" in o]
+    if _ORIGENES_COMODIN:
+        _ORIGEN_REGEX = "^(" + "|".join(
+            re.escape(o).replace(r"\*", "[A-Za-z0-9._-]+")
+            for o in _ORIGENES_COMODIN) + ")$"
+    else:
+        _ORIGEN_REGEX = None
+    _CROSS_SITE = True
 
 app.add_middleware(
     CORSMiddleware,

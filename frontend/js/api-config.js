@@ -1,9 +1,10 @@
 /* ================================================================
    EducaFix — configuración de la API (CARGA ANTES QUE LOS DEMÁS JS)
    ----------------------------------------------------------------
-   • Vacío ('')  → modo todo-en-uno: el propio backend (uvicorn/FastAPI)
-                   sirve este frontend (local, VPS, Render todo-en-uno).
-   • Con URL     → modo híbrido: el frontend está en Netlify (o cualquier
-                   hosting estático) y la API vive en otro servidor.
+   • Vacío ('')  → la API se sirve DESDE EL MISMO ORIGEN:
+                   - local/todo-en-uno: el propio backend sirve el frontend
+                   - Netlify: el proxy de netlify.toml reenvía /api/* al
+                     backend de Render (recomendado: sin CORS ni bloqueos)
+   • Con URL     → modo híbrido directo (solo si NO usas el proxy).
    ================================================================ */
-window.API_BASE = 'https://educafix.onrender.com';
+window.API_BASE = '';
