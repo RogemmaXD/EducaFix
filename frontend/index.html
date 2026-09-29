@@ -250,6 +250,31 @@
     </div>
   </div>
 
+  <div id="overlay-subt" class="overlay" role="dialog" aria-label="Sub-tareas">
+    <div class="drawer" style="max-width:460px">
+      <h3 id="subt-titulo"></h3>
+      <div id="subt-lista"></div>
+      <div style="display:flex;gap:.5rem;margin-top:.6rem">
+        <input type="text" id="subt-nuevo" placeholder="Añadir paso…" style="flex:1;border:1.5px solid var(--borde);border-radius:var(--radio-s);padding:.55rem .7rem;background:var(--bg2);color:var(--texto)" aria-label="Nueva sub-tarea">
+        <button class="btn mini" data-accion="subt-add">＋</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="overlay-libreta" class="overlay" role="dialog" aria-label="Mi libreta">
+    <div class="drawer" style="max-width:520px">
+      <h3>📓 Mi libreta <button class="x" data-accion="libreta-cerrar" aria-label="Cerrar">✕</button></h3>
+      <textarea id="libreta-texto" rows="10" placeholder="Apuntes rápidos, fórmulas, ideas… se guarda solo en este dispositivo." aria-label="Notas de la libreta"></textarea>
+      <div style="display:flex;gap:.5rem;margin-top:.6rem;flex-wrap:wrap">
+        <button class="btn mini" data-accion="libreta-guardar">💾 Guardar</button>
+        <button class="btn ghost mini" data-accion="libreta-copiar">📋 Copiar</button>
+        <button class="btn ghost mini" data-accion="libreta-limpiar">🗑️ Limpiar</button>
+      </div>
+    </div>
+  </div>
+
+  <button id="fab-top" class="fab-top" data-accion="volver-arriba" title="Volver arriba" aria-label="Volver arriba">↑</button>
+
   <div id="overlay-flash" class="overlay" role="dialog" aria-label="Repaso de flashcards">
     <div class="drawer drawer-flash">
       <div id="flash-cuerpo"></div>
@@ -297,6 +322,14 @@
         <button class="btn ghost" data-accion="rec-set" data-min="60">1 hora antes</button>
         <button class="btn ghost" data-accion="rec-set" data-min="1440">1 día antes</button>
         <button class="btn ghost" data-accion="rec-set" data-min="0">🗑️ Quitar</button>
+      </div>
+      <div style="margin-top:.8rem">
+        <label class="lbl">⏲️ Personalizado: fecha y hora exactas
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+            <input type="datetime-local" id="rec-datetime" aria-label="Fecha y hora del recordatorio">
+            <button class="btn mini" data-accion="rec-set-custom">Fijar</button>
+          </div>
+        </label>
       </div>
       <p class="sub" style="margin-top:.6rem">💡 El aviso llega mientras la app esté abierta en el navegador.</p>
     </div>

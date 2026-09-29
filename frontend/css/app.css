@@ -890,3 +890,36 @@ html.oscuro .login-error{background:#45201f;color:#fca5a5;border-color:#7f4646}
 .mc-cel:hover{transform:translateY(-3px);box-shadow:var(--sombra-float)}
 .mc-cel .mc-n{font-weight:800;font-size:.74rem;text-align:center;line-height:1.2}
 .mc-cel .mc-p{font-weight:900;font-size:1.05rem;font-variant-numeric:tabular-nums}
+
+/* ======================================================
+   7.0 — NUEVAS FUNCIONES: importantes, subtareas, libreta,
+   logros, FAB, filtro campana, hueco libre, help
+   ====================================================== */
+.fab-top{position:fixed;bottom:5.6rem;right:1rem;z-index:58;width:2.8rem;height:2.8rem;border-radius:50%;border:1px solid var(--border-subtle);background:var(--bg-glass);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);color:var(--text-brand);font-size:1.15rem;font-weight:800;cursor:pointer;box-shadow:var(--sombra-float);opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity var(--ease) .2s,transform var(--ease) .2s}
+.fab-top.visible{opacity:1;pointer-events:auto;transform:none}
+.fab-top:hover{background:var(--acento-suave)}
+
+.subt-item{display:flex;align-items:center;gap:.6rem;padding:.5rem .1rem;border-bottom:1px dashed var(--border-subtle);font-size:.88rem;font-weight:600;cursor:pointer}
+.subt-item:last-of-type{border-bottom:none}
+.subt-item input{width:1.15rem;height:1.15rem;accent-color:var(--success);flex-shrink:0}
+.subt-item input:checked+span{text-decoration:line-through;color:var(--text-muted)}
+.subt-item .del{margin-left:auto;border:none;background:none;color:var(--text-muted);cursor:pointer;font-size:.8rem;opacity:.6}
+.subt-item .del:hover{color:var(--error);opacity:1}
+.subt-prog{font-size:.62rem;font-weight:800;padding:.14rem .45rem;border-radius:1rem;background:var(--acento-suave);color:var(--text-brand);white-space:nowrap}
+
+.logro{display:flex;align-items:center;gap:.75rem;padding:.6rem .5rem;border-bottom:1px dashed var(--border-subtle)}
+.logro:last-child{border-bottom:none}
+.logro .lg-ico{width:2.4rem;height:2.4rem;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.25rem;background:var(--borde);filter:grayscale(1);opacity:.45;flex-shrink:0}
+.logro.conseguido .lg-ico{background:linear-gradient(135deg,hsla(45,100%,50%,.25),hsla(28,100%,52%,.25));filter:none;opacity:1;box-shadow:0 3px 12px -4px hsla(45,100%,50%,.5)}
+.logro .lg-txt{flex:1;min-width:0}
+.logro .lg-txt b{display:block;font-size:.85rem}
+.logro .lg-txt span{font-size:.68rem;color:var(--text-secondary);font-weight:600}
+.logro.conseguido .lg-txt b{color:var(--text-primary)}
+
+.campana-filtros{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.5rem}
+
+.hueco-libre{display:inline-flex;align-items:center;gap:.4rem;font-size:.74rem;font-weight:700;color:var(--text-secondary);background:var(--bg-subtle);border:1px dashed var(--border-strong);border-radius:1rem;padding:.28rem .7rem;margin-top:.4rem}
+
+.ayuda-fila{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.5rem 0;border-bottom:1px dashed var(--border-subtle);font-size:.85rem}
+.ayuda-fila:last-child{border-bottom:none}
+.ayuda-fila b{font-weight:700}

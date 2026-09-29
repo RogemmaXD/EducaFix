@@ -1,4 +1,4 @@
-const VERSION = 'educafix-v8';
+const VERSION = 'educafix-v9';
 const CORE = [
   './',
   'index.html',
