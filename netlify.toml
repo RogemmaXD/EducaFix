@@ -1,0 +1,9 @@
+# EducaFix en Netlify: solo publicamos el frontend estático.
+# El backend (FastAPI) se despliega aparte (Render/Railway/Fly/VPS) y se
+# conecta configurando su URL en frontend/js/api-config.js
+[build]
+  publish = "frontend"
+  command = ""
+
+# El .ics y las descargas viven en el backend; el frontend los abre
+# con la URL absoluta desde JS, así que no hacen falta redirecciones.

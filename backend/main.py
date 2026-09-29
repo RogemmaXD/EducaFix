@@ -9,10 +9,13 @@ El acceso requiere iniciar sesion con las credenciales de Educalinks
 """
 
 import os
+import re
+import time
+from collections import defaultdict
 from datetime import date, timedelta
 from pathlib import Path
 
-from fastapi import Cookie, Depends, FastAPI, HTTPException, Query, Response
+from fastapi import Cookie, Depends, FastAPI, HTTPException, Query, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from fastapi.staticfiles import StaticFiles
@@ -22,15 +25,56 @@ from auth import Sesion, auth, requiere_sesion
 from scraper import (EducalinksError, calcular_resumen, filtrar_por_semana,
                      generar_ics)
 
-app = FastAPI(title="API Agenda Educalinks", version="3.0.0")
+app = FastAPI(title="API EducaFix", version="7.0.0")
 
-# El frontend local puede servirse desde cualquier origen en desarrollo
+# Despliegue publico: origenes permitidos via variable de entorno
+_ORIGENES = [o.strip() for o in
+             os.getenv("CORS_ORIGINS", "*").split(",") if o.strip()]
+# Modo hibrido (frontend en Netlify + API en otro dominio): las cookies
+# de sesion deben viajar cross-site, lo que exige SameSite=None + Secure.
+_CROSS_SITE = sorted(_ORIGENES) != ["*"]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=_ORIGENES,
     allow_methods=["*"],
     allow_headers=["*"],
+    allow_credentials=_CROSS_SITE,
 )
+
+
+# ------------------------- Endurecimiento web publica ----------------------- #
+@app.middleware("http")
+async def cabeceras_seguridad(request: Request, call_next):
+    resp = await call_next(request)
+    resp.headers.setdefault("X-Content-Type-Options", "nosniff")
+    resp.headers.setdefault("X-Frame-Options", "DENY")
+    resp.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+    resp.headers.setdefault(
+        "Permissions-Policy", "geolocation=(), microphone=(), camera=()")
+    return resp
+
+
+# Limitador simple en memoria contra fuerza bruta en el login (por IP)
+_INTENTOS = defaultdict(list)          # ip -> [timestamps]
+_LIMITE = int(os.getenv("LOGIN_RATE_LIMIT", "8"))
+_VENTANA = 600                         # 10 minutos
+
+
+def _ip_cliente(request: Request) -> str:
+    fwd = request.headers.get("x-forwarded-for", "")
+    return fwd.split(",")[0].strip() or (request.client.host if request.client else "?")
+
+
+def _rate_limit_login(request: Request):
+    ip = _ip_cliente(request)
+    ahora = time.time()
+    _INTENTOS[ip] = [t for t in _INTENTOS[ip] if ahora - t < _VENTANA]
+    if len(_INTENTOS[ip]) >= _LIMITE:
+        raise HTTPException(
+            status_code=429,
+            detail="Demasiados intentos. Espera unos minutos e inténtalo de nuevo.",
+        )
+    _INTENTOS[ip].append(ahora)
 
 
 def _manejar_error(func, *args, **kwargs):
@@ -60,8 +104,9 @@ class DatosLogin(BaseModel):
 
 
 @app.post("/api/login")
-def login(datos: DatosLogin, response: Response):
+def login(datos: DatosLogin, request: Request, response: Response):
     """Valida las credenciales contra Educalinks y crea la sesion."""
+    _rate_limit_login(request)
     try:
         ses = auth.login(datos.usuario, datos.clave, datos.recordar)
     except EducalinksError as exc:
@@ -76,11 +121,18 @@ def login(datos: DatosLogin, response: Response):
         "key": "agenda_token",
         "value": ses.token,
         "httponly": True,
-        "samesite": "lax",
+        "samesite": "none" if _CROSS_SITE else "lax",
         "path": "/",
     }
     if datos.recordar:
         cookie["max_age"] = 365 * 24 * 3600
+    # Tras un proxy HTTPS la cookie viaja marcada como segura
+    # (obligatorio ademas para SameSite=None en modo hibrido)
+    if request.url.scheme == "https" or request.headers.get("x-forwarded-proto") == "https":
+        cookie["secure"] = True
+    elif _CROSS_SITE:
+        # SameSite=None requiere Secure; forzamos tras asumir HTTPS en produccion
+        cookie["secure"] = True
     response.set_cookie(**cookie)
     return {"ok": True, "usuario": ses.usuario}
 
@@ -116,8 +168,13 @@ def me(ses: Sesion = Depends(requiere_sesion)):
 
 @app.get("/api/config")
 def config():
-    """Datos publicos de configuracion (usuario para prellenar el login)."""
-    return {"prefill": os.getenv("EDUCA_USER", "")}
+    """Datos publicos de configuracion de la instancia EducaFix."""
+    return {
+        "prefill": os.getenv("EDUCA_USER", "") if not os.getenv("PUBLICA") else "",
+        "escuela": os.getenv("ESCUELA_NOMBRE", "Colegio Americano de Guayaquil"),
+        "app": "EducaFix",
+        "publica": bool(os.getenv("PUBLICA")),
+    }
 
 
 # ---------------------------------------------------------------------- #
@@ -246,16 +303,54 @@ def libreta_pdf(peri: int, ses: Sesion = Depends(requiere_sesion)):
 # ---------------------------------------------------------------------- #
 # Descarga proxy de archivos de Educalinks (circulares, etc.)
 # ---------------------------------------------------------------------- #
+_MIMES = {
+    ".pdf": "application/pdf",
+    ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    ".xls": "application/vnd.ms-excel",
+    ".doc": "application/msword",
+    ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ".ppt": "application/vnd.ms-powerpoint",
+    ".pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    ".csv": "text/csv",
+    ".txt": "text/plain",
+    ".zip": "application/zip",
+    ".rar": "application/vnd.rar",
+    ".png": "image/png",
+    ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
+    ".gif": "image/gif",
+    ".mp4": "video/mp4",
+    ".mp3": "audio/mpeg",
+}
+
+
 @app.get("/api/descargar")
-def descargar(url: str = Query(...), ses: Sesion = Depends(requiere_sesion)):
-    """Descarga un archivo de Educalinks con la sesion del usuario."""
+def descargar(url: str = Query(...),
+              nombre: str | None = Query(default=None, max_length=200),
+              ses: Sesion = Depends(requiere_sesion)):
+    """Descarga un archivo de Educalinks con la sesion del usuario.
+
+    El storage de Educalinks entrega nombres ofuscados (por eso antes los
+    archivos se guardaban como .file): el frontend conoce el nombre real
+    y lo pasa en ?nombre= para restaurar extension y MIME.
+    """
     if not ses.cliente.url_permitida(url):
         raise HTTPException(status_code=400, detail="URL no permitida")
     resp = _manejar_error(ses.cliente.descargar_pdf, url)
-    nombre = url.split("?")[0].rstrip("/").split("/")[-1] or "archivo"
-    media = resp.headers.get("Content-Type", "application/octet-stream")
+
+    if nombre:
+        # sanitizar: solo el nombre final, sin rutas ni caracteres raros
+        nombre = re.sub(r'[\\/:*?"<>|]', "_",
+                       nombre.strip().split("/")[-1].split("\\")[-1])
+    if not nombre:
+        nombre = url.split("?")[0].rstrip("/").split("/")[-1] or "archivo"
+
+    ext = Path(nombre.lower()).suffix
+    media = _MIMES.get(ext) or resp.headers.get(
+        "Content-Type", "application/octet-stream")
     if "html" in media.lower():
         media = "application/octet-stream"
+
     return StreamingResponse(
         resp.iter_content(chunk_size=8192),
         media_type=media,

@@ -1,8 +1,9 @@
-/* ============ Mi Agenda — Login (valida contra Educalinks via proxy) ============ */
+/* ============ EducaFix — Login (valida contra Educalinks via proxy) ============ */
 (function () {
   'use strict';
 
   var LS_RECORDADO = 'agenda_usuario';
+  var API = window.API_BASE || '';   /* URL del backend; ver js/api-config.js */
 
   var el = {
     pantalla: document.getElementById('pantalla-login'),
@@ -14,7 +15,8 @@
     btn: document.getElementById('btn-login'),
     app: document.getElementById('app'),
     franja: document.getElementById('franja'),
-    banner: document.getElementById('banner-offline')
+    banner: document.getElementById('banner-offline'),
+    escuela: document.getElementById('login-escuela')
   };
 
   function mostrarError(msj) {
@@ -47,9 +49,11 @@
   function prefill() {
     var guardado = localStorage.getItem(LS_RECORDADO);
     if (guardado) el.usuario.value = guardado;
-    fetch('api/config', { headers: { 'Accept': 'application/json' } })
+    fetch(API + 'api/config', { headers: { 'Accept': 'application/json' }, credentials: 'include' })
       .then(function (r) { return r.json(); })
       .then(function (c) {
+        if (c && c.escuela && el.escuela) el.escuela.textContent = c.escuela;
+        document.title = 'EducaFix' + (c && c.escuela ? ' — ' + c.escuela : '');
         if (c && c.prefill && !el.usuario.value) el.usuario.value = c.prefill;
       })
       .catch(function () {});
@@ -63,9 +67,10 @@
     if (!usuario || !clave) { mostrarError('Ingresa usuario y contraseña.'); return; }
 
     setCargando(true);
-    fetch('api/login', {
+    fetch(API + 'api/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify({ usuario: usuario, clave: clave, recordar: el.recordar.checked })
     })
       .then(function (r) {
@@ -89,7 +94,7 @@
         else if (status === 400) mostrarError(err.message);
         else if (status === 502) mostrarError(err.message || 'Educalinks no responde ahora. Intenta en unos minutos.');
         else if (status === 0) {
-          mostrarError('No se pudo hablar con nuestro servidor local. El portal de Educalinks está por momentos fuera de servicio/sin Internet. Si tenías datos de antes, prueba «Entrar como invitado».');
+          mostrarError('No se pudo conectar con el servidor de EducaFix' + (API ? '' : ' (si esta página está en Netlify u otro hosting estático, configura la URL de tu API en js/api-config.js)') + '. Si Educalinks está caído y tenías datos de antes, prueba «Entrar como invitado».');
           setCargando(false);
           return; // keep button disabled state; no further error
         }

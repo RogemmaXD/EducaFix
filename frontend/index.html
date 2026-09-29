@@ -4,40 +4,53 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#FF5C00">
-<meta name="description" content="Mi Agenda — tu centro académico personal sobre Educalinks">
-<title>Mi Agenda — Colegio Americano</title>
+<meta name="description" content="EducaFix — tu centro académico personal sobre Educalinks: prioridades, pendientes, notas y asistencia.">
+<title>EducaFix — Colegio Americano</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" href="img/icon-192.png">
 <link rel="apple-touch-icon" href="img/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
 
-<!-- ==================== PANTALLA DE LOGIN ==================== -->
+<!-- ==================== PANTALLA DE LOGIN (EducaFix) ==================== -->
 <div id="pantalla-login" class="login-screen oculto">
-  <div class="login-box">
-    <div class="login-logo">📚</div>
-    <h1 class="login-tit">Mi Agenda</h1>
-    <p class="login-sub">Colegio Americano de Guayaquil</p>
-    <form id="form-login">
-      <label class="lbl">Usuario (cédula)
-        <input id="login-usuario" type="text" autocomplete="username" required>
-      </label>
-      <label class="lbl">Contraseña
-        <input id="login-clave" type="password" autocomplete="current-password" required>
-      </label>
-      <label class="lbl-chk"><input type="checkbox" id="login-recordar"> Recuérdame en este dispositivo</label>
-      <div id="login-error" class="login-error oculto" role="alert"></div>
-      <button id="btn-login" class="btn btn-l" type="submit">Iniciar sesión</button>
-      <div class="login-divider">
-        <span>O</span>
-      </div>
-      <button id="btn-invitado" class="btn btn-inv" type="button" data-accion="invitado">👤 Entrar como invitado</button>
-    </form>
-    <p class="login-nota">🔒 Tus credenciales se validan directamente contra Educalinks y no salen de tu PC.</p>
+  <div class="login-wrap">
+    <div class="login-hero" aria-hidden="true">
+      <div class="lh-badge">⚡ EducaFix</div>
+      <h1 class="lh-tit">Tu vida académica,<br><strong>arreglada.</strong></h1>
+      <p class="lh-sub">Todo lo que Educalinks no te da: prioridades 🔴🟠, pendientes, notas con desglose, asistencia, flashcards y más.</p>
+      <ul class="lh-feats">
+        <li>🎯 <span>Mañana y esta semana, sin buscar nada</span></li>
+        <li>📊 <span>Notas oficiales por evaluación y tendencia</span></li>
+        <li>🃏 <span>Flashcards con repaso espaciado + pomodoro</span></li>
+        <li>📴 <span>Funciona sin conexión, instalable en el celular</span></li>
+      </ul>
+    </div>
+    <div class="login-box">
+      <div class="login-logo">⚡</div>
+      <h1 class="login-tit">EducaFix</h1>
+      <p class="login-sub" id="login-escuela">Colegio Americano de Guayaquil</p>
+      <form id="form-login">
+        <label class="lbl">Usuario (cédula)
+          <input id="login-usuario" type="text" autocomplete="username" required>
+        </label>
+        <label class="lbl">Contraseña
+          <input id="login-clave" type="password" autocomplete="current-password" required>
+        </label>
+        <label class="lbl-chk"><input type="checkbox" id="login-recordar"> Recuérdame en este dispositivo</label>
+        <div id="login-error" class="login-error oculto" role="alert"></div>
+        <button id="btn-login" class="btn btn-l" type="submit">Iniciar sesión</button>
+        <div class="login-divider">
+          <span>O</span>
+        </div>
+        <button id="btn-invitado" class="btn btn-inv" type="button" data-accion="invitado">👤 Entrar como invitado</button>
+      </form>
+      <p class="login-nota">🔒 Tus credenciales se validan directamente contra Educalinks y no salen de este servidor.</p>
+    </div>
   </div>
 </div>
 
@@ -45,13 +58,14 @@
 <div id="app" class="oculto">
 
   <header class="top">
-    <div class="brand">📚 Mi Agenda</div>
+    <div class="brand">⚡ EducaFix</div>
     <div class="buscar">
       <span class="lupa" aria-hidden="true">🔎</span>
       <input id="buscador" type="search" placeholder="Buscar tareas, notas, documentos… ( / o Ctrl+K )" autocomplete="off" readonly data-accion="pal-open" aria-label="Búsqueda global">
       <div id="resultados" role="listbox" aria-label="Resultados de búsqueda"></div>
     </div>
     <div class="acciones">
+      <button class="icon-btn" id="btn-acentos" data-accion="acento-pop" title="Personalizar (🎨)" aria-label="Personalizar tema">🎨</button>
       <button class="icon-btn" data-accion="enfoque" title="Modo enfoque (F)" aria-label="Modo enfoque">🔭</button>
       <button class="icon-btn" id="btn-refresh" data-accion="refresh-manual" title="Actualizar datos (R)" aria-label="Actualizar datos">↻</button>
       <button class="icon-btn" id="btn-campana" data-accion="camp-bell" title="Novedades" aria-label="Novedades">🔔<span class="badge-nov" id="badge-novedades" role="status" aria-live="polite">0</span></button>
@@ -59,6 +73,28 @@
       <button class="icon-btn" data-accion="salir" title="Cerrar sesión" aria-label="Cerrar sesión">⏻</button>
     </div>
   </header>
+
+  <div id="popover-acentos" class="popover-acentos" role="dialog" aria-label="Personalización rápida">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.45rem">
+      <strong>🎨 Personalizar</strong>
+      <button class="x" data-accion="acento-cerrar" aria-label="Cerrar">✕</button>
+    </div>
+    <div class="pop-swatches" id="pop-swatches"></div>
+    <label class="pop-libre">Tu color
+      <input type="color" id="pop-color" aria-label="Color libre">
+    </label>
+    <div class="pop-row">Tema
+      <div class="seg" id="pop-tema">
+        <button class="seg-btn" data-accion="tema-modo" data-modo="claro">☀️</button>
+        <button class="seg-btn" data-accion="tema-modo" data-modo="oscuro">🌙</button>
+        <button class="seg-btn" data-accion="tema-modo" data-modo="auto">✨</button>
+      </div>
+    </div>
+    <label class="pop-row">Intensidad del glass
+      <input type="range" id="pop-glass" min="0" max="100" step="1" aria-label="Intensidad glass">
+    </label>
+    <button class="btn ghost mini" data-accion="acento-ajustes" style="width:100%;justify-content:center;margin-top:.5rem">Ver más ajustes ⚙️</button>
+  </div>
 
   <div id="franja" class="franja" role="status" aria-live="polite"><span class="spi"></span> Cargando…</div>
   <div id="banner-offline" class="banner-offline oculto" data-accion="reintentar" title="Toca para reintentar">📴 Modo sin conexión — mostrando los últimos datos guardados · ✅ Reintentar</div>
@@ -85,9 +121,9 @@
 
     <section id="vista-semana" class="vista" aria-label="Mi semana">
       <div class="nav-semana">
-        <button data-accion="sem-prev" title="Semana anterior" aria-label="Semana anterior">‹</button>
+        <button data-accion="sem-prev" title="Anterior" aria-label="Semana anterior">‹</button>
         <div class="rango" id="rango-semana">…</div>
-        <button data-accion="sem-next" title="Semana siguiente" aria-label="Semana siguiente">›</button>
+        <button data-accion="sem-next" title="Siguiente" aria-label="Semana siguiente">›</button>
         <button class="hoy" data-accion="sem-hoy">Hoy</button>
       </div>
       <div id="contenido-semana">
@@ -125,13 +161,6 @@
 
     <section id="vista-mas" class="vista" aria-label="Más">
       <div id="contenido-mas"></div>
-    </section>
-
-    <section id="vista-calendario" class="vista" aria-label="Calendario">
-      <button class="btn ghost mini volver-arriba" data-accion="ir-mas">← Volver a Más</button>
-      <div id="contenido-calendario">
-        <div class="skel" style="height:300px"></div>
-      </div>
     </section>
 
     <section id="vista-evaluaciones" class="vista" aria-label="Evaluaciones">
@@ -201,16 +230,9 @@
   </div>
 
   <div id="overlay-materia" class="overlay" role="dialog" aria-label="Detalle de materia">
-    <div class="drawer" style="max-width:560px">
+    <div class="drawer drawer-materia" style="max-width:640px">
       <h3 id="materia-titulo"></h3>
       <div id="materia-detalle"></div>
-    </div>
-  </div>
-
-  <div id="overlay-info" class="overlay" role="dialog" aria-label="Detalle">
-    <div class="drawer" style="max-width:480px">
-      <h3 id="info-titulo"></h3>
-      <div id="info-cuerpo"></div>
     </div>
   </div>
 
@@ -218,6 +240,13 @@
     <div class="drawer" style="max-width:520px">
       <h3 id="examen-titulo"></h3>
       <div id="examen-detalle"></div>
+    </div>
+  </div>
+
+  <div id="overlay-info" class="overlay" role="dialog" aria-label="Detalle">
+    <div class="drawer" style="max-width:480px">
+      <h3 id="info-titulo"></h3>
+      <div id="info-cuerpo"></div>
     </div>
   </div>
 
@@ -308,6 +337,7 @@
   <div id="toasts" aria-live="polite" role="status"></div>
 </div>
 
+<script src="js/api-config.js"></script>
 <script src="js/login.js"></script>
 <script src="js/app.js"></script>
 <script src="js/pwa.js"></script>

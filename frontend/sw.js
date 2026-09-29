@@ -1,8 +1,9 @@
-const VERSION = 'mi-agenda-v6';
+const VERSION = 'educafix-v8';
 const CORE = [
   './',
   'index.html',
   'css/app.css',
+  'js/api-config.js',
   'js/login.js',
   'js/app.js',
   'js/pwa.js',

@@ -7,6 +7,18 @@
   var MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
   var MESES_C = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
   var BASE_EDU = 'https://americano.educalinks.com.ec/';
+  /* Base de la API: vacía cuando el backend sirve este frontend;
+     URL absoluta cuando el frontend vive en Netlify (ver js/api-config.js). */
+  var API = window.API_BASE || '';
+
+  /* fetch hacia la API: en modo hibrido (Netlify + API externa) hay que
+     incluir credentials para que viaje la cookie de sesion cross-site. */
+  function apiFetch(url, opts) {
+    opts = opts || {};
+    if (!opts.headers) opts.headers = { 'Accept': 'application/json' };
+    if (API) opts.credentials = 'include';
+    return fetch(API + url, opts);
+  }
 
   var LS = 'agenda_cfg';
   var LS_CACHE = 'agenda_cache';
@@ -129,6 +141,17 @@
   var flashActual = null;
   var flashGirada = false;
 
+  /* badge de la PWA con pendientes urgentes (mañana + atrasadas) */
+  function actualizarBadge() {
+    if (!navigator.setAppBadge || !state.datos) return;
+    var pend = pendientesActivos();
+    var n = pend.filter(function (e) { var d = diasRestantes(e); return d === 1 || (d != null && d < 0); }).length;
+    try {
+      if (n) navigator.setAppBadge(n);
+      else navigator.clearAppBadge();
+    } catch (e) {}
+  }
+
   function toast(msj, tipo) {
     var c = document.createElement('div');
     c.className = 'toast' + (tipo === 'err' ? ' err' : '');
@@ -166,8 +189,28 @@
     return { h: Math.round(h), s: Math.round(s * 100), l: Math.round(l * 100) };
   }
 
+  var PRESETS_ACENTO = [
+    { n: 'Naranja', h: 22, s: 100, l: 50 },
+    { n: 'Ámbar', h: 38, s: 100, l: 48 },
+    { n: 'Lima', h: 82, s: 70, l: 42 },
+    { n: 'Verde', h: 158, s: 80, l: 40 },
+    { n: 'Teal', h: 178, s: 85, l: 38 },
+    { n: 'Cian', h: 195, s: 100, l: 45 },
+    { n: 'Azul', h: 215, s: 100, l: 50 },
+    { n: 'Indigo', h: 245, s: 85, l: 55 },
+    { n: 'Morado', h: 268, s: 80, l: 55 },
+    { n: 'Rosa', h: 330, s: 90, l: 52 },
+    { n: 'Rojo', h: 8, s: 90, l: 52 },
+    { n: 'Slate', h: 222, s: 35, l: 45 }
+  ];
+
   function aplicarVisuales() {
     var r = document.documentElement;
+    if (cfg.temaModo === 'claro') cfg.dark = false;
+    else if (cfg.temaModo === 'oscuro') cfg.dark = true;
+    else if (cfg.dark === null) {
+      cfg.dark = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    }
     if (cfg.accentLibre) {
       var hsl = hexAHsl(cfg.accentLibre);
       if (hsl) {
@@ -175,13 +218,14 @@
         r.style.setProperty('--a-s', Math.max(60, hsl.s) + '%');
         r.style.setProperty('--a-l', Math.max(38, Math.min(62, hsl.l)) + '%');
       }
+    } else if (cfg.temaS && cfg.temaL) {
+      r.style.setProperty('--a-h', cfg.tema);
+      r.style.setProperty('--a-s', cfg.temaS + '%');
+      r.style.setProperty('--a-l', cfg.temaL + '%');
     } else {
       r.style.setProperty('--a-h', cfg.tema);
       r.style.setProperty('--a-s', '100%');
       r.style.setProperty('--a-l', '50%');
-    }
-    if (cfg.dark === null) {
-      cfg.dark = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
     }
     r.classList.toggle('oscuro', !!cfg.dark);
     aplicarVisualesExtra();
@@ -226,6 +270,8 @@
       '<button class="acc-btn ' + (h ? 'on' : '') + '" data-accion="hecha" data-id="' + esc(id) + '" title="' + (h ? 'Quitar hecha' : 'Hecha') + '">' + (h ? '✓' : '✓') + '</button>' +
       (esPersonal ?
         '<button class="acc-btn" data-accion="pt-del" data-id="' + esc(id) + '" title="Eliminar">🗑️</button>' :
+        '<button class="acc-btn share" data-accion="ev-share" data-id="' + esc(id) + '" title="Compartir">🔗</button>' +
+        '<button class="acc-btn" data-accion="ev-ics" data-id="' + esc(id) + '" title="Agregar a mi calendario">📅</button>' +
         '<button class="acc-btn ' + (tieneNp ? 'on' : '') + '" data-accion="np" data-id="' + esc(id) + '" title="Nota personal">✎</button>' +
         '<button class="acc-btn ' + (tieneRec ? 'on' : '') + '" data-accion="rec" data-id="' + esc(id) + '" title="Recordatorio">⏰</button>' +
         icoDet) + '</span>';
@@ -253,12 +299,136 @@
   function prioCuenta(ev) {
     var n = diasRestantes(ev);
     if (n == null) return '';
-    if (n < 0) return '<span class="cd-cuenta urgente">⚠ ' + Math.abs(n) + 'd atrasada</span>';
-    if (n === 0) return '<span class="cd-cuenta urgente">HOY</span>';
-    if (n === 1) return '<span class="cd-cuenta urgente">mañana</span>';
-    if (n <= 3) return '<span class="cd-cuenta cerca">en ' + n + ' días</span>';
-    if (n <= 7) return '<span class="cd-cuenta cerca">' + fmtCorta(parseLocal(ev.fecha_inicio)) + '</span>';
-    return '<span class="cd-cuenta lejos">' + fmtCorta(parseLocal(ev.fecha_inicio)) + '</span>';
+    if (n < 0) return '<span class="cuenta-viva atras" data-cd="' + esc(ev.fecha_inicio) + '">⚠ ' + Math.abs(n) + 'd atrasada</span>';
+    return '<span class="cuenta-viva u' + (n === 0 ? 0 : n === 1 ? 1 : n <= 7 ? 2 : 2) + '" data-cd="' + esc(ev.fecha_inicio) + '">' + esc(faltaTexto(ev)) + '</span>';
+  }
+
+  /* cuenta regresiva viva: "HOY · 5 h", "en 2d 3h", "atrasada 3d" */
+  function faltaTexto(ev) {
+    var n = diasRestantes(ev);
+    if (n == null) return '';
+    if (n < 0) return '⚠ ' + Math.abs(n) + 'd atrasada';
+    if (n === 0) {
+      var d = parseLocal(ev.fecha_inicio);
+      if (!isNaN(d.getTime())) return 'HOY';
+      return 'HOY';
+    }
+    if (n === 1) return 'mañana';
+    if (n <= 7) return 'en ' + n + ' días';
+    return fmtCorta(parseLocal(ev.fecha_inicio));
+  }
+  function faltaPreciso(ev) {
+    var d = parseLocal(ev.fecha_inicio);
+    if (isNaN(d.getTime())) return '';
+    var ms = d.getTime() - Date.now();
+    if (ms >= 0) {
+      var dias = Math.floor(ms / 86400000);
+      var horas = Math.floor((ms % 86400000) / 3600000);
+      if (dias >= 1) return (dias + 'd ' + horas + 'h');
+      var mins = Math.floor((ms % 3600000) / 60000);
+      return horas + 'h ' + (mins < 10 ? '0' : '') + mins + 'm';
+    }
+    return '⚠ ' + Math.abs(Math.floor(ms / 86400000)) + 'd';
+  }
+  var cdUltimo = 0;
+  function refrescarCuentas() {
+    var ahora = Date.now();
+    if (ahora - cdUltimo < 30000) return;
+    cdUltimo = ahora;
+    $$('.cuenta-viva[data-cd]').forEach(function (el) {
+      var ev = { fecha_inicio: el.dataset.cd };
+      var d = parseLocal(el.dataset.cd);
+      if (!isNaN(d.getTime())) {
+        var ms = d.getTime() - Date.now();
+        var n = diasRestantes(ev);
+        if (n != null && n >= 0 && n <= 1) {
+          el.textContent = (n === 0 ? 'HOY · ' : 'en ') + faltaPreciso(ev);
+        }
+      }
+    });
+  }
+
+  /* ---------- compartir actividades (Web Share API) ---------- */
+  function detallePanelPorId(id) {
+    var panel = (state.datos && state.datos.panel) || {};
+    var listas = ['por_vencer', 'atrasadas', 'por_iniciar', 'calificadas'];
+    for (var i = 0; i < listas.length; i++) {
+      var arr = panel[listas[i]] || [];
+      for (var j = 0; j < arr.length; j++) {
+        if (String(arr[j].id) === String(id)) return arr[j];
+      }
+    }
+    return null;
+  }
+  function textoEvento(ev, conDetalle) {
+    var d = parseLocal(ev.fecha_inicio);
+    var t = '📘 ' + (ev.materia || 'Actividad') + ' — ' + ev.titulo +
+      '\n📅 ' + (isNaN(d.getTime()) ? (ev.fecha_inicio || 'sin fecha') : fmtDia(d));
+    if (ev.calificacion != null && String(ev.calificacion).trim() !== '') t += '\n📊 Nota: ' + ev.calificacion;
+    if (conDetalle) {
+      var det = detallePanelPorId(ev.id);
+      if (det && det.detalle) t += '\n📝 ' + det.detalle;
+    }
+    t += '\n— compartido desde EducaFix ⚡';
+    return t;
+  }
+  function compartirEvento(id) {
+    var ev = eventoPorId(id);
+    if (!ev) { toast('No se encontró la actividad.', 'err'); return; }
+    var texto = textoEvento(ev, true);
+    if (navigator.share) {
+      navigator.share({ title: ev.titulo, text: texto }).then(function () {
+        toast('✓ Compartido');
+      }).catch(function () {});
+    } else if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(texto).then(function () {
+        toast('📋 Actividad copiada: pégala en WhatsApp, correo, etc.');
+      }).catch(function () { toast('No se pudo copiar.', 'err'); });
+    } else {
+      toast('Tu navegador no soporta compartir.', 'err');
+    }
+  }
+  function compartirDia(iso) {
+    var evs = eventosDia(parseLocal(iso));
+    if (!evs.length) { toast('Nada que compartir ese día.'); return; }
+    var texto = '📅 ' + fmtDia(parseLocal(iso)) + ' — mi día en EducaFix ⚡\n\n' +
+      evs.slice(0, 10).map(function (e) { return '• ' + (e.materia || '') + ': ' + e.titulo; }).join('\n') +
+      (evs.length > 10 ? '\n… y ' + (evs.length - 10) + ' más' : '');
+    if (navigator.share) navigator.share({ title: 'Mi día', text: texto }).catch(function () {});
+    else if (navigator.clipboard) navigator.clipboard.writeText(texto).then(function () { toast('📋 Resumen del día copiado'); });
+  }
+  function compartirMateria(nombre) {
+    if (!state.datos) return;
+    var res = ((state.datos.resumen || {}).materias || []).filter(function (m) { return clavesIguales(m.materia, nombre); })[0];
+    var pend = pendientesActivos().filter(function (e) { return clavesIguales(e.materia, nombre); });
+    var det = notasDetMateria(nombre);
+    var texto = '📚 ' + nombre + ' — mi resumen en EducaFix ⚡\n';
+    if (res && res.promedio != null) texto += '📊 Promedio actual: ' + res.promedio + '\n';
+    if (det.length) texto += '🏆 Último periodo oficial: ' + det[det.length - 1].m.total + '\n';
+    var doc = docenteDe(nombre);
+    if (doc) texto += '👨‍🏫 Docente: ' + doc + '\n';
+    if (pend.length) texto += '📝 Pendientes (' + pend.length + '):\n' + pend.slice(0, 5).map(function (e) { return '  • ' + e.titulo + (e.fecha_inicio ? ' (' + e.fecha_inicio + ')' : ''); }).join('\n') + '\n';
+    if (navigator.share) navigator.share({ title: nombre, text: texto }).catch(function () {});
+    else if (navigator.clipboard) navigator.clipboard.writeText(texto).then(function () { toast('📋 Resumen de la materia copiado'); });
+  }
+
+  function icsActividad(id) {
+    var ev = eventoPorId(id);
+    if (!ev || !ev.fecha_inicio) { toast('La actividad no tiene fecha.', 'err'); return; }
+    var ini = parseLocal(ev.fecha_inicio);
+    var fin = parseLocal(ev.fecha_fin || ev.fecha_inicio);
+    var finExcl = addDays(fin, 1);
+    function f(d) { return fechaISO(d).replace(/-/g, ''); }
+    var ics = 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//EducaFix//ES\r\nCALSCALE:GREGORIAN\r\nMETHOD:PUBLISH\r\n' +
+      'BEGIN:VEVENT\r\nUID:' + ev.id + '@educafix\r\n' +
+      'DTSTAMP:' + f(new Date()) + 'T000000Z\r\n' +
+      'DTSTART;VALUE=DATE:' + f(ini) + '\r\nDTEND;VALUE=DATE:' + f(finExcl) + '\r\n' +
+      'SUMMARY:' + icsEsc(ev.materia + ': ' + ev.titulo) + '\r\n' +
+      'DESCRIPTION:' + icsEsc('Desde EducaFix') + '\r\n' +
+      'BEGIN:VALARM\r\nACTION:DISPLAY\r\nTRIGGER:-PT16H\r\nDESCRIPTION:' + icsEsc(ev.titulo) + '\r\nEND:VALARM\r\n' +
+      'END:VEVENT\r\nEND:VCALENDAR\r\n';
+    descargar('actividad_' + fechaISO(new Date()) + '.ics', ics, 'text/calendar');
+    toast('📅 Evento .ics descargado — ábrelo para añadirlo a tu calendario');
   }
 
   function cardEvento(ev, opts) {
@@ -328,9 +498,14 @@
   }
 
   function cambiarTab(tab) {
+    if (tab === 'calendario') {         /* compatibilidad: calendario vive en Semana→Mes */
+      cfg.modoSem = 'mes'; guardarCfg();
+      tab = 'semana';
+    }
     state.vista = tab;
     cerrarBusqueda();
     cerrarCampana();
+    cerrarAcentos();
     autoActivas();
     renderVistaActual();
   }
@@ -388,6 +563,7 @@
       franja.classList.remove('err');
       franja.innerHTML = '✓ Datos actualizados';
       scheduleRetry(false);
+      actualizarBadge();
     } else if (estado === 'parcial') {
       state.fragil = true;
       banner.classList.remove('oculto');
@@ -423,7 +599,7 @@
     state.errores = {};
 
     function uno(nombre, url, extraer) {
-      return fetch(url, { headers: { 'Accept': 'application/json' } })
+      return apiFetch(url, { headers: { 'Accept': 'application/json' } })
         .then(function (r) {
           if (r.status === 401) { var e = new Error('sesion'); e.status = 401; throw e; }
           if (!r.ok) { var e2 = new Error('HTTP ' + r.status); e2.status = r.status; throw e2; }
@@ -882,28 +1058,58 @@
     return html + '</div>';
   }
 
-  /* ================= SEMANA ================= */
+  /* ================= SEMANA (Semana · Histórico · Mes · Horario) ================= */
   function renderSemana() {
     if (!state.datos) { renderEn('contenido-semana', skeleton()); return; }
-    var contenido = $('#contenido-semana');
-    var seg = '<div class="seg" style="margin:.2rem 0 .5rem"><button class="seg-btn' + (cfg.modoSem === 'semana' ? ' activa' : '') + '" data-accion="modo-sem" data-modo="semana">Semana</button>' +
-      '<button class="seg-btn' + (cfg.modoSem === 'historico' ? ' activa' : '') + '" data-accion="modo-sem" data-modo="historico">Histórico</button></div>';
-    if (cfg.modoSem === 'historico') {
+    var modo = cfg.modoSem || 'semana';
+    var seg = '<div class="seg seg-rend" style="margin:.2rem 0 .55rem" role="tablist" aria-label="Modos de semana">' +
+      [['semana', 'Semana'], ['historico', 'Histórico'], ['mes', '🗓️ Mes'], ['horario', '🕒 Horario']].map(function (m) {
+        return '<button class="seg-btn' + (modo === m[0] ? ' activa' : '') + '" data-accion="modo-sem" data-modo="' + m[0] + '" role="tab" aria-selected="' + (modo === m[0]) + '">' + m[1] + '</button>';
+      }).join('') + '</div>';
+
+    if (modo === 'historico') {
       var hm = addDays(new Date(), state.histMes * 30.5 | 0);
       var rango = MESES[hm.getMonth()] + ' ' + hm.getFullYear();
-      var semana = null;
       renderEn('rango-semana', rango);
-      var html = seg +
-        '<div class="hist-mes"><button class="btn-nav" data-accion="hist-prev">‹</button><strong>' + rango + '</strong><button class="btn-nav" data-accion="hist-next">›</button>' +
+      var htmlH = seg +
+        '<div class="hist-mes"><button class="btn-nav" data-accion="hist-prev" aria-label="Mes anterior">‹</button><strong>' + rango + '</strong><button class="btn-nav" data-accion="hist-next" aria-label="Mes siguiente">›</button>' +
         '<button class="hoy-chip" data-accion="hist-hoy">Hoy</button></div>' +
         '<input type="search" id="hist-buscar" class="hist-buscar" placeholder="🔎 Buscar en el histórico…" autocomplete="off">' +
-        '<div id="hist-lista">' + (semana = renderHistLista(fechaISO(hm))) + '</div>';
-      renderEn('contenido-semana', html);
+        '<div id="hist-lista">' + renderHistLista(fechaISO(hm)) + '</div>';
+      renderEn('contenido-semana', htmlH);
       setTimeout(function () {
         var el = $('#hist-buscar'); if (el) el.addEventListener('input', function () { renderHistLista(null); });
       }, 0);
       return;
     }
+
+    if (modo === 'mes') {
+      var d = addDays(new Date(), state.mes * 32 | 0);
+      renderEn('rango-semana', MESES_C[d.getMonth()].toUpperCase() + ' ' + d.getFullYear());
+      var segMes = '<div class="seg" style="margin:.1rem 0 .45rem"><button class="seg-btn' + (cfg.calVista !== 'agenda' ? ' activa' : '') + '" data-accion="cal-vista" data-modo="grilla">Grilla</button>' +
+        '<button class="seg-btn' + (cfg.calVista === 'agenda' ? ' activa' : '') + '" data-accion="cal-vista" data-modo="agenda">Agenda</button></div>';
+      var htmlM = seg +
+        '<div class="cal-head"><button class="btn-nav" data-accion="cal-prev" aria-label="Mes anterior">‹</button>' +
+        '<span class="tit">' + MESES_C[d.getMonth()].toUpperCase() + ' ' + d.getFullYear() + '</span>' +
+        '<button class="btn-nav" data-accion="cal-next" aria-label="Mes siguiente">›</button><button class="hoy-chip" data-accion="cal-hoy">Hoy</button></div>' + segMes;
+      var materias = materiasUnicas();
+      if (materias.length > 1) {
+        htmlM += '<div class="chips scroll" id="chip-filtro">' + materias.map(function (m) {
+          return '<button class="chip' + (agg.calFiltro === m ? ' activa' : '') + '" data-accion="cal-filtro" data-materia="' + esc(m) + '">' + esc(m) + '</button>';
+        }).join('') + '</div>';
+      }
+      htmlM += (cfg.calVista === 'agenda' ? listaMes(d) : grillaMes(d)) +
+        '<p class="sub" style="margin-top:.5rem">🔴 número en rojo = examen · haz clic en un día para ver su detalle</p>';
+      renderEn('contenido-semana', htmlM);
+      return;
+    }
+
+    if (modo === 'horario') {
+      renderEn('rango-semana', 'Horario semanal');
+      renderEn('contenido-semana', seg + tablaHorarioSemana());
+      return;
+    }
+
     var ini = addDays(iniSemana(new Date()), state.semana * 7);
     renderEn('rango-semana', 'Semana ' + numSemana(ini) + ' · ' + fmtCorta(ini) + ' – ' + fmtCorta(addDays(ini, 6)));
     var html = seg +
@@ -983,24 +1189,12 @@
     return html;
   }
 
-  /* ================= CALENDARIO ================= */
+  /* ================= CALENDARIO (integrado en Semana → Mes) ================= */
   function renderCalendario() {
-    if (!state.datos) { renderEn('contenido-calendario', skeleton()); return; }
-    var d = addDays(new Date(), state.mes * 32 | 0);
-    var seg = '<div class="seg" style="margin-bottom:.5rem"><button class="seg-btn' + (cfg.calVista === 'grilla' ? ' activa' : '') + '" data-accion="cal-vista" data-modo="grilla">Grilla</button>' +
-      '<button class="seg-btn' + (cfg.calVista === 'agenda' ? ' activa' : '') + '" data-accion="cal-vista" data-modo="agenda">Agenda</button>' +
-      '<button class="seg-btn' + (cfg.calVista === 'horario' ? ' activa' : '') + '" data-accion="cal-vista" data-modo="horario">Horario</button></div>';
-    var html = '<div class="cal-head"><button class="btn-nav" data-accion="cal-prev">‹</button>' +
-      '<span class="tit">' + MESES_C[d.getMonth()].toUpperCase() + ' ' + d.getFullYear() + '</span>' +
-      '<button class="btn-nav" data-accion="cal-next">›</button><button class="hoy-chip" data-accion="cal-hoy">Hoy</button></div>' + seg;
-    var materias = materiasUnicas();
-    if (materias.length > 1) {
-      html += '<div class="chips scroll" id="chip-filtro">' + materias.map(function (m) {
-        return '<button class="chip' + (agg.calFiltro === m ? ' activa' : '') + '" data-accion="cal-filtro" data-materia="' + esc(m) + '">' + esc(m) + '</button>';
-      }).join('') + '</div>';
-    }
-    html += (cfg.calVista === 'grilla' ? grillaMes(d) : cfg.calVista === 'agenda' ? listaMes(d) : tablaHorarioSemana());
-    renderEn('contenido-calendario', html);
+    /* El calendario vive dentro de Semana ("Mes"); redirigimos allí. */
+    cfg.modoSem = 'mes';
+    guardarCfg();
+    cambiarTab('semana');
   }
 
   function tablaHorarioSemana() {
@@ -1530,7 +1724,7 @@
             html += '<div style="display:flex;justify-content:space-between;gap:.5rem;align-items:center;padding:.35rem 0;font-size:.83rem;border-bottom:1px dashed var(--borde)">' +
               '<span style="flex:1;min-width:0;font-weight:600">' + esc(it.titulo) + (it.publicado_en ? ' <span class=\'sub\' style=\'font-weight:400\'>' + esc(it.publicado_en) + '</span>' : '') + '</span>';
             var archivoBtn = (it.archivos || []).map(function (a) {
-              return '<a class="acc-btn" href="api/descargar?url=' + encodeURIComponent(a.url) +
+              return '<a class="acc-btn" href="' + API + 'api/descargar?url=' + encodeURIComponent(a.url) + '&nombre=' + encodeURIComponent(a.nombre) +
                 '" target="_blank" title="Descargar ' + esc(a.nombre) + '">⤓</a>';
             }).join('');
             if (archivoBtn) html += '<span style="display:inline-flex;gap:.3rem;flex-shrink:0">' + archivoBtn + '</span>';
@@ -1546,7 +1740,11 @@
       }
     }
     if (diaActual === fechaISO(new Date())) {
-      html += '<div style="text-align:right;margin-top:.4rem"><button class="btn ghost mini" data-accion="pt-add" data-fecha="' + diaActual + '">＋ Añadir pendiente hoy</button></div>';
+      html += '<div style="text-align:right;margin-top:.4rem;display:flex;gap:.4rem;justify-content:flex-end;flex-wrap:wrap">' +
+        '<button class="btn ghost mini" data-accion="pt-add" data-fecha="' + diaActual + '">＋ Añadir pendiente hoy</button>' +
+        '<button class="btn ghost mini" data-accion="dia-share" data-fecha="' + diaActual + '">🔗 Compartir día</button></div>';
+    } else if (evs.length) {
+      html += '<div style="text-align:right;margin-top:.4rem"><button class="btn ghost mini" data-accion="dia-share" data-fecha="' + diaActual + '">🔗 Compartir día</button></div>';
     }
     $('#dia-lista').innerHTML = evs.length || html.includes('mat-seccion') ? html : '<div class="vacio">Sin actividades este día.</div>';
     openOverlay('overlay-dia');
@@ -1591,7 +1789,7 @@
     { ico: '📚', tit: 'Ir a Materias', cmd: 'ir:materias', g: 'Vistas' },
     { ico: '📝', tit: 'Ir a Pendientes', cmd: 'ir:pendientes', g: 'Vistas' },
     { ico: '📊', tit: 'Ir a Rendimiento', cmd: 'ir:rendimiento', g: 'Vistas' },
-    { ico: '🗓️', tit: 'Ir a Calendario', cmd: 'ir:calendario', g: 'Vistas' },
+    { ico: '🗓️', tit: 'Calendario del mes (en Semana)', cmd: 'ir:calendario', g: 'Vistas' },
     { ico: '📌', tit: 'Ir a Evaluaciones', cmd: 'ir:evaluaciones', g: 'Vistas' },
     { ico: '📣', tit: 'Ir a Comunicados', cmd: 'ir:comunicados', g: 'Vistas' },
     { ico: '📂', tit: 'Ir a Documentos', cmd: 'ir:documentos', g: 'Vistas' },
@@ -1646,12 +1844,18 @@
         if (items.length >= 16) return;
         if (String(m.materia || '').toLowerCase().indexOf(q) >= 0) items.push({ ico: '📊', tit: m.materia, sub: 'Promedio ' + fmtNum(m.promedio, 2), accion: 'ir:notas', dato: m.materia, tipo: 'materia' });
       });
+      (PLAN || []).forEach(function (p) {
+        if (items.length >= 16 || !p.docente) return;
+        if (String(p.docente).toLowerCase().indexOf(q) >= 0 || String(p.materia).toLowerCase().indexOf(q) >= 0) {
+          items.push({ ico: '👨‍🏫', tit: p.docente, sub: 'Docente de ' + p.materia, accion: 'pal-docente', dato: p.materia, tipo: 'docente' });
+        }
+      });
       (MATER || []).forEach(function (mt) {
         if (items.length >= 16) return;
         (mt.items || []).slice(0, 4).forEach(function (it) {
           if (items.length >= 16) return;
-          if (String(it.titulo || '').toLowerCase().indexOf(q) >= 0 && it.archivos && it.archivos.length) {
-            items.push({ ico: '📎', tit: it.titulo, sub: mt.materia + ' · ' + it.publicado_en, accion: 'pal-mat', dato: it.archivos[0].url, tipo: 'material' });
+            if (String(it.titulo || '').toLowerCase().indexOf(q) >= 0 && it.archivos && it.archivos.length) {
+            items.push({ ico: '📎', tit: it.titulo, sub: mt.materia + ' · ' + it.publicado_en, accion: 'pal-mat', dato: it.archivos[0].url, dato2: it.archivos[0].nombre, tipo: 'material' });
           }
         });
       });
@@ -1674,7 +1878,8 @@
     if (it.accion === 'pal-cmd') { ejecutarComando(it.dato); return; }
     if (it.accion === 'dia-iso') { cambiarTab('calendario'); renderDiaOverlay(it.dato); return; }
     if (it.accion === 'pal-com') { agg.comTab = it.dato; cambiarTab('comunicados'); return; }
-    if (it.accion === 'pal-mat') { window.open('api/descargar?url=' + encodeURIComponent(it.dato), '_blank'); return; }
+    if (it.accion === 'pal-mat') { window.open(API + 'api/descargar?url=' + encodeURIComponent(it.dato) + (it.dato2 ? '&nombre=' + encodeURIComponent(it.dato2) : ''), '_blank'); return; }
+    if (it.accion === 'pal-docente') { cambiarTab('materias'); setTimeout(function () { abrirMateria(it.dato); }, 60); return; }
     if (String(it.accion).indexOf('ir:') === 0) cambiarTab(it.accion.split(':')[1]);
   }
   function ejecutarComando(cmd) {
@@ -1689,7 +1894,7 @@
     else if (acc === 'print') { cambiarTab('semana'); setTimeout(function () { window.print(); }, 200); }
     else if (acc === 'csv') exportarCSV();
     else if (acc === 'ics') exportarHorario();
-    else if (acc === 'ics-agenda') window.open('api/calendario.ics', '_blank');
+    else if (acc === 'ics-agenda') window.open(API + 'api/calendario.ics', '_blank');
     else if (acc === 'exp') exportarExpediente();
     else if (acc === 'ajustes') { openOverlay('overlay-ajustes'); renderAjustes(); }
   }
@@ -1821,18 +2026,12 @@
   }
 
   function renderAjustes() {
-    var swatches = [
-      { n: 'Naranja', h: 22, c: 'hsl(22,100%,50%)' },
-      { n: 'Azul', h: 215, c: 'hsl(215,100%,50%)' },
-      { n: 'Verde', h: 158, c: 'hsl(158,80%,40%)' },
-      { n: 'Morado', h: 268, c: 'hsl(268,80%,55%)' },
-      { n: 'Rosa', h: 330, c: 'hsl(330,90%,52%)' }
-    ];
     var html = '';
     html += '<div class="aj-sec">🎨 Personalización</div>' +
       '<div class="aj-row"><span>Color de acento</span></div><div class="swatches">' +
-      swatches.map(function (s) {
-        return '<button class="sw' + (cfg.tema === s.h && !cfg.accentLibre ? ' activa' : '') + '" data-accion="tema-sw" data-h="' + s.h + '" title="' + s.n + '" aria-label="Tema ' + s.n + '" style="background:' + s.c + '"></button>';
+      PRESETS_ACENTO.map(function (p) {
+        return '<button class="sw' + (cfg.tema === p.h && !cfg.accentLibre && (cfg.temaS == null || cfg.temaS === p.s) ? ' activa' : '') +
+          '" data-accion="tema-sw" data-h="' + p.h + '" data-s="' + p.s + '" data-l="' + p.l + '" title="' + p.n + '" aria-label="Tema ' + p.n + '" style="background:hsl(' + p.h + ',' + p.s + '%,' + p.l + '%)"></button>';
       }).join('') +
       '<label class="sw libre" style="position:relative;overflow:hidden;' + (cfg.accentLibre ? 'box-shadow:0 0 0 3px var(--acento-suave-2)' : '') + '" title="Color libre" aria-label="Color libre">' +
       '<input type="color" data-cfg="accentLibre" value="' + (cfg.accentLibre || '#ff6a00') + '" style="position:absolute;inset:-40%;width:180%;height:180%;border:none;padding:0;cursor:pointer;background:none">' +
@@ -1929,7 +2128,7 @@
   /* ================= NOVEDADES / CAMPANA ================= */
   function cargarNovedades(silencioso) {
     if (!state.activo) return Promise.resolve();
-    return fetch('api/novedades', { headers: { 'Accept': 'application/json' } })
+    return apiFetch('api/novedades', { headers: { 'Accept': 'application/json' } })
       .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
       .then(function (data) {
         state.campanaRes = data;
@@ -1995,7 +2194,7 @@
     if (!state.datos || !state.datos.horario) { toast('Sin datos de horario.', 'err'); return; }
     var hoy = new Date();
     var hoyIdx = hoy.getDay();
-    var ics = 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Mi Agenda//ES 1.0//EN\r\nCALSCALE:GREGORIAN\r\n';
+    var ics = 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//EducaFix//ES\r\nCALSCALE:GREGORIAN\r\n';
     state.datos.horario.forEach(function (b, i) {
       var di = DIAS_UP.indexOf(String(b.dia || '').trim().toUpperCase());
       if (di < 0) return;
@@ -2099,7 +2298,13 @@
         case 'nov-leer': marcarNovedad(t.dataset.ids); break;
         case 'leido': toggleLeido(clave); break;
         case 'fav': toggleFav(clave); break;
-        case 'tema-sw': cfg.tema = parseInt(t.dataset.h, 10); cfg.accentLibre = ''; guardarCfg(); aplicarVisuales(); renderAjustes(); break;
+        case 'tema-sw':
+          cfg.tema = parseInt(t.dataset.h, 10);
+          cfg.temaS = t.dataset.s ? parseInt(t.dataset.s, 10) : null;
+          cfg.temaL = t.dataset.l ? parseInt(t.dataset.l, 10) : null;
+          cfg.accentLibre = '';
+          guardarCfg(); aplicarVisuales(); renderAjustes(); renderAcentosPop();
+          break;
         case 'ics-horario': exportarHorario(); break;
         case 'csv-notas': exportarCSV(); break;
         case 'pdf-circ': descargarCircular(t.dataset.url); break;
@@ -2176,7 +2381,17 @@
         case 'pagos-ver': abrirInfoPagos(); break;
         case 'info-cerrar': closeOverlay('overlay-info'); break;
         case 'mat-tab': agg.matTab = t.dataset.tab; renderMateriaOverlay(); break;
-        case 'ics-agenda': window.open('api/calendario.ics', '_blank'); toast('📅 Abriendo agenda .ics — guárdala o suscríbete'); break;
+        case 'mat-full': agg.matFull = !agg.matFull; renderMateriaOverlay(); break;
+        case 'mat-share': compartirMateria(t.dataset.materia); break;
+        case 'materias-vista': cfg.materiasVista = t.dataset.v; guardarCfg(); renderMaterias(); break;
+        case 'ev-share': compartirEvento(t.dataset.id); break;
+        case 'ev-ics': icsActividad(t.dataset.id); break;
+        case 'dia-share': compartirDia(t.dataset.fecha); break;
+        case 'acento-pop': toggleAcentos(); break;
+        case 'acento-cerrar': cerrarAcentos(); break;
+        case 'acento-ajustes': cerrarAcentos(); openOverlay('overlay-ajustes'); renderAjustes(); break;
+        case 'tema-modo': setTemaModo(t.dataset.modo); break;
+        case 'ics-agenda': window.open(API + 'api/calendario.ics', '_blank'); toast('📅 Abriendo agenda .ics — guárdala o suscríbete'); break;
         case 'prio-colapsar': toggleColapso(t.dataset.bloque); break;
         case 'inicio-personalizar': openOverlay('overlay-ajustes'); renderAjustes(); setTimeout(function () { var el = document.getElementById('aj-widgets'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 80); break;
         default:
@@ -2266,7 +2481,7 @@
     if (state.vista === 'comunicados' && state.datos) { var l = $('#com-lista'); if (l) l.innerHTML = comListaHtml(); }
   }
   function marcarNovedad(ids) {
-    fetch('api/novedades/leer', {
+    apiFetch('api/novedades/leer', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ids: String(ids).split(',').map(Number) })
@@ -2277,7 +2492,7 @@
   function descargarCircular(url) {
     var u = absoluto(url);
     toast('Descargando…');
-    fetch('api/descargar?url=' + encodeURIComponent(u))
+    apiFetch('api/descargar?url=' + encodeURIComponent(u))
       .then(function (r) {
         if (r.status === 400) throw new Error('URL no permitida');
         if (!r.ok) throw new Error('Error ' + r.status);
@@ -2299,7 +2514,7 @@
     if (!state.campanaRes) return;
     var pend = state.campanaRes.novedades.filter(function (n) { return !n.leida; });
     if (!pend.length) return;
-    fetch('api/novedades/leer', {
+    apiFetch('api/novedades/leer', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: '{}'
@@ -2382,10 +2597,13 @@
 
       if (ev.key === 'Escape') { cerrarPaneles(); return; }
       if (ev.key === 'R' || ev.key === 'r') { recargar(); return; }
-      if (ev.key === 'D' || ev.key === 'd') {
-        cfg.dark = !cfg.dark; guardarCfg(); aplicarVisuales(); return;
-      }
       if (ev.key === 'F' || ev.key === 'f') { abrirEnfoque(); return; }
+      if (ev.key === 'C' || ev.key === 'c') { cfg.modoSem = 'mes'; guardarCfg(); cambiarTab('semana'); return; }
+      if (ev.key === 'D' || ev.key === 'd') {
+        cfg.dark = !cfg.dark;
+        cfg.temaModo = cfg.dark ? 'oscuro' : 'claro';
+        guardarCfg(); aplicarVisuales(); return;
+      }
       if (ev.key >= '1' && ev.key <= '6') {
         var tabs = ['inicio', 'semana', 'materias', 'pendientes', 'rendimiento', 'mas'];
         cambiarTab(tabs[+ev.key - 1]);
@@ -2439,6 +2657,11 @@
     $('#pantalla-login').classList.add('oculto');
     aplicarVisuales();
     autoActivas();
+    /* atajos de la PWA (manifest shortcuts via #hash) */
+    var hash = (location.hash || '').replace('#', '');
+    if (['pendientes', 'evaluaciones', 'estudio', 'inicio', 'semana', 'materias', 'rendimiento', 'mas'].indexOf(hash) >= 0) {
+      state.vista = hash;
+    }
     timers.vivo = setInterval(actualizarVivoWrap, 1000);
     timers.rec = setInterval(tickRec, 30000);
     timers.nov = setInterval(function () { cargarNovedades(true); }, 300000);
@@ -2470,7 +2693,7 @@
   function loginInvitado() {
     var b = $('#btn-invitado');
     if (b) { b.disabled = true; b.textContent = 'Entrando sin validación…'; }
-    fetch('api/invitado', { method: 'POST', headers: { 'Content-Type': 'application/json' } })
+    apiFetch('api/invitado', { method: 'POST', headers: { 'Content-Type': 'application/json' } })
       .then(function (r) {
         if (r.ok) return;
         var err = new Error('HTTP ' + r.status); err.status = r.status; throw err;
@@ -2488,7 +2711,7 @@
   }
 
   function cerrarSesion() {
-    fetch('api/logout', { method: 'POST' }).finally(function () {
+    apiFetch('api/logout', { method: 'POST' }).finally(function () {
       __detener();
       try { localStorage.removeItem(LS_CACHE); } catch (e) {}
       window.Login.mostrar();
@@ -2512,6 +2735,14 @@
       }
       if (el.id === 'buscador') { abrirPalette(el.value); }
       if (el.id === 'pal-input') renderPalette(el.value);
+      if (el.id === 'pop-color') {
+        cfg.accentLibre = el.value;
+        guardarCfg(); aplicarVisuales();
+      }
+      if (el.id === 'pop-glass') {
+        cfg.glass = parseInt(el.value, 10);
+        guardarCfg(); aplicarVisuales();
+      }
       if (el.id === 'hist-buscar') { }
       if (el.id === 'com-buscar') { }
       if (el.id === 'sim-materia' || el.id === 'sim-meta' || el.id === 'sim-k') calcSim();
@@ -2560,6 +2791,7 @@
     actualizarVivo();
     enfTick();
     pomoTick();
+    refrescarCuentas();
   }
 
   var agg = { comTab: 'todos', calFiltro: null };
@@ -2613,7 +2845,7 @@
   function cargarMateriales() {
     if (materialesCargando || MATER) return Promise.resolve();
     materialesCargando = true;
-    return fetch('api/materiales', { headers: { 'Accept': 'application/json' } })
+    return apiFetch('api/materiales', { headers: { 'Accept': 'application/json' } })
       .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)); })
       .then(function (j) {
         MATER = j.materiales || [];
@@ -2668,8 +2900,44 @@
     h.setAttribute('data-fuente', cfg.fuente || 'auto');
     h.setAttribute('data-contraste', cfg.contraste ? 'alto' : 'normal');
     h.setAttribute('data-card', cfg.cardStyle === 'solido' ? 'solido' : 'glass');
+    /* intensidad del glass (personalizable 0-100) */
+    var g = cfg.glass == null ? 100 : Math.max(0, Math.min(100, cfg.glass));
+    var px = Math.round(14 * g / 100);
+    h.style.setProperty('--blur', px < 1 ? 'none' : 'saturate(' + Math.round(140 + g * 0.4) + '%) blur(' + px + 'px)');
     var meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute('content', cfg.dark ? 'hsl(' + cfg.tema + ',45%,20%)' : 'hsl(' + cfg.tema + ',100%,50%)');
+  }
+
+  /* ---------- popover de personalización rápida ---------- */
+  var acentosAbierto = false;
+  function renderAcentosPop() {
+    var sw = PRESETS_ACENTO.map(function (p) {
+      return '<button class="sw' + (cfg.tema === p.h && !cfg.accentLibre && (cfg.temaS == null || cfg.temaS === p.s) ? ' activa' : '') +
+        '" data-accion="tema-sw" data-h="' + p.h + '" data-s="' + p.s + '" data-l="' + p.l + '" title="' + p.n + '" aria-label="Tema ' + p.n + '" style="background:hsl(' + p.h + ',' + p.s + '%,' + p.l + '%)"></button>';
+    }).join('');
+    renderEn('pop-swatches', sw);
+    var color = $('#pop-color'); if (color) color.value = cfg.accentLibre || '#ff6a00';
+    var glass = $('#pop-glass'); if (glass) glass.value = cfg.glass == null ? 100 : cfg.glass;
+    $$('#pop-tema .seg-btn').forEach(function (b) {
+      var modo = cfg.temaModo || 'auto';
+      b.classList.toggle('activa', b.dataset.modo === (modo === 'auto' ? 'auto' : (cfg.dark ? 'oscuro' : 'claro')));
+    });
+  }
+  function toggleAcentos() {
+    acentosAbierto = !acentosAbierto;
+    var el = document.getElementById('popover-acentos');
+    el.classList.toggle('abierto', acentosAbierto);
+    if (acentosAbierto) renderAcentosPop();
+  }
+  function cerrarAcentos() {
+    acentosAbierto = false;
+    var el = document.getElementById('popover-acentos');
+    if (el) el.classList.remove('abierto');
+  }
+  function setTemaModo(modo) {
+    cfg.temaModo = modo;
+    if (modo === 'auto') cfg.dark = null;
+    guardarCfg(); aplicarVisuales(); renderAcentosPop();
   }
 
   /* ======================================================
@@ -2692,7 +2960,7 @@
   function cargarPlanificacion() {
     if (planCargando || (PLAN && PLAN.length)) return Promise.resolve();
     planCargando = true;
-    return fetch('api/planificacion', { headers: { 'Accept': 'application/json' } })
+    return apiFetch('api/planificacion', { headers: { 'Accept': 'application/json' } })
       .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)); })
       .then(function (j) {
         PLAN = j.materias || [];
@@ -2838,18 +3106,48 @@
       datos.sort(function (a, b) { return String(a.nombre).localeCompare(String(b.nombre)); });
     }
 
-    var html = '<div class="mat-lista">' + datos.map(function (m) {
-      return '<button class="mat-row" data-accion="mat-abrir" data-materia="' + esc(m.nombre) + '">' +
-        '<span class="mr-dot" style="background:' + colorMateria(m.nombre) + '" aria-hidden="true"></span>' +
-        '<span class="mr-main"><span class="mr-nombre">' + esc(m.nombre) + '</span>' +
-        (m.doc ? '<span class="mr-doc">' + esc(truncNombre(m.doc, 30)) + '</span>' : '') + '</span>' +
-        (m.pro != null ? '<span class="mr-prom ' + sisColor(m.pro) + '">' + fmtNum(m.pro, 2) + '</span>' : '<span class="mr-prom muted">—</span>') +
-        (m.pend.length ? '<span class="mr-chip' + (m.pend.length > 3 ? ' alerta' : '') + '">' + m.pend.length + '</span>' : '') +
-        '<span class="mr-chevron" aria-hidden="true">›</span>' +
-        '</button>';
-    }).join('') + '</div>' +
-      (datos.some(function (m) { return m.pend.length; }) ?
-        '<p class="sub" style="text-align:center;margin-top:.5rem">El número indica pendientes activos · toca una materia para ver todo su detalle</p>' : '');
+    var html = '<div class="seg" style="margin:.1rem 0 .55rem" role="tablist" aria-label="Vista de materias">' +
+      [['lista', '☰ Lista'], ['tarjetas', '🗂️ Tarjetas'], ['compacto', '▪ Compacto']].map(function (v) {
+        return '<button class="seg-btn' + (cfg.materiasVista === v[0] || (!cfg.materiasVista && v[0] === 'lista') ? ' activa' : '') + '" data-accion="materias-vista" data-v="' + v[0] + '" role="tab">' + v[1] + '</button>';
+      }).join('') + '</div>';
+
+    var vista = cfg.materiasVista || 'lista';
+    if (vista === 'tarjetas') {
+      html += '<div class="mat-cards">' + datos.map(function (m) {
+        var prox = m.pend.length ? m.pend[0] : null;
+        return '<button class="mat-card" data-accion="mat-abrir" data-materia="' + esc(m.nombre) + '" style="--mat-c:' + colorMateria(m.nombre) + '">' +
+          '<div class="m-nombre">' + esc(m.nombre) + '</div>' +
+          (m.doc ? '<div class="m-docente">👨‍🏫 ' + esc(truncNombre(m.doc, 28)) + '</div>' : '') +
+          '<div class="m-stats">' +
+          (m.pro != null ? '<span class="m-chip" style="color:' + sisColor(m.pro) + ';font-weight:800">📊 ' + fmtNum(m.pro, 2) + '</span>' : '<span class="m-chip">sin notas</span>') +
+          (m.pend.length ? '<span class="m-chip' + (m.pend.length > 3 ? ' alerta' : '') + '">📝 ' + m.pend.length + '</span>' : '') +
+          '</div>' +
+          (prox ? '<div class="m-prox">📌 ' + esc(truncNombre(prox.titulo, 30)) + '</div>' : '') +
+          '</button>';
+      }).join('') + '</div>';
+    } else if (vista === 'compacto') {
+      html += '<div class="mat-compacto">' + datos.map(function (m) {
+        return '<button class="mc-cel" data-accion="mat-abrir" data-materia="' + esc(m.nombre) + '" title="' + esc(m.nombre) + (m.doc ? ' · ' + esc(m.doc) : '') + '">' +
+          '<span class="dot" style="background:' + colorMateria(m.nombre) + ';width:.65rem;height:.65rem;border-radius:50%"></span>' +
+          '<span class="mc-n">' + esc(truncNombre(m.nombre, 22)) + '</span>' +
+          (m.pro != null ? '<span class="mc-p ' + sisColor(m.pro) + '">' + fmtNum(m.pro, 1) + '</span>' : '<span class="mc-p" style="color:var(--text-muted)">—</span>') +
+          (m.pend.length ? '<span class="m-chip' + (m.pend.length > 3 ? ' alerta' : '') + '">' + m.pend.length + '</span>' : '') +
+          '</button>';
+      }).join('') + '</div>';
+    } else {
+      html += '<div class="mat-lista">' + datos.map(function (m) {
+        return '<button class="mat-row" data-accion="mat-abrir" data-materia="' + esc(m.nombre) + '">' +
+          '<span class="mr-dot" style="background:' + colorMateria(m.nombre) + '" aria-hidden="true"></span>' +
+          '<span class="mr-main"><span class="mr-nombre">' + esc(m.nombre) + '</span>' +
+          (m.doc ? '<span class="mr-doc">' + esc(truncNombre(m.doc, 30)) + '</span>' : '') + '</span>' +
+          (m.pro != null ? '<span class="mr-prom ' + sisColor(m.pro) + '">' + fmtNum(m.pro, 2) + '</span>' : '<span class="mr-prom muted">—</span>') +
+          (m.pend.length ? '<span class="mr-chip' + (m.pend.length > 3 ? ' alerta' : '') + '">' + m.pend.length + '</span>' : '') +
+          '<span class="mr-chevron" aria-hidden="true">›</span>' +
+          '</button>';
+      }).join('') + '</div>';
+    }
+    html += (datos.some(function (m) { return m.pend.length; }) ?
+      '<p class="sub" style="text-align:center;margin-top:.5rem">El número indica pendientes activos · toca una materia para ver todo su detalle</p>' : '');
     renderEn('contenido-materias', html ||
       '<div class="vacio">📚 Aún no detectamos materias.<br><small>Actualiza los datos con ↻</small></div>');
   }
@@ -2866,7 +3164,7 @@
   function cargarNotasDetalle() {
     if (notasDetCargando || NOTAS_DET) return Promise.resolve();
     notasDetCargando = true;
-    return fetch('api/notas/detalle', { headers: { 'Accept': 'application/json' } })
+    return apiFetch('api/notas/detalle', { headers: { 'Accept': 'application/json' } })
       .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)); })
       .then(function (j) { NOTAS_DET = j; })
       .catch(function (e) { console.warn('notas detalladas no disponibles', e); })
@@ -2890,10 +3188,13 @@
     if (!nombre) return;
     var tabs = [['resumen', 'Resumen'], ['agenda', 'Agenda'], ['notas', 'Notas'], ['materiales', 'Materiales'], ['asistencia', 'Asistencia']];
     $('#materia-titulo').innerHTML = '<span class="dot" style="background:' + colorMateria(nombre) + ';display:inline-block;width:.85rem;height:.85rem;border-radius:50%;margin-right:.4rem"></span>' +
-      esc(nombre) + ' <span style="margin-left:auto"></span><button class="x" data-accion="materia-cerrar" aria-label="Cerrar">✕</button>' +
+      esc(nombre) + ' <span style="margin-left:auto"></span>' +
+      '<button class="x" data-accion="mat-full" title="' + (agg.matFull ? 'Salir de pantalla completa' : 'Pantalla completa (más info)') + '" aria-label="Pantalla completa">' + (agg.matFull ? '⤡' : '⛶') + '</button>' +
+      '<button class="x" data-accion="materia-cerrar" aria-label="Cerrar">✕</button>' +
       '<div class="chips" style="margin:.55rem 0 .2rem">' + tabs.map(function (t) {
         return '<button class="chip' + (agg.matTab === t[0] ? ' activa' : '') + '" data-accion="mat-tab" data-tab="' + t[0] + '">' + t[1] + '</button>';
       }).join('') + '</div>';
+    document.getElementById('overlay-materia').classList.toggle('completo', !!agg.matFull);
 
     var res = ((state.datos.resumen || {}).materias || []).filter(function (m) { return clavesIguales(m.materia, nombre); })[0] || null;
     var pro = res ? esCal(res.promedio) : null;
@@ -2929,18 +3230,19 @@
       }
       html += '<div class="mat-detalle-sec"><div style="display:flex;gap:.5rem;flex-wrap:wrap">' +
         '<button class="btn ghost mini" data-accion="flash-nueva" data-materia="' + esc(nombre) + '">🃏 Flashcard (' + fl.length + ')</button>' +
-        '<button class="btn ghost mini" data-accion="pomo-para-examen" data-materia="' + esc(nombre) + '">🍅 Estudiar</button></div></div>';
+        '<button class="btn ghost mini" data-accion="pomo-para-examen" data-materia="' + esc(nombre) + '">🍅 Estudiar</button>' +
+        '<button class="btn ghost mini" data-accion="mat-share" data-materia="' + esc(nombre) + '">🔗 Compartir resumen</button></div></div>';
     }
 
     if (agg.matTab === 'agenda') {
       html += pendM.length ?
         '<div class="mat-detalle-sec"><h4>📌 Pendientes (' + pendM.length + ')</h4>' +
-        pendM.map(function (e) { return cardEvento(e, { compacta: true, prioridades: true }); }).join('') + '</div>'
+        pendM.slice(0, agg.matFull ? 50 : 6).map(function (e) { return cardEvento(e, { compacta: true, prioridades: true }); }).join('') + '</div>'
         : '<div class="vacio" style="padding:.8rem">Sin pendientes de esta materia.</div>';
       html += calif.length ?
-        '<div class="mat-detalle-sec"><h4>✅ Calificadas (últimas 8)</h4><div class="tarjeta" style="padding:.5rem .7rem">' +
-        calif.slice(0, 8).map(function (e) {
-          return '<div class="fila-per"><span style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(truncNombre(e.titulo, 40)) + '</span>' +
+        '<div class="mat-detalle-sec"><h4>✅ Calificadas (' + calif.length + (agg.matFull ? '' : ' · últimas 8') + ')</h4><div class="tarjeta" style="padding:.5rem .7rem">' +
+        calif.slice(0, agg.matFull ? 50 : 8).map(function (e) {
+          return '<div class="fila-per"><span style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(truncNombre(e.titulo, 40)) + ' <span class="sub">' + esc(e.fecha_inicio || '') + '</span></span>' +
             '<span class="badge nota ' + sisColor(esCal(e.calificacion)) + '">' + esc(e.calificacion) + '</span></div>';
         }).join('') + '</div></div>' : '';
     }
@@ -2978,21 +3280,27 @@
     if (agg.matTab === 'materiales') {
       if (lec) {
         html += '<div class="mat-detalle-sec"><h4>📖 Leccionario (temas)</h4><div class="tarjeta" style="padding:.5rem .7rem;font-size:.8rem">' +
-          lec.filas.slice(0, 8).map(function (f) {
-            return '<div style="padding:.3rem 0;border-bottom:1px dashed var(--borde)">' + esc(f.join(' · ').slice(0, 90)) + '</div>';
+          lec.filas.slice(0, agg.matFull ? 40 : 8).map(function (f) {
+            return '<div style="padding:.3rem 0;border-bottom:1px dashed var(--borde)">' + esc(f.join(' · ').slice(0, 120)) + '</div>';
           }).join('') + '</div></div>';
       }
       html += mats.length ?
         '<div class="mat-detalle-sec"><h4>📎 Materiales del aula (' + mats.length + ')</h4>' +
-        mats.map(function (it) {
+        mats.slice(0, agg.matFull ? 100 : 8).map(function (it) {
           var btns = (it.archivos || []).map(function (a) {
-            return '<a class="acc-btn" href="api/descargar?url=' + encodeURIComponent(a.url) + '" target="_blank" title="Descargar ' + esc(a.nombre) + '">⤓</a>';
+            return '<a class="acc-btn" href="' + API + 'api/descargar?url=' + encodeURIComponent(a.url) + '&nombre=' + encodeURIComponent(a.nombre) + '" target="_blank" title="Descargar ' + esc(a.nombre) + '">⤓</a>';
           }).join('');
           return '<div class="mat-item"><div class="mi"><span class="mi-strong">' + esc(truncNombre(it.titulo, 46)) + '</span>' +
             (it.publicado_en ? '<div class="mi-sub">' + esc(it.publicado_en) + '</div>' : '') + '</div>' +
             '<div class="ax">' + btns + '</div></div>';
         }).join('') + '</div>'
         : '<div class="vacio" style="padding:.9rem">Sin materiales publicados en el aula virtual.</div>';
+      if (agg.matFull && fl.length) {
+        html += '<div class="mat-detalle-sec"><h4>🃏 Flashcards de la materia (' + fl.length + ')</h4><div class="tarjeta" style="padding:.5rem .7rem;font-size:.8rem">' +
+          fl.slice(0, 12).map(function (c) {
+            return '<div class="fila-per"><span style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(truncNombre(c.f, 40)) + '</span><span class="sub">caja ' + (c.caja || 0) + '</span></div>';
+          }).join('') + '</div></div>';
+      }
     }
 
     if (agg.matTab === 'asistencia') {
@@ -3137,7 +3445,7 @@
       html += '<div class="mat-detalle-sec"><h4>📎 Carpeta de repaso (aula virtual)</h4>' +
         mats.map(function (it) {
           var btns = (it.archivos || []).map(function (a) {
-            return '<a class="acc-btn" href="api/descargar?url=' + encodeURIComponent(a.url) + '" target="_blank" title="Descargar">⤓</a>';
+            return '<a class="acc-btn" href="' + API + 'api/descargar?url=' + encodeURIComponent(a.url) + '&nombre=' + encodeURIComponent(a.nombre) + '" target="_blank" title="Descargar ' + esc(a.nombre) + '">⤓</a>';
           }).join('');
           return '<div class="mat-item"><div class="mi"><span class="mi-strong">' + esc(truncNombre(it.titulo, 44)) + '</span></div><div class="ax">' + btns + '</div></div>';
         }).join('') + '</div>';
@@ -3216,7 +3524,7 @@
   }
   function docItem(mt, it, key) {
     var btns = (it.archivos || []).map(function (a) {
-      return '<a class="acc-btn" href="api/descargar?url=' + encodeURIComponent(a.url) + '" target="_blank" title="Descargar ' + esc(a.nombre) + '" aria-label="Descargar">⤓</a>';
+      return '<a class="acc-btn" href="' + API + 'api/descargar?url=' + encodeURIComponent(a.url) + '&nombre=' + encodeURIComponent(a.nombre) + '" target="_blank" title="Descargar ' + esc(a.nombre) + '" aria-label="Descargar">⤓</a>';
     }).join('');
     return '<div class="doc-item">' +
       '<button class="acc-btn fav ' + (FAV[key] ? 'on' : '') + '" data-accion="fav-doc" data-key="' + esc(key) + '" title="Favorito" aria-label="Marcar favorito">★</button>' +
@@ -3447,8 +3755,7 @@
       grupo('Académico',
         menuRow('📌', 'Evaluaciones', evals7 ? evals7 + ' en los próximos 7 días' : 'próximas y mapa de carga', 'ir:evaluaciones', evals7) +
         menuRow('📂', 'Documentos', docs ? docs + ' materiales del aula virtual' : 'materiales por materia', 'ir:documentos', '') +
-        menuRow('🧠', 'Estudio', due ? due + ' flashcards para hoy · pomodoro' : 'pomodoro, sesiones y flashcards', 'ir:estudio', due) +
-        menuRow('🗓️', 'Calendario', 'grilla mensual, agenda y horario', 'ir:calendario', '')) +
+        menuRow('🧠', 'Estudio', due ? due + ' flashcards para hoy · pomodoro' : 'pomodoro, sesiones y flashcards', 'ir:estudio', due)) +
       grupo('Colegio',
         menuRow('📣', 'Comunicados', 'mensajes y circulares', 'ir:comunicados', noLeidos) +
         (fal.disponible ?
@@ -3462,7 +3769,7 @@
         menuRow('🗓️', 'Exportar agenda', 'archivo .ics para tu calendario', 'ics-agenda', '') +
         menuRow('🗂️', 'Exportar expediente', 'todo tu historial en un JSON', 'exp-json', '') +
         menuRow('⚙️', 'Ajustes', 'personalización, metas y estudio', 'ajustes', '')) +
-      '<div class="tip">💡 <strong>Calendario externo:</strong> en Google Calendar usa "Suscribirse a un calendario" con la URL de tu PC: <code>' + esc(location.origin) + '/api/calendario.ics</code></div>';
+      '<div class="tip">💡 <strong>Calendario mensual y horario:</strong> ahora viven dentro de <strong>Semana</strong> (pestañas «Mes» y «Horario»).<br><br><strong>Calendario externo:</strong> en Google Calendar usa "Suscribirse a un calendario" con la URL de tu PC: <code>' + esc(location.origin) + '/api/calendario.ics</code></div>';
     renderEn('contenido-mas', html);
   }
 
@@ -3542,7 +3849,7 @@
   ligarTeclado();
   ligarPull();
 
-  fetch('api/me', { headers: { 'Accept': 'application/json' } })
+  apiFetch('api/me', { headers: { 'Accept': 'application/json' } })
     .then(function (r) { return r.ok; })
     .then(function (ok) {
       if (ok) iniciar();

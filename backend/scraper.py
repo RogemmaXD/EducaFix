@@ -18,7 +18,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-BASE_URL = "https://americano.educalinks.com.ec"
+# Instancia de Educalinks del colegio (configurable para despliegue publico)
+BASE_URL = os.getenv("EDUCA_BASE_URL", "https://americano.educalinks.com.ec").rstrip("/")
 
 
 class EducalinksError(Exception):
@@ -918,10 +919,10 @@ def generar_ics(eventos):
     lineas = [
         "BEGIN:VCALENDAR",
         "VERSION:2.0",
-        "PRODID:-//Agenda Educalinks//ES",
+        "PRODID:-//EducaFix//ES",
         "CALSCALE:GREGORIAN",
         "METHOD:PUBLISH",
-        "X-WR-CALNAME:Mi Agenda — Colegio Americano",
+        "X-WR-CALNAME:EducaFix — Colegio Americano",
         "X-PUBLISHED-TTL:PT12H",
     ]
     ahora = datetime.now().strftime("%Y%m%dT%H%M%S")
