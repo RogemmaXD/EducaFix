@@ -1,0 +1,23 @@
+# Render Blueprint — EducaFix
+# Crea el backend en Render con "New → Blueprint" y este archivo configura
+# TODO automaticamente (no hay que escribir comandos a mano).
+services:
+  - type: web
+    name: educafix-api
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/config
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      - key: PUBLICA
+        value: "1"
+      - key: ESCUELA_NOMBRE
+        value: Colegio Americano de Guayaquil
+      # Origen de tu frontend en Netlify (te lo pregunta Render al crear;
+      # acepta comodin: https://*.netlify.app)
+      - key: CORS_ORIGINS
+        sync: false

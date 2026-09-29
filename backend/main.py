@@ -27,15 +27,36 @@ from scraper import (EducalinksError, calcular_resumen, filtrar_por_semana,
 
 app = FastAPI(title="API EducaFix", version="7.0.0")
 
-# Despliegue publico: origenes permitidos via variable de entorno
-_ORIGENES = [o.strip() for o in
-             os.getenv("CORS_ORIGINS", "*").split(",") if o.strip()]
+# Despliegue publico: origenes permitidos via variable de entorno.
+# Formato: URLs exactas separadas por coma, con o sin https:// y sin "/" final.
+#   Ejemplos:
+#     CORS_ORIGINS=*                                        (local/todo-en-uno)
+#     CORS_ORIGINS=https://educafix.netlify.app             (frontend en Netlify)
+#     CORS_ORIGINS=https://*.netlify.app,http://localhost:8000
+# Las entradas con comodin (*.netlify.app) se convierten a regex.
+_ORIGENES_RAW = [o.strip().rstrip("/") for o in
+                 os.getenv("CORS_ORIGINS", "*").split(",") if o.strip()]
+_ORIGENES_EXACTOS = [o for o in _ORIGENES_RAW if "*" not in o]
+_ORIGENES_COMODIN = [o for o in _ORIGENES_RAW if "*" in o]
 # Modo hibrido (frontend en Netlify + API en otro dominio): las cookies
 # de sesion deben viajar cross-site, lo que exige SameSite=None + Secure.
-_CROSS_SITE = sorted(_ORIGENES) != ["*"]
+_CROSS_SITE = sorted(_ORIGENES_RAW) != ["*"]
+if not _ORIGENES_EXACTOS and not _ORIGENES_COMODIN:
+    _ORIGENES_EXACTOS = ["*"]
+    _CROSS_SITE = False
+
+# regex combinada para origenes con comodin: https://*.netlify.app
+_ORIGEN_REGEX = None
+if _ORIGENES_COMODIN:
+    partes = "|".join(
+        re.escape(o).replace(r"\*", "[A-Za-z0-9._-]+")
+        for o in _ORIGENES_COMODIN)
+    _ORIGEN_REGEX = f"^({partes})$"
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=_ORIGENES,
+    allow_origins=_ORIGENES_EXACTOS,
+    allow_origin_regex=_ORIGEN_REGEX,
     allow_methods=["*"],
     allow_headers=["*"],
     allow_credentials=_CROSS_SITE,

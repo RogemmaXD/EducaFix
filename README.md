@@ -97,9 +97,12 @@ híbrido en dos piezas:
 
 ### 1) Backend en Render (gratis)
 
-1. Crea el servicio Web en [render.com](https://render.com) desde tu repo
-   de GitHub (**New → Web Service**).
-2. Configura:
+> 💡 **Opción sin escribir comandos (recomendada):** el repo incluye
+> `render.yaml` (Blueprint). En Render usa **New → Blueprint**, selecciona
+> el repo y todo (directorio, build, start) se configura solo; solo tendrás
+> que responder el valor de `CORS_ORIGINS` cuando te lo pida.
+
+Si prefieres el método manual (**New → Web Service**), configura:
    - **Root Directory**: `backend`
    - **Build Command**: `pip install -r requirements.txt`
    - **Start Command**: `uvicorn main:app --host 0.0.0.0 --port $PORT`
@@ -112,6 +115,14 @@ híbrido en dos piezas:
    (usa tu dominio final de Netlify; si aún no lo sabes, vuelve aquí
    después del paso 2 y edita la variable).
 4. Guarda y espera la URL: `https://educafix-api.onrender.com` (ejemplo).
+
+> ⚠️ **Errores comunes al llenar el formulario:**
+> - El Start Command es **exactamente** `uvicorn main:app --host 0.0.0.0 --port $PORT`.
+>   "Variables" es el título de la sección de abajo en Render — **no lo
+>   escribas** en el comando (provoca "Got unexpected extra argument").
+> - `CORS_ORIGINS` es una URL con `https://` y **sin `/` final**; también
+>   acepta comodines: `https://*.netlify.app` sirve para cualquier
+>   subdominio de Netlify.
 
 > Render free "duerme" tras 15 min sin visitas: la primera petición tras
 > el descanso tarda ~50 s en despertar. Es normal.
