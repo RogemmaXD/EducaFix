@@ -35,6 +35,10 @@
       <h1 class="login-tit">EducaFix</h1>
       <p class="login-sub" id="login-escuela">Colegio Americano de Guayaquil</p>
       <form id="form-login">
+        <div class="seg seg-perfil" role="radiogroup" aria-label="Perfil">
+          <button type="button" class="seg-btn activa" id="perfil-alumno" data-perfil-btn="alumno" role="radio" aria-checked="true">🎓 Alumno</button>
+          <button type="button" class="seg-btn" id="perfil-docente" data-perfil-btn="docente" role="radio" aria-checked="false">👨‍🏫 Docente</button>
+        </div>
         <label class="lbl">Usuario (cédula)
           <input id="login-usuario" type="text" autocomplete="username" required>
         </label>
@@ -193,6 +197,28 @@
       <div id="contenido-estudio">
         <div class="skel" style="height:120px"></div>
         <div class="skel" style="height:120px"></div>
+      </div>
+    </section>
+
+    <section id="vista-dinicio" class="vista" aria-label="Inicio docente">
+      <div id="contenido-dinicio">
+        <div class="skel" style="height:90px"></div>
+        <div class="skel" style="height:120px"></div>
+        <div class="skel" style="height:120px"></div>
+      </div>
+    </section>
+
+    <section id="vista-dclases" class="vista" aria-label="Clases y agenda docente">
+      <div id="contenido-dclases">
+        <div class="skel" style="height:76px"></div>
+        <div class="skel" style="height:76px"></div>
+        <div class="skel" style="height:76px"></div>
+      </div>
+    </section>
+
+    <section id="vista-dhorario" class="vista" aria-label="Horario docente">
+      <div id="contenido-dhorario">
+        <div class="skel" style="height:200px"></div>
       </div>
     </section>
   </main>

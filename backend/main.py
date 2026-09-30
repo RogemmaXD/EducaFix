@@ -133,6 +133,7 @@ class DatosLogin(BaseModel):
     usuario: str
     clave: str
     recordar: bool = False
+    perfil: str = "alumno"   # 'alumno' | 'docente'
 
 
 @app.post("/api/login")
@@ -140,9 +141,12 @@ def login(datos: DatosLogin, request: Request, response: Response):
     """Valida las credenciales contra Educalinks y crea la sesion."""
     _rate_limit_login(request)
     try:
-        ses = auth.login(datos.usuario, datos.clave, datos.recordar)
+        ses = auth.login(datos.usuario, datos.clave, datos.recordar,
+                         datos.perfil)
     except EducalinksError as exc:
         msg = str(exc)
+        if "Perfil no valido" in msg:
+            raise HTTPException(status_code=400, detail=msg)
         if "Login rechazado" in msg:
             raise HTTPException(status_code=401,
                                 detail="Usuario o contrasena incorrectos")
@@ -195,7 +199,23 @@ def login_invitado(response: Response):
 
 @app.get("/api/me")
 def me(ses: Sesion = Depends(requiere_sesion)):
-    return {"usuario": ses.usuario}
+    return {"usuario": ses.usuario, "perfil": ses.perfil}
+
+
+def _requiere_alumno(ses: Sesion = Depends(requiere_sesion)) -> Sesion:
+    """Guarda: los endpoints de alumno no sirven con sesion de docente."""
+    if ses.perfil != "alumno":
+        raise HTTPException(status_code=403,
+                            detail="Esta seccion es solo para alumnos")
+    return ses
+
+
+def _requiere_docente(ses: Sesion = Depends(requiere_sesion)) -> Sesion:
+    """Guarda: los endpoints de docente no sirven con sesion de alumno."""
+    if ses.perfil != "docente":
+        raise HTTPException(status_code=403,
+                            detail="Esta seccion es solo para docentes")
+    return ses
 
 
 @app.get("/api/config")
@@ -214,7 +234,7 @@ def config():
 # ---------------------------------------------------------------------- #
 @app.get("/api/agenda")
 def agenda(
-    ses: Sesion = Depends(requiere_sesion),
+    ses: Sesion = Depends(_requiere_alumno),
     semana: date | None = Query(
         default=None,
         description="Cualquier fecha YYYY-MM-DD; se devuelve esa semana (lun-dom)",
@@ -239,7 +259,7 @@ def agenda(
 
 
 @app.get("/api/horario")
-def horario(ses: Sesion = Depends(requiere_sesion)):
+def horario(ses: Sesion = Depends(_requiere_alumno)):
     """Horario semanal de clases (bloques por dia y periodo)."""
     bloques = _manejar_error(ses.cliente.get_horario)
     return {"total": len(bloques), "bloques": bloques}
@@ -249,14 +269,14 @@ def horario(ses: Sesion = Depends(requiere_sesion)):
 # Mensajes y circulares
 # ---------------------------------------------------------------------- #
 @app.get("/api/mensajes")
-def mensajes(ses: Sesion = Depends(requiere_sesion)):
+def mensajes(ses: Sesion = Depends(_requiere_alumno)):
     """Mensajes/comunicados recibidos en Educalinks."""
     lista = _manejar_error(ses.cliente.get_mensajes)
     return {"total": len(lista), "mensajes": lista}
 
 
 @app.get("/api/circulares")
-def circulares(ses: Sesion = Depends(requiere_sesion)):
+def circulares(ses: Sesion = Depends(_requiere_alumno)):
     """Circulares del colegio con link de descarga."""
     lista = _manejar_error(ses.cliente.get_circulares)
     return {"total": len(lista), "circulares": lista}
@@ -266,7 +286,7 @@ def circulares(ses: Sesion = Depends(requiere_sesion)):
 # Notas: resumen y libretas oficiales
 # ---------------------------------------------------------------------- #
 @app.get("/api/resumen")
-def resumen(ses: Sesion = Depends(requiere_sesion)):
+def resumen(ses: Sesion = Depends(_requiere_alumno)):
     """Promedios por materia y periodo calculados desde la agenda."""
     eventos = _manejar_error(ses.cliente.get_agenda)
     libretas = _manejar_error(ses.cliente.get_libretas)
@@ -274,7 +294,7 @@ def resumen(ses: Sesion = Depends(requiere_sesion)):
 
 
 @app.get("/api/panel")
-def panel(ses: Sesion = Depends(requiere_sesion)):
+def panel(ses: Sesion = Depends(_requiere_alumno)):
     """Panel del portal (resumen.php): por vencer, atrasadas, hoy, pagos.
 
     Cache propio de 30 min (PANEL_TTL_MINUTES) porque la pagina es pesada.
@@ -283,40 +303,77 @@ def panel(ses: Sesion = Depends(requiere_sesion)):
 
 
 @app.get("/api/planificacion")
-def planificacion(ses: Sesion = Depends(requiere_sesion)):
+def planificacion(ses: Sesion = Depends(_requiere_alumno)):
     """Docente por materia y leccionario de temas (planificacion.php)."""
     lista = _manejar_error(ses.cliente.get_planificacion)
     return {"total": len(lista), "materias": lista}
 
 
 @app.get("/api/asistencia")
-def asistencia(ses: Sesion = Depends(requiere_sesion)):
+def asistencia(ses: Sesion = Depends(_requiere_alumno)):
     """Historial de faltas/atrasos del estudiante (del PDF del portal)."""
     return _manejar_error(ses.cliente.get_faltas)
 
 
+@app.get("/api/observaciones")
+def observaciones(ses: Sesion = Depends(_requiere_alumno)):
+    """Observaciones de comportamiento/disciplina del alumno."""
+    return _manejar_error(ses.cliente.get_observaciones)
+
+
 @app.get("/api/notas/detalle")
-def notas_detalle(ses: Sesion = Depends(requiere_sesion)):
+def notas_detalle(ses: Sesion = Depends(_requiere_alumno)):
     """Desglose oficial por periodo y materia, extraido de la libreta PDF."""
     return _manejar_error(ses.cliente.get_notas_detalladas)
 
 
+# ---------------------------------------------------------------------- #
+# Portal docente (perfil 'docente'; scrapers adaptativos)
+# ---------------------------------------------------------------------- #
+@app.get("/api/docentes/panel")
+def docentes_panel(ses: Sesion = Depends(_requiere_docente)):
+    """Modulos reales del portal docente (menu de su index)."""
+    return _manejar_error(ses.cliente.get_docentes_panel)
+
+
+@app.get("/api/docentes/horario")
+def docentes_horario(ses: Sesion = Depends(_requiere_docente)):
+    """Horario del docente si su portal expone la tabla estandar."""
+    return _manejar_error(ses.cliente.get_docentes_horario)
+
+
+@app.get("/api/docentes/agenda")
+def docentes_agenda(ses: Sesion = Depends(_requiere_docente)):
+    """Agenda/tareas del docente (tabla generica; refinable con acceso)."""
+    return _manejar_error(ses.cliente.get_docentes_agenda)
+
+
+@app.get("/api/docentes/mensajes")
+def docentes_mensajes(ses: Sesion = Depends(_requiere_docente)):
+    return _manejar_error(ses.cliente.get_docentes_mensajes)
+
+
+@app.get("/api/docentes/circulares")
+def docentes_circulares(ses: Sesion = Depends(_requiere_docente)):
+    return _manejar_error(ses.cliente.get_docentes_circulares)
+
+
 @app.get("/api/materiales")
-def materiales(ses: Sesion = Depends(requiere_sesion)):
+def materiales(ses: Sesion = Depends(_requiere_alumno)):
     """Materiales del aula virtual por clase (cache 60 min; solo lectura)."""
     lista = _manejar_error(ses.cliente.get_materiales)
     return {"total": len(lista), "materiales": lista}
 
 
 @app.get("/api/notas/libretas")
-def libretas(ses: Sesion = Depends(requiere_sesion)):
+def libretas(ses: Sesion = Depends(_requiere_alumno)):
     """Periodos evaluativos disponibles con su libreta oficial."""
     lista = _manejar_error(ses.cliente.get_libretas)
     return {"total": len(lista), "libretas": lista}
 
 
 @app.get("/api/notas/libreta/{peri}")
-def libreta_pdf(peri: int, ses: Sesion = Depends(requiere_sesion)):
+def libreta_pdf(peri: int, ses: Sesion = Depends(_requiere_alumno)):
     """Descarga la libreta oficial en PDF (proxied con la sesion)."""
     lista = _manejar_error(ses.cliente.get_libretas)
     encontrada = next(
@@ -359,7 +416,7 @@ _MIMES = {
 @app.get("/api/descargar")
 def descargar(url: str = Query(...),
               nombre: str | None = Query(default=None, max_length=200),
-              ses: Sesion = Depends(requiere_sesion)):
+              ses: Sesion = Depends(_requiere_alumno)):
     """Descarga un archivo de Educalinks con la sesion del usuario.
 
     El storage de Educalinks entrega nombres ofuscados (por eso antes los
@@ -394,7 +451,7 @@ def descargar(url: str = Query(...),
 # Calendario exportable (.ics)
 # ---------------------------------------------------------------------- #
 @app.get("/api/calendario.ics")
-def calendario_ics(ses: Sesion = Depends(requiere_sesion)):
+def calendario_ics(ses: Sesion = Depends(_requiere_alumno)):
     """iCalendar con todas las actividades; utilizable como suscripcion
     de calendario (Google Calendar / Apple) gracias a METHOD:PUBLISH."""
     eventos = _manejar_error(ses.cliente.get_agenda)
@@ -416,7 +473,7 @@ class MarcarLeidas(BaseModel):
 
 @app.get("/api/novedades")
 def novedades(no_leidas: bool = Query(default=False),
-              ses: Sesion = Depends(requiere_sesion)):
+              ses: Sesion = Depends(_requiere_alumno)):
     """Novedades detectadas; refresca los datos antes de comparar."""
     _datos_completos(ses)
     return ses.historial.listar_novedades(solo_no_leidas=no_leidas)
@@ -424,7 +481,7 @@ def novedades(no_leidas: bool = Query(default=False),
 
 @app.post("/api/novedades/leer")
 def marcar_leidas(payload: MarcarLeidas,
-                  ses: Sesion = Depends(requiere_sesion)):
+                  ses: Sesion = Depends(_requiere_alumno)):
     ses.historial.marcar_leidas(payload.ids)
     return {"ok": True}
 
@@ -433,7 +490,7 @@ def marcar_leidas(payload: MarcarLeidas,
 # Utilitarios
 # ---------------------------------------------------------------------- #
 @app.post("/api/refresh")
-def refresh(ses: Sesion = Depends(requiere_sesion)):
+def refresh(ses: Sesion = Depends(_requiere_alumno)):
     """Limpia el cache del usuario y obliga a re-consultar Educalinks."""
     ses.cliente.clear_cache()
     agenda_data, horario_data, mensajes_data, circulares_data, _ = \

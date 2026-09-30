@@ -30,17 +30,18 @@ class EducalinksClient:
     def __init__(self, user=None, password=None, tipo=None):
         self.user = user or os.getenv("EDUCA_USER", "")
         self.password = password or os.getenv("EDUCA_PASS", "")
-        self.tipo = tipo or os.getenv("EDUCA_TIPO", "1")  # 1 = Alumnos
+        self.tipo = tipo or os.getenv("EDUCA_TIPO", "1")  # 1=Alumnos, 3=Docentes
         self.cache_ttl = int(os.getenv("CACHE_TTL_MINUTES", "15")) * 60
         self.session = requests.Session()
         self.session.headers.update({
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
         })
         self._logged_in = False
+        self.perfil_portal = None   # 'alumno' o 'docente' tras login
         self._cache = {}  # clave -> (timestamp, data)
 
     # ------------------------------------------------------------------ #
-    # Autenticacion
+    # Autenticacion (alumnos=1 / docentes=3, mismo portal)
     # ------------------------------------------------------------------ #
     def login(self):
         if not self.user or not self.password:
@@ -65,7 +66,16 @@ class EducalinksClient:
                 "El portal de Educalinks no responde (mantenimiento o sin Internet)"
             )
         location = resp.headers.get("Location", "")
-        if resp.status_code != 302 or "alumnos" not in location:
+        if resp.status_code != 302:
+            self._logged_in = False
+            raise EducalinksError(
+                "Login rechazado por Educalinks (verifica usuario/clave/perfil)"
+            )
+        if "alumnos" in location:
+            self.perfil_portal = "alumno"
+        elif "docentes" in location:
+            self.perfil_portal = "docente"
+        else:
             self._logged_in = False
             raise EducalinksError(
                 "Login rechazado por Educalinks (verifica usuario/clave/perfil)"
@@ -168,6 +178,10 @@ class EducalinksClient:
 
     def _fetch_horario(self):
         html = self._get("/alumnos/horario.php")
+        return self._parse_horario_html(html)
+
+    @staticmethod
+    def _parse_horario_html(html):
         soup = BeautifulSoup(html, "lxml")
 
         tabla = None
@@ -222,30 +236,8 @@ class EducalinksClient:
 
     def _fetch_mensajes(self):
         html = self._get("/alumnos/mensajes")
-        soup = BeautifulSoup(html, "lxml")
-        mensajes = []
-        vistos = set()
-        for enlace in soup.select('a[href*="mens_codi="]'):
-            m = re.search(r"mens_codi=(\d+)", enlace.get("href", ""))
-            if not m or m.group(1) in vistos:
-                continue
-            vistos.add(m.group(1))
-            item = enlace.find_parent("li")
-            remitente, fecha_txt = "", ""
-            if item:
-                span = item.select_one("span.uk-text-muted")
-                if span:
-                    remitente = span.get_text(strip=True)
-                small = item.find("small")
-                if small:
-                    fecha_txt = small.get_text(strip=True)
-            mensajes.append({
-                "id": m.group(1),
-                "asunto": enlace.get_text(strip=True),
-                "remitente": remitente,
-                "fecha": self._parse_fecha_slash(fecha_txt),
-            })
-        return mensajes
+        mensajes = self._parse_mensajes_html(html)
+        return mensajes or []
 
     @staticmethod
     def _parse_fecha_slash(texto):
@@ -270,29 +262,8 @@ class EducalinksClient:
     def _fetch_circulares(self):
         html = self._get("/alumnos/circulares.php")
         soup = BeautifulSoup(html, "lxml")
-        circulares = []
-        for card in soup.select("div.md-card-horizontal"):
-            enlace = card.select_one("h3 a")
-            if not enlace:
-                continue
-            descripcion, fecha = "", None
-            for li in card.select("ul.md-list li"):
-                spans = li.find_all("span")
-                if len(spans) < 2:
-                    continue
-                rotulo = spans[0].get_text(strip=True).lower()
-                valor = spans[-1].get_text(strip=True)
-                if "inform" in rotulo:
-                    descripcion = valor
-                elif "fecha" in rotulo:
-                    fecha = self._parse_fecha_texto(valor)
-            circulares.append({
-                "titulo": enlace.get_text(strip=True),
-                "descripcion": descripcion,
-                "fecha": fecha,
-                "url": enlace.get("href", ""),
-            })
-        return circulares
+        circulares = self._parse_circulares_html(soup)
+        return circulares or []
 
     def _parse_fecha_texto(self, texto):
         """Convierte '17 Jul 2026' a '2026-07-17'; None si no aplica."""
@@ -687,6 +658,262 @@ class EducalinksClient:
                     "materias": materias,
                 })
         return {"disponible": bool(periodos), "periodos": periodos}
+
+    # ------------------------------------------------------------------ #
+    # Portal docente (adaptativo: el menu del profe define los modulos)
+    # ------------------------------------------------------------------ #
+    def _doc_menu(self):
+        """Menu del portal docente leido de su index: [{nombre, ruta}]."""
+        ts, data = self._cache.get("doc_menu", (0, None))
+        if data is not None and (time.time() - ts) < self.cache_ttl:
+            return data
+        html = self._get("/docentes/index.php")
+        soup = BeautifulSoup(html, "lxml")
+        modulos, vistos = [], set()
+        for a in soup.select("a[href*='.php']"):
+            href = a.get("href", "").strip()
+            nombre = a.get_text(" ", strip=True)
+            if (not href or href.startswith("#") or "salir" in href
+                    or "admin_pass" in href or not nombre):
+                continue
+            if href in vistos:
+                continue
+            vistos.add(href)
+            modulos.append({"nombre": nombre, "ruta": href})
+        self._cache["doc_menu"] = (time.time(), modulos)
+        return modulos
+
+    @staticmethod
+    def _doc_abs(ruta):
+        """Convierte una ruta del menu docente en ruta absoluta del portal."""
+        ruta = (ruta or "").strip()
+        if ruta.startswith("http"):
+            return ruta
+        if ruta.startswith("../"):
+            return "/" + ruta[3:]
+        if ruta.startswith("./"):
+            ruta = ruta[2:]
+        if ruta.startswith("/"):
+            return ruta
+        return "/docentes/" + ruta
+
+    def _doc_ruta(self, patron):
+        """Devuelve la ruta del menu docente cuyo nombre coincida."""
+        try:
+            for m in self._doc_menu():
+                if re.search(patron, m["nombre"], re.I):
+                    return m["ruta"]
+        except EducalinksError:
+            pass
+        return None
+
+    def get_docentes_panel(self):
+        """Panel docente: modulos reales de su portal (descubrimiento)."""
+        return self._cached("doc_panel", self._fetch_docentes_panel)
+
+    def _fetch_docentes_panel(self):
+        try:
+            return {"disponible": True, "modulos": self._doc_menu()}
+        except EducalinksError as exc:
+            return {"disponible": False, "razon": str(exc), "modulos": []}
+
+    def get_docentes_horario(self):
+        """Horario del docente: parser de la tabla LUNES-DOMINGO sobre la
+        ruta 'Horarios' de su propio menu (fallback: horario.php)."""
+        return self._cached("doc_horario", self._fetch_docentes_horario)
+
+    def _fetch_docentes_horario(self):
+        candidatas = []
+        r = self._doc_ruta(r"horario")
+        if r:
+            candidatas.append(r)
+        candidatas.append("/docentes/horario.php")
+        for ruta in candidatas:
+            try:
+                html = self._get(self._doc_abs(ruta))
+                bloques = self._parse_horario_html(html)
+                if bloques:
+                    return {"disponible": True, "ruta": ruta, "bloques": bloques}
+            except (EducalinksError, Exception):
+                continue
+        return {"disponible": False,
+                "razon": "No se encontró la tabla de horario en el portal docente",
+                "bloques": []}
+
+    def get_docentes_mensajes(self):
+        return self._cached("doc_mensajes", self._fetch_docentes_mensajes)
+
+    def _fetch_docentes_mensajes(self):
+        candidatas = []
+        r = self._doc_ruta(r"mensaje|comunicad")
+        if r:
+            candidatas.append(r)
+        candidatas.append("/docentes/mensajes.php")
+        for ruta in candidatas:
+            try:
+                html = self._get(self._doc_abs(ruta))
+                mensajes = self._parse_mensajes_html(html)
+                if mensajes is not None:
+                    return {"disponible": True, "ruta": ruta, "mensajes": mensajes}
+            except (EducalinksError, Exception):
+                continue
+        return {"disponible": False, "razon": "Mensajes no detectados",
+                "mensajes": []}
+
+    def _parse_mensajes_html(self, html):
+        """Parser compartido de mensajes (alumnos y docentes comparten UI)."""
+        soup = BeautifulSoup(html, "lxml")
+        enlaces = soup.select('a[href*="mens_codi="]')
+        if not enlaces:
+            return None
+        mensajes, vistos = [], set()
+        for enlace in enlaces:
+            m = re.search(r"mens_codi=(\d+)", enlace.get("href", ""))
+            if not m or m.group(1) in vistos:
+                continue
+            vistos.add(m.group(1))
+            item = enlace.find_parent("li")
+            remitente, fecha_txt = "", ""
+            if item:
+                span = item.select_one("span.uk-text-muted")
+                if span:
+                    remitente = span.get_text(strip=True)
+                small = item.find("small")
+                if small:
+                    fecha_txt = small.get_text(strip=True)
+            mensajes.append({
+                "id": m.group(1),
+                "asunto": enlace.get_text(strip=True),
+                "remitente": remitente,
+                "fecha": self._parse_fecha_slash(fecha_txt),
+            })
+        return mensajes
+
+    def get_docentes_circulares(self):
+        return self._cached("doc_circulares", self._fetch_docentes_circulares)
+
+    def _fetch_docentes_circulares(self):
+        candidatas = []
+        r = self._doc_ruta(r"circular")
+        if r:
+            candidatas.append(r)
+        candidatas.append("/docentes/circulares.php")
+        for ruta in candidatas:
+            try:
+                html = self._get(self._doc_abs(ruta))
+                soup = BeautifulSoup(html, "lxml")
+                circulares = self._parse_circulares_html(soup)
+                if circulares is not None:
+                    return {"disponible": True, "ruta": ruta, "circulares": circulares}
+            except (EducalinksError, Exception):
+                continue
+        return {"disponible": False, "razon": "Circulares no detectadas",
+                "circulares": []}
+
+    @staticmethod
+    def _parse_circulares_html(soup):
+        cards = soup.select("div.md-card-horizontal")
+        if not cards:
+            return None
+        meses = EducalinksClient._MESES_ES
+        circulares = []
+        for card in cards:
+            enlace = card.select_one("h3 a")
+            if not enlace:
+                continue
+            descripcion, fecha = "", None
+            for li in card.select("ul.md-list li"):
+                spans = li.find_all("span")
+                if len(spans) < 2:
+                    continue
+                rotulo = spans[0].get_text(strip=True).lower()
+                valor = spans[-1].get_text(strip=True)
+                if "inform" in rotulo:
+                    descripcion = valor
+                elif "fecha" in rotulo:
+                    m = re.search(r"(\d{1,2})\s+(\w+)\s+(\d{4})", valor)
+                    if m:
+                        mes = meses.get(m.group(2).lower()[:3])
+                        if mes:
+                            fecha = f"{m.group(3)}-{mes:02d}-{int(m.group(1)):02d}"
+            circulares.append({
+                "titulo": enlace.get_text(strip=True),
+                "descripcion": descripcion,
+                "fecha": fecha,
+                "url": enlace.get("href", ""),
+            })
+        return circulares
+
+    def get_docentes_agenda(self):
+        """Agenda del docente: tabla generica del modulo 'Tareas/Agenda'.
+
+        Sin credenciales de prueba no se conoce el DOM exacto: se extrae
+        la primera tabla sustancial (columnas + filas crudas) para que la
+        UI muestre lo que exista y refinemos cuando haya acceso real.
+        """
+        return self._cached("doc_agenda", self._fetch_docentes_agenda)
+
+    def _fetch_docentes_agenda(self):
+        candidatas = []
+        for patron in (r"tarea", r"agenda"):
+            r = self._doc_ruta(patron)
+            if r and r not in candidatas:
+                candidatas.append(r)
+        candidatas.append("/docentes/agenda.php")
+        for ruta in candidatas:
+            try:
+                html = self._get(self._doc_abs(ruta))
+                tabla = self._primera_tabla_sustancial(html)
+                if tabla:
+                    return {"disponible": True, "ruta": ruta, **tabla}
+            except (EducalinksError, Exception):
+                continue
+        return {"disponible": False,
+                "razon": "Agenda no detectada (pendiente mapeo con credenciales docentes)",
+                "columnas": [], "filas": []}
+
+    @staticmethod
+    def _primera_tabla_sustancial(html):
+        soup = BeautifulSoup(html, "lxml")
+        for t in soup.find_all("table"):
+            columnas = [th.get_text(" ", strip=True)
+                       for th in t.find_all("th") if th.get_text(strip=True)]
+            filas = []
+            for tr in t.select("tbody tr"):
+                celdas = [c.get_text(" ", strip=True) for c in tr.find_all("td")]
+                celdas = [c for c in celdas if c != ""]
+                if len(celdas) >= 2:
+                    filas.append(celdas)
+            if filas and (columnas or len(filas) >= 3):
+                return {"columnas": columnas, "filas": filas[:200]}
+        return None
+
+    # ------------------------------------------------------------------ #
+    # Observaciones de comportamiento (alumnos, tabla de inspeccion)
+    # ------------------------------------------------------------------ #
+    def get_observaciones(self):
+        """Observaciones/disciplina del alumno (tabla de inspeccion)."""
+        return self._cached("observaciones", self._fetch_observaciones)
+
+    def _fetch_observaciones(self):
+        html = self._get("/alumnos/notas.php")
+        soup = BeautifulSoup(html, "lxml")
+        tabla = soup.find("table", id="tbl_alum_insp")
+        if not tabla:
+            return {"disponible": False, "observaciones": []}
+        obs = []
+        for tr in tabla.select("tbody tr"):
+            celdas = [c.get_text(" ", strip=True) for c in tr.find_all("td")]
+            celdas = [c for c in celdas if c != ""]
+            if len(celdas) >= 4:
+                obs.append({
+                    "periodo": celdas[0],
+                    "fecha": celdas[1],
+                    "tipo": celdas[2],
+                    "detalle": celdas[3],
+                    "puntos": celdas[4] if len(celdas) > 4 else "",
+                })
+        return {"disponible": True, "observaciones": obs}
 
     # ------------------------------------------------------------------ #
     # Aula virtual: catalogo de clases y sus materiales

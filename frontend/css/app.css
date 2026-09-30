@@ -105,6 +105,8 @@ html.oscuro .login-error{background:#45201f;color:#fca5a5;border-color:#7f4646}
 .btn-l{width:100%;justify-content:center;padding:.85rem;font-size:.97rem;border-radius:var(--radio);margin-top:.35rem}
 .btn-l:disabled{opacity:.6;cursor:wait}
 .login-nota{text-align:center;font-size:.74rem;color:var(--texto2);margin-top:1.05rem;line-height:1.45}
+.seg-perfil{display:flex;width:100%;margin:0 0 1rem;background:var(--bg-subtle);border-radius:2rem;padding:.2rem;border:1px solid var(--borde)}
+.seg-perfil .seg-btn{flex:1;justify-content:center;padding:.55rem .5rem;font-size:.88rem}
 
 /* ---------- HEADER (glass EducaFix) ---------- */
 header.top{

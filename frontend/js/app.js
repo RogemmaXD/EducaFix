@@ -125,7 +125,8 @@
     histMes: 0,
     activo: false,
     fragil: false,
-    ultCarga: 0
+    ultCarga: 0,
+    perfil: 'alumno'
   };
 
   var timers = { vivo: null, rec: null, nov: null, pomo: null };
@@ -513,6 +514,7 @@
   }
 
   function cambiarTab(tab) {
+    if (state.perfil === 'docente' && tab === 'inicio') tab = 'dinicio';
     if (tab === 'calendario') {         /* compatibilidad: calendario vive en Semana→Mes */
       cfg.modoSem = 'mes'; guardarCfg();
       tab = 'semana';
@@ -528,7 +530,13 @@
   function renderVistaActual() {
     if (!state.activo) return;
     try {
-      if (state.vista === 'inicio') renderInicio();
+      if (state.perfil === 'docente') {
+        if (state.vista === 'inicio' || state.vista === 'dinicio') renderDInicio();
+        else if (state.vista === 'dclases') renderDClases();
+        else if (state.vista === 'dhorario') renderDHorario();
+        else if (state.vista === 'comunicados') renderComunicados();
+        else if (state.vista === 'mas') renderDMas();
+      } else if (state.vista === 'inicio') renderInicio();
       else if (state.vista === 'semana') renderSemana();
       else if (state.vista === 'materias') renderMaterias();
       else if (state.vista === 'pendientes') renderPendientes();
@@ -698,7 +706,13 @@
     var f = $('#franja');
     if (state.fragil) return;
     if (state.datos) {
-      var dias = state.datos.agenda.length + PT.length;
+      if (state.perfil === 'docente') {
+        var mods = ((state.datos.panel || {}).modulos || []).length;
+        f.innerHTML = '✓ Portal docente sincronizado · ' + mods + ' módulos · 🕐 ' + edadSync();
+        f.className = 'franja ok';
+        return;
+      }
+      var dias = (state.datos.agenda || []).length + PT.length;
       var pend = 0;
       for (var i = 0; i < state.datos.agenda.length; i++) {
         if (esCal(state.datos.agenda[i].calificacion) == null) pend++;
@@ -2742,7 +2756,10 @@
         guardarCfg(); aplicarVisuales(); return;
       }
       if (ev.key >= '1' && ev.key <= '6') {
-        var tabs = ['inicio', 'semana', 'materias', 'pendientes', 'rendimiento', 'mas'];
+        var tabs = state.perfil === 'docente'
+          ? ['dinicio', 'dclases', 'dhorario', 'comunicados', 'mas']
+          : ['inicio', 'semana', 'materias', 'pendientes', 'rendimiento', 'mas'];
+        if (state.perfil === 'docente' && +ev.key > 5) return;
         cambiarTab(tabs[+ev.key - 1]);
       }
     });
@@ -2787,23 +2804,31 @@
   }
 
   /* ================= VIDA / CONEXION ================= */
-  function iniciar() {
+  function iniciar(perfil) {
     if (state.activo) return;
     state.activo = true;
+    state.perfil = perfil || window.__efPerfil || 'alumno';
+    document.documentElement.setAttribute('data-perfil', state.perfil);
     $('#app').classList.remove('oculto');
     $('#pantalla-login').classList.add('oculto');
     aplicarVisuales();
+    if (state.perfil === 'docente') construirTabsDocente();
     autoActivas();
     /* atajos de la PWA (manifest shortcuts via #hash) */
     var hash = (location.hash || '').replace('#', '');
     if (['pendientes', 'evaluaciones', 'estudio', 'inicio', 'semana', 'materias', 'rendimiento', 'mas'].indexOf(hash) >= 0) {
       state.vista = hash;
     }
+    if (state.perfil === 'docente' && state.vista === 'inicio') state.vista = 'dinicio';
     timers.vivo = setInterval(actualizarVivoWrap, 1000);
     timers.rec = setInterval(tickRec, 30000);
     timers.nov = setInterval(function () { cargarNovedades(true); }, 300000);
     cargarNovedades(true);
-    cargar({ silencioso: false });
+    if (state.perfil === 'docente') {
+      cargarDocente({ silencioso: false });
+    } else {
+      cargar({ silencioso: false });
+    }
     setTimeout(pedirPermisoAuto, 4000);
     setTimeout(function () { if (!MATER) cargarMateriales().then(renderVistaActual); }, 3500);
     setTimeout(onboarding, 300);
@@ -2812,6 +2837,192 @@
       var fab = document.getElementById('fab-top');
       if (fab) fab.classList.toggle('visible', window.scrollY > 500);
     }, { passive: true });
+  }
+
+  /* ------------------ MODO DOCENTE ------------------ */
+  function construirTabsDocente() {
+    var tabs = [
+      ['dinicio', '🏠 Inicio'],
+      ['dclases', '🗂️ Clases'],
+      ['dhorario', '🕒 Horario'],
+      ['comunicados', '📣 Comunicados'],
+      ['mas', '⋯ Más']
+    ];
+    document.querySelector('nav.tabs').innerHTML = tabs.map(function (t, i) {
+      return '<button class="tab' + (i === 0 ? ' activa' : '') + '" data-tab="' + t[0] + '">' + t[1] + '</button>';
+    }).join('');
+    document.querySelector('nav.bottom-nav').innerHTML = tabs.map(function (t, i) {
+      return '<button class="bnav-btn' + (i === 0 ? ' activa' : '') + '" data-tab="' + t[0] + '"><span class="bi">' + t[1].split(' ')[0] + '</span>' + t[1].split(' ')[1] + '</button>';
+    }).join('');
+    state.vista = 'dinicio';
+  }
+
+  function cargarDocente(o) {
+    o = o || {};
+    var f = $('#franja');
+    if (f) f.innerHTML = '<span class="spi"></span> Cargando portal docente…';
+    var cache = leerLS('doc_cache', null);
+    var ok = {};
+    function unoDoc(nombre, url) {
+      return apiFetch(url, { headers: { 'Accept': 'application/json' } })
+        .then(function (r) { if (r.status === 401) { var e = new Error('sesion'); e.status = 401; throw e; } return r.json(); })
+        .then(function (j) { ok[nombre] = j; })
+        .catch(function (err) {
+          if (err.status === 401) throw err;
+          if (cache && cache[nombre] != null) ok[nombre] = cache[nombre];
+        });
+    }
+    Promise.all([
+      unoDoc('panel', 'api/docentes/panel'),
+      unoDoc('dhorario', 'api/docentes/horario'),
+      unoDoc('dagenda', 'api/docentes/agenda'),
+      unoDoc('dmensajes', 'api/docentes/mensajes'),
+      unoDoc('dcirculares', 'api/docentes/circulares')
+    ]).then(function () {
+      state.datos = {
+        doc: true,
+        panel: ok.panel || null,
+        dhorario: ok.dhorario || null,
+        dagenda: ok.dagenda || null,
+        dmensajes: ok.dmensajes || null,
+        dcirculares: ok.dcirculares || null,
+        horario: (ok.dhorario && ok.dhorario.bloques) || [],
+        mensajes: (ok.dmensajes && ok.dmensajes.mensajes) || [],
+        circulares: (ok.dcirculares && ok.dcirculares.circulares) || [],
+        agenda: [],
+        resumen: { general: {}, materias: [] },
+        faltas: null,
+        mensajesOK: !!(ok.dmensajes && ok.dmensajes.disponible)
+      };
+      state.ultCarga = Date.now();
+      state.fragil = !ok.panel;
+      guardarLS('doc_cache', state.datos);
+      var fr = $('#franja');
+      if (fr) {
+        if (ok.panel) { fr.classList.remove('err'); fr.innerHTML = '✓ Portal docente sincronizado'; }
+        else { fr.classList.add('err'); fr.innerHTML = '⚠ Algunos módulos del portal docente no se pudieron leer'; }
+      }
+      if (state.activo) { autoActivas(); renderVistaActual(); }
+    }).catch(function (err) {
+      if (err.status === 401) {
+        scheduleRetry(false);
+        window.Login.mostrar('Tu sesión venció. Ingresa de nuevo.');
+        return;
+      }
+      if (cache) { state.datos = cache; state.ultCarga = 0; renderVistaActual(); }
+    });
+  }
+
+  function renderDInicio() {
+    if (!state.datos) { renderEn('contenido-dinicio', skeleton()); return; }
+    actualizarFranja();
+    var panel = state.datos.panel || {};
+    var mods = panel.modulos || [];
+    var c = claseActual();
+    var hoy = new Date();
+    var hHora = hoy.getHours();
+    var saludoProfe = hHora < 6 ? '¡Buenas noches, profe!' : hHora < 12 ? '¡Buenos días, profe!' : hHora < 19 ? '¡Buenas tardes, profe!' : '¡Buenas noches, profe!';
+    var html =
+      '<div class="tarjeta saludo saludo-mini"><div class="saludo-fila"><div>' +
+      '<h2 style="font-size:1.12rem">' + esc(saludoProfe) + '</h2>' +
+      '<div class="fecha" style="font-size:.72rem">' + fmtDia(hoy) + '</div></div>' +
+      '<div style="flex:1"></div>' +
+      '<button class="btn ghost mini" data-accion="refresh-manual" title="Actualizar">↻</button></div>' +
+      '<span class="chip" style="display:inline-block;margin-top:.4rem;background:var(--acento-suave);color:var(--text-brand);font-weight:700;font-size:.68rem">🧪 Modo docente experimental</span></div>';
+
+    if (c.hoy) {
+      html += '<div class="prio-cab ahora"><span class="punto" aria-hidden="true"></span> CLASES DE HOY <span class="n">' + c.hoy.length + '</span></div>' +
+        '<div class="tarjeta" style="padding:.55rem .8rem"><div id="clase-ahora">' + bloqueClaseAhora(c) + '</div></div>';
+    } else if (state.datos.horario.length) {
+      html += '<div class="hueco-libre" role="status">☕ Hoy no tienes clases registradas en el portal</div>';
+    }
+
+    if (panel.disponible === false) {
+      html += '<div class="critica-card" role="status">⚠️ No se pudo leer el menú del portal docente: ' + esc(panel.razon || 'razón desconocida') + '. Verifica que tu cuenta tenga acceso al perfil Docentes.</div>';
+    } else if (mods.length) {
+      html += '<div class="prio-cab proximo"><span class="punto" aria-hidden="true"></span> TU PORTAL <span class="n">' + mods.length + ' módulos</span></div>' +
+        '<div class="menu-grupo">' + mods.map(function (m) {
+          return '<span class="menu-row" style="cursor:default">' +
+            '<span class="mr-ico" aria-hidden="true">📘</span>' +
+            '<span class="mr-main"><span class="mr-tit">' + esc(m.nombre) + '</span>' +
+            '<span class="mr-sub">' + esc(m.ruta) + '</span></span></span>';
+        }).join('') + '</div>';
+    }
+
+    var mens = state.datos.mensajes || [];
+    if (mens.length) {
+      html += '<div class="prio-cab proximo"><span class="punto" aria-hidden="true"></span> MENSAJES RECIENTES <span class="n">' + mens.length + '</span></div>' +
+        '<div class="tarjeta" style="padding:.6rem .8rem">' + mens.slice(0, 4).map(function (m) {
+          return '<div class="fila-per"><span style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(m.asunto) + '</span><span class="sub">' + esc(m.remitente || '') + '</span></div>';
+        }).join('') +
+        '<button class="btn ghost mini" style="margin-top:.4rem" data-accion="ir:comunicados">Ver todos →</button></div>';
+    }
+    renderEn('contenido-dinicio', html);
+  }
+
+  function renderDClases() {
+    if (!state.datos) { renderEn('contenido-dclases', skeleton()); return; }
+    var ag = state.datos.dagenda || {};
+    var html = '<div class="critica-card" role="status">🧪 La agenda del portal docente se muestra tal como la expone Educalinks. Con acceso de un docente real afinaremos las columnas y acciones.</div>';
+    if (ag.disponible && (ag.filas || []).length) {
+      html += '<div class="contenedor-tabla"><table class="tabla-notas"><thead><tr>' +
+        (ag.columnas || []).map(function (c) { return '<th>' + esc(c) + '</th>'; }).join('') +
+        '</tr></thead><tbody>' +
+        ag.filas.map(function (f) {
+          return '<tr>' + f.map(function (v) { return '<td>' + esc(truncNombre(v, 60)) + '</td>'; }).join('') + '</tr>';
+        }).join('') + '</tbody></table></div>';
+    } else {
+      html += '<div class="vacio">📂 No se detectó la tabla de tareas/agenda del portal docente.<br><small>' + esc(ag.razon || 'El módulo aún no está mapeado; al conectar credenciales de docente se afinará automáticamente.') + '</small></div>';
+    }
+    renderEn('contenido-dclases', html);
+  }
+
+  function renderDHorario() {
+    if (!state.datos) { renderEn('contenido-dhorario', skeleton()); return; }
+    var h = state.datos.dhorario || {};
+    if (h.disponible && (h.bloques || []).length) {
+      renderEn('contenido-dhorario',
+        '<div style="text-align:right;margin-bottom:.4rem"><button class="btn ghost mini" data-accion="print-semana">🖨️ Imprimir horario</button></div>' +
+        tablaHorarioSemana());
+    } else {
+      renderEn('contenido-dhorario', '<div class="vacio">🕒 El portal docente no expone la tabla de horario.<br><small>' + esc(h.razon || 'Pendiente de mapeo.') + '</small></div>');
+    }
+  }
+
+  function renderDMas() {
+    if (!state.datos) { renderEn('contenido-mas', skeleton()); return; }
+    var panel = state.datos.panel || {};
+    var mods = panel.modulos || [];
+    var dOK = [];
+    [['dhorario', '🕒 Horario'], ['dagenda', '🗂️ Agenda/tareas'], ['dmensajes', '✉️ Mensajes'], ['dcirculares', '📄 Circulares']].forEach(function (par) {
+      var d = state.datos[par[0]] || {};
+      dOK.push({ ico: par[1].split(' ')[0], n: par[1].split(' ')[1], ok: d.disponible !== false });
+    });
+    function menuRowDoc(ico, tit, sub, accion) {
+      return '<button class="menu-row" data-accion="' + accion + '">' +
+        '<span class="mr-ico" aria-hidden="true">' + ico + '</span>' +
+        '<span class="mr-main"><span class="mr-tit">' + tit + '</span>' +
+        '<span class="mr-sub">' + sub + '</span></span>' +
+        '<span class="mr-chevron" aria-hidden="true">›</span></button>';
+    }
+    var html = '<div class="menu-sec">Estado del modo docente</div><div class="menu-grupo">' +
+      dOK.map(function (m) {
+        return '<span class="menu-row" style="cursor:default">' +
+          '<span class="mr-ico" aria-hidden="true">' + m.ico + '</span>' +
+          '<span class="mr-main"><span class="mr-tit">' + m.n + '</span></span>' +
+          (m.ok ? '<span class="badge nota verde">✓ detectado</span>' : '<span class="badge estado">por mapear</span>') + '</span>';
+      }).join('') + '</div>' +
+      '<div class="menu-sec">Atajos</div><div class="menu-grupo">' +
+      menuRowDoc('📣', 'Mensajes y circulares', 'comunicados del colegio', 'ir:comunicados') +
+      menuRowDoc('⚙️', 'Ajustes', 'tema, colores y metas', 'ajustes') +
+      menuRowDoc('↻', 'Sincronizar portal', 'volver a leer Educalinks', 'refresh-manual') +
+      menuRowDoc('⏻', 'Cerrar sesión', '', 'salir') +
+      '</div>';
+    if (mods.length) {
+      html += '<div class="menu-sec">Rutas detectadas (para desarrollo)</div>' +
+        '<p class="sub" style="font-size:.68rem;word-break:break-all">' + mods.map(function (m) { return esc(m.nombre + ' → ' + m.ruta); }).join(' · ') + '</p>';
+    }
+    renderEn('contenido-mas', html);
   }
   function pedirPermisoAuto() {
     if (!Object.keys(REC).length || !('Notification' in window)) return;
@@ -2976,7 +3187,7 @@
 
   function agendaTodo() {
     if (!state.datos) return [];
-    return state.datos.agenda.concat(PT.map(personaEvento));
+    return (state.datos.agenda || []).concat(PT.map(personaEvento));
   }
 
   function normalizar(s) { return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim(); }
@@ -4459,10 +4670,12 @@
   ligarPull();
 
   apiFetch('api/me', { headers: { 'Accept': 'application/json' } })
-    .then(function (r) { return r.ok; })
-    .then(function (ok) {
-      if (ok) iniciar();
-      else window.Login.mostrar('Tu sesión venció. Ingresa de nuevo.');
+    .then(function (r) {
+      if (!r.ok) throw new Error('401');
+      return r.json();
+    })
+    .then(function (me) {
+      iniciar(me && me.perfil);
     })
     .catch(function () { window.Login.mostrar(); });
 })();

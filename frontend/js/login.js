@@ -4,6 +4,25 @@
 
   var LS_RECORDADO = 'agenda_usuario';
   var API = window.API_BASE || '';   /* URL del backend; ver js/api-config.js */
+  var perfil = 'alumno';             /* 'alumno' | 'docente' */
+
+  /* selector de perfil del login */
+  document.querySelectorAll('[data-perfil-btn]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      perfil = b.dataset.perfilBtn;
+      try { localStorage.setItem('educafix_perfil', perfil); } catch (e) {}
+      document.querySelectorAll('[data-perfil-btn]').forEach(function (x) {
+        x.classList.toggle('activa', x.dataset.perfilBtn === perfil);
+        x.setAttribute('aria-checked', x.dataset.perfilBtn === perfil ? 'true' : 'false');
+      });
+      var invitado = document.getElementById('btn-invitado');
+      if (invitado) invitado.classList.toggle('oculto', perfil === 'docente');
+    });
+  });
+  try {
+    var pref = localStorage.getItem('educafix_perfil');
+    if (pref === 'docente') document.getElementById('perfil-docente').click();
+  } catch (e) {}
 
   var el = {
     pantalla: document.getElementById('pantalla-login'),
@@ -71,7 +90,7 @@
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
-      body: JSON.stringify({ usuario: usuario, clave: clave, recordar: el.recordar.checked })
+      body: JSON.stringify({ usuario: usuario, clave: clave, recordar: el.recordar.checked, perfil: perfil })
     })
       .then(function (r) {
         if (r.ok) return r.json();
@@ -86,6 +105,7 @@
         else localStorage.removeItem(LS_RECORDADO);
         el.pantalla.classList.add('oculto');
         el.clave.value = '';
+        window.__efPerfil = perfil;
         window.App.iniciar();
       })
       .catch(function (err) {
