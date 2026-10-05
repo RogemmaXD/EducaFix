@@ -24,6 +24,7 @@ from pydantic import BaseModel
 from auth import Sesion, auth, requiere_sesion
 from scraper import (EducalinksError, calcular_resumen, filtrar_por_semana,
                      generar_ics)
+from snapshots import snapshots
 
 app = FastAPI(title="API EducaFix", version="7.0.0")
 
@@ -197,6 +198,69 @@ def login_invitado(response: Response):
     return {"ok": True, "usuario": ses.usuario}
 
 
+@app.get("/api/status")
+def estado_educalinks():
+    """Estado de Educalinks (publico, no requiere sesion).
+
+    Hace un ping ligero al portal (solo HEAD del login) y reporta si
+    esta arriba, lento o caido. Cacheado 2 min para no estresar el portal.
+    """
+    ahora = time.time()
+    cacheado = getattr(estado_educalinks, "_cache", None)
+    if cacheado and ahora - cacheado["ts"] < 120:
+        return cacheado["data"]
+
+    from scraper import BASE_URL
+    import requests as req
+    inicio = time.time()
+    try:
+        r = req.head(f"{BASE_URL}/index.php", timeout=8,
+                     allow_redirects=False)
+        latencia = round((time.time() - inicio) * 1000)
+        estado = "slow" if latencia > 3000 else "up"
+        data = {"educalinks": estado, "latency_ms": latencia,
+                "checked_at": ahora}
+    except Exception:
+        data = {"educalinks": "down", "latency_ms": None,
+                "checked_at": ahora}
+    estado_educalinks._cache = {"ts": ahora, "data": data}
+    return data
+
+
+def _con_respaldo(ses: Sesion, clave: str, fetcher):
+    """Intenta fetcher(); si Educalinks cae, sirve el snapshot persistido.
+
+    Devuelve (datos, es_snapshot, ts_snapshot). Los endpoints usan esto
+    para añadir la cabecera X-Snapshot cuando sirven datos guardados.
+    """
+    try:
+        data = fetcher()
+        snapshots.guardar(ses.usuario, ses.perfil, clave, data)
+        return data, False, None
+    except EducalinksError:
+        snap = snapshots.cargar(ses.usuario, ses.perfil, clave)
+        if snap:
+            return snap[0], True, snap[1]
+        raise
+
+
+@app.get("/api/snapshots/estado")
+def snapshots_estado(ses: Sesion = Depends(requiere_sesion)):
+    """Qué snapshots persistentes existen para este usuario y su edad."""
+    claves = ["agenda", "horario", "mensajes", "circulares", "resumen",
+              "panel", "planificacion", "asistencia", "observaciones",
+              "notas_detalle"]
+    resultado = []
+    for c in claves:
+        edad = snapshots.edad(ses.usuario, ses.perfil, c)
+        resultado.append({
+            "clave": c,
+            "disponible": edad is not None,
+            "edad_segundos": round(edad) if edad else None,
+        })
+    return {"snapshots": resultado}
+
+
 @app.get("/api/me")
 def me(ses: Sesion = Depends(requiere_sesion)):
     return {"usuario": ses.usuario, "perfil": ses.perfil}
@@ -234,6 +298,7 @@ def config():
 # ---------------------------------------------------------------------- #
 @app.get("/api/agenda")
 def agenda(
+    response: Response,
     ses: Sesion = Depends(_requiere_alumno),
     semana: date | None = Query(
         default=None,
@@ -242,7 +307,13 @@ def agenda(
     todas: bool = Query(default=False, description="Devuelve todas las actividades"),
 ):
     """Actividades de la agenda: tareas, examenes, lecciones, notas."""
-    eventos = _manejar_error(ses.cliente.get_agenda)
+    try:
+        eventos, snap, ts = _con_respaldo(ses, "agenda", ses.cliente.get_agenda)
+    except EducalinksError as exc:
+        raise HTTPException(status_code=502, detail=str(exc))
+    if snap:
+        response.headers["X-Snapshot"] = "true"
+        response.headers["X-Snapshot-Ts"] = str(ts)
     if todas:
         return {"total": len(eventos), "eventos": eventos}
 
@@ -259,9 +330,15 @@ def agenda(
 
 
 @app.get("/api/horario")
-def horario(ses: Sesion = Depends(_requiere_alumno)):
+def horario(response: Response, ses: Sesion = Depends(_requiere_alumno)):
     """Horario semanal de clases (bloques por dia y periodo)."""
-    bloques = _manejar_error(ses.cliente.get_horario)
+    try:
+        bloques, snap, ts = _con_respaldo(ses, "horario", ses.cliente.get_horario)
+    except EducalinksError as exc:
+        raise HTTPException(status_code=502, detail=str(exc))
+    if snap:
+        response.headers["X-Snapshot"] = "true"
+        response.headers["X-Snapshot-Ts"] = str(ts)
     return {"total": len(bloques), "bloques": bloques}
 
 
@@ -269,16 +346,28 @@ def horario(ses: Sesion = Depends(_requiere_alumno)):
 # Mensajes y circulares
 # ---------------------------------------------------------------------- #
 @app.get("/api/mensajes")
-def mensajes(ses: Sesion = Depends(_requiere_alumno)):
+def mensajes(response: Response, ses: Sesion = Depends(_requiere_alumno)):
     """Mensajes/comunicados recibidos en Educalinks."""
-    lista = _manejar_error(ses.cliente.get_mensajes)
+    try:
+        lista, snap, ts = _con_respaldo(ses, "mensajes", ses.cliente.get_mensajes)
+    except EducalinksError as exc:
+        raise HTTPException(status_code=502, detail=str(exc))
+    if snap:
+        response.headers["X-Snapshot"] = "true"
+        response.headers["X-Snapshot-Ts"] = str(ts)
     return {"total": len(lista), "mensajes": lista}
 
 
 @app.get("/api/circulares")
-def circulares(ses: Sesion = Depends(_requiere_alumno)):
+def circulares(response: Response, ses: Sesion = Depends(_requiere_alumno)):
     """Circulares del colegio con link de descarga."""
-    lista = _manejar_error(ses.cliente.get_circulares)
+    try:
+        lista, snap, ts = _con_respaldo(ses, "circulares", ses.cliente.get_circulares)
+    except EducalinksError as exc:
+        raise HTTPException(status_code=502, detail=str(exc))
+    if snap:
+        response.headers["X-Snapshot"] = "true"
+        response.headers["X-Snapshot-Ts"] = str(ts)
     return {"total": len(lista), "circulares": lista}
 
 
@@ -286,45 +375,89 @@ def circulares(ses: Sesion = Depends(_requiere_alumno)):
 # Notas: resumen y libretas oficiales
 # ---------------------------------------------------------------------- #
 @app.get("/api/resumen")
-def resumen(ses: Sesion = Depends(_requiere_alumno)):
+def resumen(response: Response, ses: Sesion = Depends(_requiere_alumno)):
     """Promedios por materia y periodo calculados desde la agenda."""
-    eventos = _manejar_error(ses.cliente.get_agenda)
-    libretas = _manejar_error(ses.cliente.get_libretas)
-    return calcular_resumen(eventos, libretas)
+    try:
+        eventos, _, _ = _con_respaldo(ses, "agenda", ses.cliente.get_agenda)
+        libretas, _, _ = _con_respaldo(ses, "libretas", ses.cliente.get_libretas)
+        data = calcular_resumen(eventos, libretas)
+        snapshots.guardar(ses.usuario, ses.perfil, "resumen", data)
+    except EducalinksError as exc:
+        snap = snapshots.cargar(ses.usuario, ses.perfil, "resumen")
+        if snap:
+            response.headers["X-Snapshot"] = "true"
+            response.headers["X-Snapshot-Ts"] = str(snap[1])
+            return snap[0]
+        raise HTTPException(status_code=502, detail=str(exc))
+    return data
 
 
 @app.get("/api/panel")
-def panel(ses: Sesion = Depends(_requiere_alumno)):
+def panel(response: Response, ses: Sesion = Depends(_requiere_alumno)):
     """Panel del portal (resumen.php): por vencer, atrasadas, hoy, pagos.
 
     Cache propio de 30 min (PANEL_TTL_MINUTES) porque la pagina es pesada.
     """
-    return _manejar_error(ses.cliente.get_panel)
+    try:
+        data, snap, ts = _con_respaldo(ses, "panel", ses.cliente.get_panel)
+    except EducalinksError as exc:
+        raise HTTPException(status_code=502, detail=str(exc))
+    if snap:
+        response.headers["X-Snapshot"] = "true"
+        response.headers["X-Snapshot-Ts"] = str(ts)
+    return data
 
 
 @app.get("/api/planificacion")
-def planificacion(ses: Sesion = Depends(_requiere_alumno)):
+def planificacion(response: Response, ses: Sesion = Depends(_requiere_alumno)):
     """Docente por materia y leccionario de temas (planificacion.php)."""
-    lista = _manejar_error(ses.cliente.get_planificacion)
+    try:
+        lista, snap, ts = _con_respaldo(ses, "planificacion", ses.cliente.get_planificacion)
+    except EducalinksError as exc:
+        raise HTTPException(status_code=502, detail=str(exc))
+    if snap:
+        response.headers["X-Snapshot"] = "true"
+        response.headers["X-Snapshot-Ts"] = str(ts)
     return {"total": len(lista), "materias": lista}
 
 
 @app.get("/api/asistencia")
-def asistencia(ses: Sesion = Depends(_requiere_alumno)):
+def asistencia(response: Response, ses: Sesion = Depends(_requiere_alumno)):
     """Historial de faltas/atrasos del estudiante (del PDF del portal)."""
-    return _manejar_error(ses.cliente.get_faltas)
+    try:
+        data, snap, ts = _con_respaldo(ses, "asistencia", ses.cliente.get_faltas)
+    except EducalinksError as exc:
+        raise HTTPException(status_code=502, detail=str(exc))
+    if snap:
+        response.headers["X-Snapshot"] = "true"
+        response.headers["X-Snapshot-Ts"] = str(ts)
+    return data
 
 
 @app.get("/api/observaciones")
-def observaciones(ses: Sesion = Depends(_requiere_alumno)):
+def observaciones(response: Response, ses: Sesion = Depends(_requiere_alumno)):
     """Observaciones de comportamiento/disciplina del alumno."""
-    return _manejar_error(ses.cliente.get_observaciones)
+    try:
+        data, snap, ts = _con_respaldo(ses, "observaciones", ses.cliente.get_observaciones)
+    except EducalinksError as exc:
+        raise HTTPException(status_code=502, detail=str(exc))
+    if snap:
+        response.headers["X-Snapshot"] = "true"
+        response.headers["X-Snapshot-Ts"] = str(ts)
+    return data
 
 
 @app.get("/api/notas/detalle")
-def notas_detalle(ses: Sesion = Depends(_requiere_alumno)):
+def notas_detalle(response: Response, ses: Sesion = Depends(_requiere_alumno)):
     """Desglose oficial por periodo y materia, extraido de la libreta PDF."""
-    return _manejar_error(ses.cliente.get_notas_detalladas)
+    try:
+        data, snap, ts = _con_respaldo(ses, "notas_detalle", ses.cliente.get_notas_detalladas)
+    except EducalinksError as exc:
+        raise HTTPException(status_code=502, detail=str(exc))
+    if snap:
+        response.headers["X-Snapshot"] = "true"
+        response.headers["X-Snapshot-Ts"] = str(ts)
+    return data
 
 
 # ---------------------------------------------------------------------- #

@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" href="img/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
@@ -20,18 +20,18 @@
 <div id="pantalla-login" class="login-screen oculto">
   <div class="login-wrap">
     <div class="login-hero" aria-hidden="true">
-      <div class="lh-badge">⚡ EducaFix</div>
-      <h1 class="lh-tit">Tu vida académica,<br><strong>arreglada.</strong></h1>
-      <p class="lh-sub">Todo lo que Educalinks no te da: prioridades 🔴🟠, pendientes, notas con desglose, asistencia, flashcards y más.</p>
+      <div class="lh-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg> EducaFix</div>
+      <h1 class="lh-tit">Tu vida académica,<br><strong>organizada.</strong></h1>
+      <p class="lh-sub">Prioridades, notas oficiales, asistencia y estudio — todo lo que Educalinks no te da.</p>
       <ul class="lh-feats">
-        <li>🎯 <span>Mañana y esta semana, sin buscar nada</span></li>
-        <li>📊 <span>Notas oficiales por evaluación y tendencia</span></li>
-        <li>🃏 <span>Flashcards con repaso espaciado + pomodoro</span></li>
-        <li>📴 <span>Funciona sin conexión, instalable en el celular</span></li>
+        <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg> <span>Mañana y esta semana, sin buscar nada</span></li>
+        <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg> <span>Notas oficiales por evaluación y tendencia</span></li>
+        <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" x2="21" y1="9" y2="9"/><path d="m16 15-2 2-2-2"/></svg> <span>Flashcards con repaso espaciado + pomodoro</span></li>
+        <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h4l3-8 4 16 3-8h6"/></svg> <span>Funciona sin conexión, instalable en el celular</span></li>
       </ul>
     </div>
     <div class="login-box">
-      <div class="login-logo">⚡</div>
+      <div class="login-logo" style="color:var(--acento)"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
       <h1 class="login-tit">EducaFix</h1>
       <p class="login-sub" id="login-escuela">Colegio Americano de Guayaquil</p>
       <form id="form-login">
@@ -62,19 +62,19 @@
 <div id="app" class="oculto">
 
   <header class="top">
-    <div class="brand">⚡ EducaFix</div>
+    <div class="brand"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg> EducaFix</div>
     <div class="buscar">
-      <span class="lupa" aria-hidden="true">🔎</span>
-      <input id="buscador" type="search" placeholder="Buscar tareas, notas, documentos… ( / o Ctrl+K )" autocomplete="off" readonly data-accion="pal-open" aria-label="Búsqueda global">
+      <span class="lupa" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+      <input id="buscador" type="search" placeholder="Buscar… ( / o Ctrl+K )" autocomplete="off" readonly data-accion="pal-open" aria-label="Búsqueda global">
       <div id="resultados" role="listbox" aria-label="Resultados de búsqueda"></div>
     </div>
     <div class="acciones">
-      <button class="icon-btn" id="btn-acentos" data-accion="acento-pop" title="Personalizar (🎨)" aria-label="Personalizar tema">🎨</button>
-      <button class="icon-btn" data-accion="enfoque" title="Modo enfoque (F)" aria-label="Modo enfoque">🔭</button>
-      <button class="icon-btn" id="btn-refresh" data-accion="refresh-manual" title="Actualizar datos (R)" aria-label="Actualizar datos">↻</button>
-      <button class="icon-btn" id="btn-campana" data-accion="camp-bell" title="Novedades" aria-label="Novedades">🔔<span class="badge-nov" id="badge-novedades" role="status" aria-live="polite">0</span></button>
-      <button class="icon-btn" data-accion="ajustes" title="Ajustes" aria-label="Ajustes">⚙️</button>
-      <button class="icon-btn" data-accion="salir" title="Cerrar sesión" aria-label="Cerrar sesión">⏻</button>
+      <button class="icon-btn" id="btn-acentos" data-accion="acento-pop" title="Personalizar (🎨)" aria-label="Personalizar tema"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.676 0-.437-.18-.835-.465-1.116-.28-.28-.448-.668-.448-1.088 0-.918.742-1.66 1.66-1.66H15.5c3.038 0 5.5-2.462 5.5-5.5C21 6.5 16.5 2 12 2z"/></svg></button>
+      <button class="icon-btn" data-accion="enfoque" title="Modo enfoque (F)" aria-label="Modo enfoque"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></button>
+      <button class="icon-btn" id="btn-refresh" data-accion="refresh-manual" title="Actualizar datos (R)" aria-label="Actualizar datos"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg></button>
+      <button class="icon-btn" id="btn-campana" data-accion="camp-bell" title="Novedades" aria-label="Novedades"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="badge-nov" id="badge-novedades" role="status" aria-live="polite">0</span></button>
+      <button class="icon-btn" data-accion="ajustes" title="Ajustes" aria-label="Ajustes"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button>
+      <button class="icon-btn" data-accion="salir" title="Cerrar sesión" aria-label="Cerrar sesión"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg></button>
     </div>
   </header>
 
@@ -105,11 +105,11 @@
   <div id="ptr" class="ptr" aria-hidden="true">↻</div>
 
   <nav class="tabs" aria-label="Vistas principales">
-    <button class="tab activa" data-tab="inicio">🏠 Inicio</button>
-    <button class="tab" data-tab="semana">📅 Semana</button>
-    <button class="tab" data-tab="materias">📚 Materias</button>
-    <button class="tab" data-tab="pendientes">📝 Pendientes</button>
-    <button class="tab" data-tab="rendimiento">📊 Rendimiento</button>
+    <button class="tab activa" data-tab="inicio"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Inicio</button>
+    <button class="tab" data-tab="semana"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg> Semana</button>
+    <button class="tab" data-tab="materias"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg> Materias</button>
+    <button class="tab" data-tab="pendientes"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Pendientes</button>
+    <button class="tab" data-tab="rendimiento"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg> Rendimiento</button>
     <button class="tab" data-tab="mas">⋯ Más</button>
   </nav>
 
@@ -226,10 +226,10 @@
   <footer>Datos obtenidos de Educalinks · Uso personal</footer>
 
   <nav class="bottom-nav" aria-label="Navegación principal">
-    <button class="bnav-btn activa" data-tab="inicio"><span class="bi">🏠</span>Inicio</button>
-    <button class="bnav-btn" data-tab="semana"><span class="bi">📅</span>Semana</button>
-    <button class="bnav-btn" data-tab="pendientes"><span class="bi">📝</span>Pendientes</button>
-    <button class="bnav-btn" data-tab="rendimiento"><span class="bi">📊</span>Rendimiento</button>
+    <button class="bnav-btn activa" data-tab="inicio"><span class="bi"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>Inicio</button>
+    <button class="bnav-btn" data-tab="semana"><span class="bi"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg></span>Semana</button>
+    <button class="bnav-btn" data-tab="pendientes"><span class="bi"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>Pendientes</button>
+    <button class="bnav-btn" data-tab="rendimiento"><span class="bi"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></span>Rendimiento</button>
     <button class="bnav-btn" data-tab="mas"><span class="bi">⋯</span>Más</button>
   </nav>
 

@@ -21,13 +21,32 @@
   }
 
   var LS = 'agenda_cfg';
-  var LS_CACHE = 'agenda_cache';
   var LS_HECHAS = 'agenda_hechas';
   var LS_NP = 'agenda_np';
   var LS_REC = 'agenda_rec';
   var LS_LEIDOS = 'agenda_leidos';
   var LS_FAV = 'agenda_favoritos';
   var LS_NOTIF = 'agenda_notificados';
+
+  /* Cache por usuario+perfil: cada cuenta en la misma maquina tiene su
+     propio snapshot local, sin mezclarse entre si. */
+  var LS_CACHE = 'agenda_cache';  /* se vuelve dinamico via cacheKey() */
+
+  function cacheKey() {
+    var u = (state.usuario || 'anon').replace(/[^a-zA-Z0-9]/g, '');
+    return 'ef_cache_' + u + '_' + (state.perfil || 'alumno');
+  }
+  function leerCache() {
+    /* migración: si existe el cache viejo de una sola clave, moverlo */
+    var viejo = leerLS('agenda_cache', null);
+    if (viejo && !leerLS(cacheKey(), null)) {
+      guardarLS(cacheKey(), viejo);
+      try { localStorage.removeItem('agenda_cache'); } catch (e) {}
+    }
+    return leerLS(cacheKey(), null);
+  }
+  function guardarCache(d) { guardarLS(cacheKey(), d); }
+  function borrarCache() { try { localStorage.removeItem(cacheKey()); } catch (e) {} }
 
   function $(s, c) { return (c || document).querySelector(s); }
   function $$(s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); }
@@ -126,7 +145,8 @@
     activo: false,
     fragil: false,
     ultCarga: 0,
-    perfil: 'alumno'
+    perfil: 'alumno',
+    usuario: ''
   };
 
   var timers = { vivo: null, rec: null, nov: null, pomo: null };
@@ -561,19 +581,29 @@
   }
 
   var retryTimer = null;
+  var retryDelay = 20000;  /* backoff exponencial: 20s → 40s → 80s → 160s → 300s máx */
 
   function scheduleRetry(activo) {
     if (!state.activo) activo = false;
-    if (retryTimer && !activo) { clearInterval(retryTimer); retryTimer = null; return; }
-    if (!retryTimer && activo) {
-      retryTimer = setInterval(function () { cargar({ silencioso: true }); }, 20000);
+    if (retryTimer && !activo) { clearTimeout(retryTimer); retryTimer = null; retryDelay = 20000; return; }
+    if (retryTimer) clearTimeout(retryTimer);
+    if (activo) {
+      retryTimer = setTimeout(function () {
+        retryTimer = null;
+        retryDelay = Math.min(retryDelay * 2, 300000);  /* máx 5 min */
+        cargar({ silencioso: true });
+      }, retryDelay);
     }
   }
 
   function aplicarDatos(datos, estado, o) {
     o = o || {};
     state.datos = datos;
-    state.ultCarga = Date.now();
+    /* FIX: solo marcar ultCarga en éxito real — antes se reseteaba
+       incluso en fallo, haciendo que "hace X min" mintiera */
+    if (estado === 'ok') {
+      state.ultCarga = Date.now();
+    }
     var banner = $('#banner-offline');
     var franja = $('#franja');
     var detalle = state.errores && Object.keys(state.errores).length
@@ -581,25 +611,31 @@
       : '';
     if (estado === 'ok') {
       state.fragil = false;
-      guardarLS(LS_CACHE, datos);
+      guardarCache(datos);
       banner.classList.add('oculto');
       franja.classList.remove('err');
-      franja.innerHTML = '✓ Datos actualizados';
+      franja.innerHTML = '✓ Datos actualizados · 🕐 ahora';
       scheduleRetry(false);
       actualizarBadge();
     } else if (estado === 'parcial') {
       state.fragil = true;
+      /* guardar el merge parcial: mejor dato fresco a medias que viejo completo */
+      var merge = Object.assign({}, leerCache() || {}, datos);
+      guardarCache(merge);
       banner.classList.remove('oculto');
-      banner.textContent = '⚠ Algunas secciones no se pudieron actualizar. Reintentando… · ✅ Reintentar';
+      banner.innerHTML = '⚠ <strong>Educalinks tuvo problemas</strong> — se muestran los datos más recientes disponibles. Reintentando… <button class="btn ghost mini" data-accion="reintentar">Reintentar</button>';
       franja.classList.add('err');
-      franja.innerHTML = '⚠ Datos parciales';
+      franja.innerHTML = '⚠ Datos parciales · 🕐 ' + edadSync();
       scheduleRetry(true);
     } else if (estado === 'offline') {
       state.fragil = true;
+      var edadCache = cache && cache.ts ? 'del ' + new Date(cache.ts).toLocaleString('es-EC', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'reciente';
       banner.classList.remove('oculto');
-      banner.textContent = '📴 Sin conexión con la app o con Educalinks — mostrando datos guardados. Reintentando… · ✅ Reintentar' + detalle;
+      banner.innerHTML = '📴 <strong>Educalinks no está disponible</strong> — mostrando tus datos guardados (' + edadCache + '). ' +
+        'Tus <strong>flashcards, pomodoro, pendientes y notas personales siguen funcionando</strong>. ' +
+        '<button class="btn ghost mini" data-accion="reintentar">Reintentar</button>';
       franja.classList.add('err');
-      franja.innerHTML = '✗ Sin conexión' + detalle;
+      franja.innerHTML = '📴 Modo sin conexión · datos ' + edadCache;
       scheduleRetry(true);
     } else if (estado === 'fallo') {
       state.fragil = true;
@@ -617,15 +653,20 @@
     if (franja && franja.lastChild && franja.lastChild.classList && franja.lastChild.classList.contains('spi')) {
       franja.innerHTML = '<span class="spi"></span> Cargando…';
     }
-    var cache = leerLS(LS_CACHE, null);
+    var cache = leerCache();
     var ok = {};
     state.errores = {};
+    state.snapshots = {};  /* marcar qué endpoints vinieron del respaldo del backend */
 
     function uno(nombre, url, extraer) {
       return apiFetch(url, { headers: { 'Accept': 'application/json' } })
         .then(function (r) {
           if (r.status === 401) { var e = new Error('sesion'); e.status = 401; throw e; }
           if (!r.ok) { var e2 = new Error('HTTP ' + r.status); e2.status = r.status; throw e2; }
+          /* detectar si el backend sirvió un snapshot (Educalinks caído) */
+          if (r.headers.get('X-Snapshot') === 'true') {
+            state.snapshots[nombre] = true;
+          }
           return r.json();
         })
         .then(function (j) { ok[nombre] = extraer ? extraer(j) : j; })
@@ -650,7 +691,9 @@
     ]).then(function () {
       var faltasVacio = { disponible: false, eventos: [], resumen: {} };
       var faltan = NOMBRES.filter(function (n) { return ok[n] == null; });
-      if (faltan.length) {
+      var haySnapshot = Object.keys(state.snapshots).length > 0;
+      if (faltan.length && !haySnapshot) {
+        /* sin respaldo del backend: fusionar con cache local */
         if (cache) return aplicarDatos({
           agenda: ok.agenda || cache.agenda || [],
           horario: ok.horario || cache.horario || [],
@@ -664,6 +707,23 @@
         franja.classList.add('err');
         franja.innerHTML = '✗ No se pudo cargar. Revisa tu conexión.';
         return 'fallo';
+      }
+      if (faltan.length === 0 && haySnapshot) {
+        /* el backend sirvió snapshots (Educalinks caído) — todo llegó,
+           pero desde el respaldo persistido; mostrar aviso */
+        var datosOK = {
+          agenda: ok.agenda, horario: ok.horario,
+          mensajes: ok.mensajes, circulares: ok.circulares,
+          resumen: ok.resumen, panel: ok.panel, faltas: ok.faltas,
+          ts: Date.now()
+        };
+        guardarCache(datosOK);
+        state.fragil = false;
+        var sn = Object.keys(state.snapshots);
+        toast('📴 Educalinks está caído — mostrando tus datos guardados por el servidor');
+        state.ultCarga = state.ultCarga || Date.now();
+        if (state.activo) { autoActivas(); renderVistaActual(); }
+        return 'snapshot';
       }
       return aplicarDatos({
         agenda: ok.agenda,
@@ -2421,7 +2481,7 @@
         case 'reintentar': recargar(); break;
         case 'refresh-manual': recargar(); break;
         case 'limpiar-cache':
-          try { localStorage.removeItem(LS_CACHE); localStorage.removeItem('agenda_materiales'); } catch (e) {}
+          try { borrarCache(); localStorage.removeItem('agenda_materiales'); } catch (e) {}
           state.datos = null; MATER = null;
           toast('💾 Datos guardados borrados; recargando…');
           recargar();
@@ -2488,6 +2548,7 @@
         case 'exp-json': exportarExpediente(); break;
         case 'asistencia-ver': abrirInfoAsistencia(); break;
         case 'pagos-ver': abrirInfoPagos(); break;
+        case 'snapshots-estado': abrirSnapshotsEstado(); break;
         case 'info-cerrar': closeOverlay('overlay-info'); break;
         case 'mat-tab': agg.matTab = t.dataset.tab; renderMateriaOverlay(); break;
         case 'mat-full': agg.matFull = !agg.matFull; renderMateriaOverlay(); break;
@@ -2808,6 +2869,11 @@
     if (state.activo) return;
     state.activo = true;
     state.perfil = perfil || window.__efPerfil || 'alumno';
+    /* cargar el usuario para el cache por cuenta */
+    apiFetch('api/me', { headers: { 'Accept': 'application/json' } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (me) { if (me && me.usuario) state.usuario = me.usuario; })
+      .catch(function () {});
     document.documentElement.setAttribute('data-perfil', state.perfil);
     $('#app').classList.remove('oculto');
     $('#pantalla-login').classList.add('oculto');
@@ -3065,9 +3131,9 @@
   }
 
   function cerrarSesion() {
-    apiFetch('api/logout', { method: 'POST' }).finally(function () {
+    fetch(API + 'api/logout', { method: 'POST', credentials: 'include' }).finally(function () {
       __detener();
-      try { localStorage.removeItem(LS_CACHE); } catch (e) {}
+      borrarCache();
       window.Login.mostrar();
     });
   }
@@ -3710,6 +3776,37 @@
     openOverlay('overlay-info');
   }
 
+  function abrirSnapshotsEstado() {
+    abrirInfo('📴 Datos offline disponibles',
+      '<p class="sub" style="margin-bottom:.6rem">Este es el respaldo que tu servidor EducaFix guarda en SQLite. Si Educalinks cae, tu app sirve estos datos automáticamente.</p>' +
+      '<div id="snap-lista"><div class="sub">⏳ Consultando…</div></div>');
+    apiFetch('api/snapshots/estado', { headers: { 'Accept': 'application/json' } })
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)); })
+      .then(function (j) {
+        var filas = (j.snapshots || []).map(function (s) {
+          var edad = s.edad_segundos;
+          var edadTxt = edad == null ? '—' :
+            edad < 60 ? 'hace segundos' :
+            edad < 3600 ? 'hace ' + Math.round(edad / 60) + ' min' :
+            edad < 86400 ? 'hace ' + Math.round(edad / 3600) + ' h' :
+            'hace ' + Math.round(edad / 86400) + ' días';
+          return '<div class="ayuda-fila"><b>' + s.clave + '</b>' +
+            (s.disponible
+              ? '<span style="color:var(--success);font-weight:700">✓ ' + edadTxt + '</span>'
+              : '<span style="color:var(--text-muted)">sin datos</span>') + '</div>';
+        }).join('');
+        var n = (j.snapshots || []).filter(function (s) { return s.disponible; }).length;
+        renderEn('snap-lista',
+          '<div class="sub" style="margin-bottom:.4rem"><strong>' + n + ' de ' + (j.snapshots || []).length + '</strong> fuentes respaldadas</div>' + filas +
+          (n < (j.snapshots || []).length
+            ? '<p class="sub" style="margin-top:.6rem">💡 Las fuentes sin datos se respaldan la próxima vez que Educalinks responda y las consultes.</p>'
+            : '<p class="sub" style="margin-top:.6rem;color:var(--success);font-weight:700">✓ Respaldo completo: tu app funciona aunque Educalinks caiga.</p>'));
+      })
+      .catch(function (e) {
+        renderEn('snap-lista', '<div class="sub">No se pudo consultar el estado del respaldo.</div>');
+      });
+  }
+
   function abrirInfoAsistencia() {
     var fal = state.datos.faltas || {};
     var fres = fal.resumen || {};
@@ -4212,6 +4309,7 @@
       grupo('Mis datos',
         menuRow('📓', 'Mi libreta', 'apuntes rápidos personales', 'libreta-abrir', '') +
         menuRow('🏆', 'Mis logros', 'insignias por tus avances', 'logros-ver', (function () { var l = calcularLogros().filter(function (x) { return x.ok; }).length; return l || ''; })()) +
+        menuRow('📴', 'Datos offline', 'qué hay guardado para cuando Educalinks caiga', 'snapshots-estado', '') +
         menuRow('📊', 'Exportar notas', 'CSV con todas tus actividades', 'csv-notas', '') +
         menuRow('🗓️', 'Exportar agenda', 'archivo .ics para tu calendario', 'ics-agenda', '') +
         menuRow('🗂️', 'Exportar expediente', 'todo tu historial en un JSON', 'exp-json', '') +
@@ -4675,6 +4773,7 @@
       return r.json();
     })
     .then(function (me) {
+      if (me && me.usuario) state.usuario = me.usuario;
       iniciar(me && me.perfil);
     })
     .catch(function () { window.Login.mostrar(); });
