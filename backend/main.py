@@ -15,7 +15,7 @@ from collections import defaultdict
 from datetime import date, timedelta
 from pathlib import Path
 
-from fastapi import Cookie, Depends, FastAPI, HTTPException, Query, Request, Response
+from fastapi import Cookie, Depends, FastAPI, File, Form, HTTPException, Query, Request, Response, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from fastapi.staticfiles import StaticFiles
@@ -244,7 +244,168 @@ def _con_respaldo(ses: Sesion, clave: str, fetcher):
         raise
 
 
+
+from pydantic import BaseModel
+
+# Guardas de perfil (definidas ANTES de los endpoints que las usan)
+def _requiere_alumno(ses: Sesion = Depends(requiere_sesion)) -> Sesion:
+    if ses.perfil != "alumno":
+        raise HTTPException(status_code=403, detail="Solo para alumnos")
+    return ses
+
+
+def _requiere_docente(ses: Sesion = Depends(requiere_sesion)) -> Sesion:
+    if ses.perfil != "docente":
+        raise HTTPException(status_code=403, detail="Solo para docentes")
+    return ses
+
+
+class MensajeEnviar(BaseModel):
+    para_codi: str
+    para_tipo: str = "D"  # D=docente, A=alumno
+    asunto: str
+    cuerpo: str
+
+
+class ActividadDocente(BaseModel):
+    curs_mate_prof: str
+    titulo: str
+    detalle: str = ""
+    fecha_inicio: str
+    fecha_fin: str
+    tipo: str = "T"
+
+
+@app.post("/api/mensajes/enviar")
+def mensajes_enviar(m: MensajeEnviar,
+                    ses: Sesion = Depends(_requiere_alumno)):
+    """Envía un mensaje a un docente o alumno a través de Educalinks."""
+    try:
+        r = ses.cliente.enviar_mensaje(
+            m.para_codi, m.para_tipo, m.asunto, m.cuerpo)
+        return r
+    except EducalinksError as exc:
+        raise HTTPException(status_code=502, detail=str(exc))
+
+
+@app.post("/api/mensajes/responder")
+def mensajes_responder(m: MensajeEnviar,
+                        ses: Sesion = Depends(_requiere_alumno)):
+    """Responde a un mensaje existente."""
+    try:
+        r = ses.cliente.responder_mensaje(
+            m.para_codi, m.para_tipo, m.asunto, m.cuerpo)
+        return r
+    except EducalinksError as exc:
+        raise HTTPException(status_code=502, detail=str(exc))
+
+
+@app.get("/api/mensajes/completos")
+def mensajes_completos(response: Response,
+                        ses: Sesion = Depends(_requiere_alumno)):
+    """Cuerpo completo de mensajes (desde la pestaña de notificaciones)."""
+    try:
+        data, snap, ts = _con_respaldo(ses, "mensajes_full",
+                                        ses.cliente.get_mensajes_completos)
+    except EducalinksError as exc:
+        raise HTTPException(status_code=502, detail=str(exc))
+    if snap:
+        response.headers["X-Snapshot"] = "true"
+        response.headers["X-Snapshot-Ts"] = str(ts)
+    return data
+
+
+@app.get("/api/eventos")
+def eventos(response: Response, ses: Sesion = Depends(_requiere_alumno)):
+    """Eventos del calendario del colegio (index.php)."""
+    try:
+        data, snap, ts = _con_respaldo(ses, "eventos",
+                                        ses.cliente.get_eventos)
+    except EducalinksError as exc:
+        raise HTTPException(status_code=502, detail=str(exc))
+    if snap:
+        response.headers["X-Snapshot"] = "true"
+        response.headers["X-Snapshot-Ts"] = str(ts)
+    return data
+
+
+@app.get("/api/enlaces")
+def enlaces(response: Response, ses: Sesion = Depends(_requiere_alumno)):
+    """Plataformas externas del colegio (enlace.php)."""
+    try:
+        data, snap, ts = _con_respaldo(ses, "enlaces",
+                                        ses.cliente.get_enlaces_externos)
+    except EducalinksError as exc:
+        raise HTTPException(status_code=502, detail=str(exc))
+    if snap:
+        response.headers["X-Snapshot"] = "true"
+        response.headers["X-Snapshot-Ts"] = str(ts)
+    return data
+
+
+@app.get("/api/alum-codi")
+def alum_codi(ses: Sesion = Depends(_requiere_alumno)):
+    """Código interno del estudiante (para enviar mensajes)."""
+    return _manejar_error(ses.cliente.get_alum_codi)
+
+
+class TareaUploadRequest(BaseModel):
+    agen_codi: str
+    nombre_materia: str = ""
+    enlaces: list[str] = []
+
+
+@app.post("/api/tareas/subir")
+async def tareas_subir(archivo: UploadFile = File(...),
+                       agen_codi: str = Form(...),
+                       nombre_materia: str = Form(default=""),
+                       ses: Sesion = Depends(_requiere_alumno)):
+    """Sube un archivo de tarea (PDF/JPG/PNG, max 2MB)."""
+    try:
+        contenido = await archivo.read()
+        if len(contenido) > 2 * 1024 * 1024:
+            raise HTTPException(status_code=400, detail="El archivo supera los 2MB")
+        ext = Path(archivo.filename.lower()).suffix if archivo.filename else ""
+        if ext not in (".pdf", ".jpg", ".jpeg", ".png"):
+            raise HTTPException(status_code=400,
+                                detail="Solo PDF, JPG, JPEG o PNG")
+        r = ses.cliente.subir_tarea(agen_codi, contenido,
+                                     archivo.filename or "tarea.pdf",
+                                     nombre_materia)
+        return r
+    except EducalinksError as exc:
+        raise HTTPException(status_code=502, detail=str(exc))
+
+
+@app.post("/api/tareas/enlaces")
+def tareas_enlaces(t: TareaUploadRequest,
+                   ses: Sesion = Depends(_requiere_alumno)):
+    """Envía enlaces de tarea virtual (URLs de plataformas externas)."""
+    if not t.enlaces:
+        raise HTTPException(status_code=400, detail="Debe enviar al menos un enlace")
+    try:
+        r = ses.cliente.subir_enlaces_tarea(t.agen_codi, t.enlaces)
+        return r
+    except EducalinksError as exc:
+        raise HTTPException(status_code=502, detail=str(exc))
+
+
+@app.post("/api/docentes/actividad")
+def docentes_crear_actividad(a: ActividadDocente,
+                               ses: Sesion = Depends(_requiere_docente)):
+    """Crear actividad/tarea (REQUIERE credenciales de docente)."""
+    try:
+        r = ses.cliente.crear_actividad_docente(
+            a.curs_mate_prof, a.titulo, a.detalle,
+            a.fecha_inicio, a.fecha_fin, a.tipo)
+        return r
+    except EducalinksError as exc:
+        raise HTTPException(status_code=502, detail=str(exc))
+
+
 @app.get("/api/snapshots/estado")
+
+
 def snapshots_estado(ses: Sesion = Depends(requiere_sesion)):
     """Qué snapshots persistentes existen para este usuario y su edad."""
     claves = ["agenda", "horario", "mensajes", "circulares", "resumen",
@@ -266,20 +427,8 @@ def me(ses: Sesion = Depends(requiere_sesion)):
     return {"usuario": ses.usuario, "perfil": ses.perfil}
 
 
-def _requiere_alumno(ses: Sesion = Depends(requiere_sesion)) -> Sesion:
-    """Guarda: los endpoints de alumno no sirven con sesion de docente."""
-    if ses.perfil != "alumno":
-        raise HTTPException(status_code=403,
-                            detail="Esta seccion es solo para alumnos")
-    return ses
-
-
-def _requiere_docente(ses: Sesion = Depends(requiere_sesion)) -> Sesion:
-    """Guarda: los endpoints de docente no sirven con sesion de alumno."""
-    if ses.perfil != "docente":
-        raise HTTPException(status_code=403,
-                            detail="Esta seccion es solo para docentes")
-    return ses
+# (las guardas _requiere_alumno/_requiere_docente están definidas al inicio
+#  del archivo, antes de los endpoints que las usan)
 
 
 @app.get("/api/config")

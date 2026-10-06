@@ -361,6 +361,61 @@
     </div>
   </div>
 
+  <div id="overlay-entregar" class="overlay" role="dialog" aria-label="Entregar tarea">
+    <div class="drawer" style="max-width:500px">
+      <h3 id="entregar-titulo">📤 Entregar tarea <button class="x" data-accion="entregar-cerrar" aria-label="Cerrar">✕</button></h3>
+      <p id="entregar-contexto" class="sub"></p>
+      <div class="entregar-tabs">
+        <button class="seg-btn activa" data-accion="entregar-tab" data-tab="archivo" id="tab-archivo">📄 Archivo</button>
+        <button class="seg-btn" data-accion="entregar-tab" data-tab="enlaces" id="tab-enlaces">🔗 Enlaces</button>
+      </div>
+      <div id="entregar-panel-archivo">
+        <label class="lbl">Selecciona tu archivo
+          <input type="file" id="entregar-file" accept=".pdf,.jpg,.jpeg,.png" style="margin-top:.4rem">
+        </label>
+        <p class="sub" style="margin-top:.3rem">✅ Formatos: PDF, JPG, JPEG, PNG · Máx 2MB · El nombre no debe tener puntos o comas</p>
+        <button class="btn" data-accion="entregar-enviar-archivo" style="margin-top:.6rem">📤 Subir tarea</button>
+      </div>
+      <div id="entregar-panel-enlaces" style="display:none">
+        <div id="entregar-enlaces-lista">
+          <label class="lbl">Enlace 1
+            <input type="url" class="entregar-enlace-input" placeholder="https://drive.google.com/..." style="margin-top:.3rem">
+          </label>
+        </div>
+        <button class="btn ghost mini" data-accion="entregar-add-enlace" style="margin-top:.4rem">＋ Añadir otro enlace</button>
+        <button class="btn" data-accion="entregar-enviar-enlaces" style="margin-top:.6rem">🔗 Enviar enlaces</button>
+      </div>
+      <div id="entregar-resultado" style="margin-top:.8rem"></div>
+    </div>
+  </div>
+
+  <div id="overlay-mensaje" class="overlay" role="dialog" aria-label="Enviar mensaje">
+    <div class="drawer" style="max-width:520px">
+      <h3 id="mensaje-titulo">✉️ Nuevo mensaje <button class="x" data-accion="mensaje-cerrar" aria-label="Cerrar">✕</button></h3>
+      <label class="lbl">Para
+        <select id="mensaje-para" class="sel" style="width:100%" aria-label="Destinatario"></select>
+      </label>
+      <label class="lbl">Asunto
+        <input id="mensaje-asunto" type="text" placeholder="Escribe el asunto…" maxlength="200">
+      </label>
+      <label class="lbl">Mensaje
+        <textarea id="mensaje-cuerpo" rows="6" placeholder="Escribe tu mensaje al docente…"></textarea>
+      </label>
+      <div style="display:flex;gap:.5rem;margin-top:.5rem;flex-wrap:wrap">
+        <button class="btn" data-accion="mensaje-enviar">Enviar</button>
+        <button class="btn ghost" data-accion="mensaje-cerrar">Cancelar</button>
+      </div>
+      <p class="sub" style="margin-top:.5rem">💡 Se envía directamente a Educalinks. El docente lo verá en su portal.</p>
+    </div>
+  </div>
+
+  <div id="overlay-leer" class="overlay" role="dialog" aria-label="Leer mensaje">
+    <div class="drawer" style="max-width:520px">
+      <h3 id="leer-titulo"></h3>
+      <div id="leer-cuerpo"></div>
+    </div>
+  </div>
+
   <div id="overlay-palette" class="overlay overlay-pal" role="dialog" aria-label="Paleta de comandos">
     <div class="drawer drawer-pal">
       <div class="pal-caja">

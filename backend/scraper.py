@@ -916,6 +916,288 @@ class EducalinksClient:
         return {"disponible": True, "observaciones": obs}
 
     # ------------------------------------------------------------------ #
+    # Codigo interno del estudiante (para enviar mensajes)
+    # ------------------------------------------------------------------ #
+    def get_alum_codi(self):
+        """Extrae el codigo interno del estudiante (alum_codi).
+
+        El valor vive en un <input type="hidden" id="mens_de"> en
+        resumen.php (el formulario de mensajes lo usa como remitente).
+        """
+        cacheado = self._cache.get("alum_codi")
+        if cacheado and (time.time() - cacheado[0]) < self.cache_ttl:
+            return cacheado[1]
+        codi = ""
+        try:
+            html = self._get("/alumnos/resumen.php")
+            m = re.search(r'id="mens_de"[^>]*value=[\'"]?(\d+)', html)
+            if m:
+                codi = m.group(1)
+        except EducalinksError:
+            pass
+        self._cache["alum_codi"] = (time.time(), codi)
+        return codi
+
+    # ------------------------------------------------------------------ #
+    # Cuerpo completo de mensajes (desde resumen.php table_mensajes)
+    # ------------------------------------------------------------------ #
+    def get_mensajes_completos(self):
+        """Cuerpo completo de mensajes recibidos (tabla de notificaciones
+        de resumen.php, pestaña 'Notificaciones')."""
+        return self._cached("mensajes_full", self._fetch_mensajes_completos)
+
+    def _fetch_mensajes_completos(self):
+        html = self._get("/alumnos/resumen.php")
+        soup = BeautifulSoup(html, "lxml")
+        tabla = soup.find("table", id="table_mensajes")
+        if not tabla:
+            return {"disponible": False, "mensajes": []}
+        mensajes = []
+        for fila in tabla.select("tbody tr"):
+            celdas = fila.find_all("td")
+            if len(celdas) < 3:
+                continue
+            docente = celdas[0].get_text(" ", strip=True)
+            cuerpo = celdas[1].get_text(" ", strip=True)
+            recibido = celdas[2].get_text(" ", strip=True)
+            leido = len(celdas) > 3 and celdas[3].get_text(strip=True).strip() != ""
+            mensajes.append({
+                "docente": docente,
+                "cuerpo": cuerpo[:3000],
+                "recibido": recibido,
+                "leido": leido,
+            })
+        return {"disponible": True, "mensajes": mensajes}
+
+    # ------------------------------------------------------------------ #
+    # Eventos del calendario (desde index.php)
+    # ------------------------------------------------------------------ #
+    def get_eventos(self):
+        """Eventos del colegio (calendario de index.php)."""
+        return self._cached("eventos", self._fetch_eventos)
+
+    def _fetch_eventos(self):
+        html = self._get("/alumnos/index.php")
+        # Buscar: var eventos = [{"icono":"...","date":"2026-05-20","title":"...",...}, ...];
+        eventos = []
+        for m in re.finditer(r'"date"\s*:\s*"([\d-]+)".*?"title"\s*:\s*"([^"]*)"', html):
+            fecha = m.group(1)
+            titulo = m.group(2).replace("\\u00a1", "¡").replace("\\u00bf", "¿")
+            eventos.append({"fecha": fecha, "titulo": titulo, "url": ""})
+        # también buscar adjuntos (PDFs de eventos)
+        for ev in eventos:
+            m2 = re.search(r'"title"\s*:\s*"' + re.escape(ev["titulo"]) +
+                           r'".*?"img"\s*:\s*"([^"]*)"', html)
+            if m2:
+                ev["pdf"] = m2.group(1).replace("\\/", "/")
+        return {"disponible": bool(eventos), "eventos": eventos}
+
+    # ------------------------------------------------------------------ #
+    # Enlaces a plataformas externas (enlace.php)
+    # ------------------------------------------------------------------ #
+    def get_enlaces_externos(self):
+        """Plataformas externas a las que el colegio da acceso."""
+        return self._cached("enlaces", self._fetch_enlaces_externos)
+
+    def _fetch_enlaces_externos(self):
+        try:
+            html = self._get("/alumnos/enlace.php")
+        except EducalinksError:
+            return {"disponible": False, "enlaces": []}
+        soup = BeautifulSoup(html, "lxml")
+        enlaces = []
+        # excluir navegacion interna y enlaces de sistema
+        excluir = ("educalinks", "salir", "contrase", "admin_pass",
+                   "index.php", "#", "javascript", "recupera",
+                   "fonts.google", "gstatic", "css", "js", "img",
+                   "dist/", "bower")
+        for a in soup.select("a[href]"):
+            href = a.get("href", "").strip()
+            texto = a.get_text(" ", strip=True)
+            if (not href or not texto or len(texto) < 4):
+                continue
+            href_l = href.lower()
+            if any(x in href_l for x in excluir):
+                continue
+            if href_l.endswith((".css", ".js", ".png", ".ico", ".jpg")):
+                continue
+            enlaces.append({
+                "nombre": texto,
+                "url": href if href.startswith("http") else BASE_URL + "/" + href,
+            })
+        return {"disponible": bool(enlaces), "enlaces": enlaces}
+
+    # ------------------------------------------------------------------ #
+    # ENVIAR MENSAJES (escritura en Educalinks)
+    # ------------------------------------------------------------------ #
+    def enviar_mensaje(self, para_codi, para_tipo, asunto, cuerpo):
+        """Envía un mensaje a través del portal de Educalinks.
+
+        POST a mensajes_nuevo_script_envio.php con DO=ADD.
+        para_codi: matrícula del destinatario
+        para_tipo: 'D' (docente) o 'A' (alumno)
+        """
+        if not self._logged_in:
+            self.login()
+        alum_codi = self.get_alum_codi()
+        if not alum_codi:
+            raise EducalinksError("No se pudo obtener tu código de estudiante")
+
+        dest = json.dumps([{
+            "mens_para": para_codi,
+            "mens_para_tipo": para_tipo,
+            "mens_alum_codi": alum_codi,
+        }])
+        data = {
+            "mens_de": alum_codi,
+            "mens_de_tipo": "A",
+            "mens_dest": dest,
+            "mens_titu": asunto,
+            "mens_deta": cuerpo,
+            "DO": "ADD",
+        }
+        resp = self.session.post(
+            f"{BASE_URL}/alumnos/mensajes_nuevo_script_envio.php",
+            data=data, timeout=30)
+        if resp.status_code != 200:
+            raise EducalinksError(f"Error {resp.status_code} al enviar mensaje")
+        # respuesta JSON: {tipo: "error"|"success", mensaje: "..."}
+        try:
+            r = resp.json()
+            if r.get("tipo") == "error":
+                raise EducalinksError(r.get("mensaje", "Error al enviar"))
+            return {"ok": True, "mensaje": r.get("mensaje", "Mensaje enviado")}
+        except ValueError:
+            # si no es JSON, asumir éxito si status 200
+            return {"ok": True, "mensaje": "Mensaje enviado"}
+
+    def responder_mensaje(self, para_codi, para_tipo, asunto, cuerpo):
+        """Responde a un mensaje existente (DO=RESP)."""
+        if not self._logged_in:
+            self.login()
+        alum_codi = self.get_alum_codi()
+        if not alum_codi:
+            raise EducalinksError("No se pudo obtener tu código de estudiante")
+        data = {
+            "mens_de": alum_codi,
+            "mens_de_tipo": "A",
+            "mens_para": para_codi,
+            "mens_para_tipo": para_tipo,
+            "mens_titu": asunto,
+            "mens_deta": cuerpo,
+            "DO": "RESP",
+        }
+        resp = self.session.post(
+            f"{BASE_URL}/alumnos/mensajes_nuevo_script_envio.php",
+            data=data, timeout=30)
+        if resp.status_code != 200:
+            raise EducalinksError(f"Error {resp.status_code} al responder")
+        try:
+            r = resp.json()
+            if r.get("tipo") == "error":
+                raise EducalinksError(r.get("mensaje", "Error al responder"))
+            return {"ok": True, "mensaje": r.get("mensaje", "Respuesta enviada")}
+        except ValueError:
+            return {"ok": True, "mensaje": "Respuesta enviada"}
+
+    def subir_tarea(self, agen_codi, archivo_bytes, archivo_nombre, nombre_materia):
+        """Sube un archivo de tarea como estudiante.
+
+        POST a scrip_upload_file_alum.php con FormData:
+        - tarea_upload: File (PDF/JPG/JPEG/PNG, max 2MB)
+        - id_agen_alum_actividad_notas: ID de la actividad
+        - nombreMateria: nombre de la materia
+        """
+        if not self._logged_in:
+            self.login()
+        files = {"tarea_upload": (archivo_nombre, archivo_bytes)}
+        data = {
+            "id_agen_alum_actividad_notas": str(agen_codi),
+            "nombreMateria": nombre_materia,
+        }
+        resp = self.session.post(
+            f"{BASE_URL}/alumnos/scrip_upload_file_alum.php",
+            files=files, data=data, timeout=60)
+        if resp.status_code != 200:
+            raise EducalinksError(f"Error {resp.status_code} al subir tarea")
+        texto = resp.text.strip()
+        if texto == "OK":
+            return {"ok": True, "mensaje": "Tarea enviada correctamente"}
+        elif texto == "0":
+            raise EducalinksError("El archivo no se pudo subir")
+        elif texto == "2":
+            raise EducalinksError("El nombre del archivo no debe contener puntos, comas u otros caracteres especiales")
+        elif texto == "3":
+            raise EducalinksError("El archivo debe ser PDF, JPG, JPEG o PNG")
+        elif texto == "4":
+            raise EducalinksError("El archivo supera los 2MB permitidos")
+        elif texto == "5":
+            raise EducalinksError("La tarea ya fue subida anteriormente")
+        elif texto == "6":
+            raise EducalinksError("Error al subir la tarea (código 6)")
+        raise EducalinksError(f"Respuesta desconocida: {texto}")
+
+    def subir_enlaces_tarea(self, agen_codi, enlaces):
+        """Envía enlaces de tarea virtual como estudiante.
+
+        POST a script_agen.php con opc=agen_enlaces_alum.
+        """
+        if not self._logged_in:
+            self.login()
+        data = {
+            "enlaces": enlaces,
+            "opc": "agen_enlaces_alum",
+            "id": str(agen_codi),
+        }
+        resp = self.session.post(
+            f"{BASE_URL}/alumnos/script_agen.php",
+            data=data, timeout=30)
+        if resp.status_code != 200:
+            raise EducalinksError(f"Error {resp.status_code} al enviar enlaces")
+        texto = resp.text.strip()
+        if texto == "OK":
+            return {"ok": True, "mensaje": "Enlaces enviados correctamente"}
+        raise EducalinksError(f"Error al enviar enlaces: {texto}")
+
+    # ------------------------------------------------------------------ #
+    # Portal docente: scaffold de escritura (preparado para credenciales)
+    # ------------------------------------------------------------------ #
+    def crear_actividad_docente(self, curs_mate_prof, titulo, detalle,
+                                 fecha_inicio, fecha_fin, tipo="T"):
+        """Crea una actividad/tarea en el portal docente.
+
+        REQUIERE credenciales de docente. Los campos se basan en el
+        patrón de POST del portal (form-data a script .php con opc=).
+        Este método está preparado pero NO PROBADO sin credenciales.
+        """
+        if not self._logged_in:
+            self.login()
+        if self.perfil_portal != "docente":
+            raise EducalinksError("Se necesita perfil de docente")
+        # Endpoint estimado basado en el patrón del portal
+        data = {
+            "opc": "set_agenda",
+            "curs_mate_prof": curs_mate_prof,
+            "agen_titu": titulo,
+            "agen_deta": detalle,
+            "agen_fech_ini": fecha_inicio,
+            "agen_fech_fin": fecha_fin,
+            "agen_tipo": tipo,
+        }
+        resp = self.session.post(
+            f"{BASE_URL}/docentes/script_agenda.php",
+            data=data, timeout=30)
+        if resp.status_code != 200:
+            raise EducalinksError(f"Error {resp.status_code} al crear actividad")
+        try:
+            r = resp.json()
+            if r.get("tipo") == "error":
+                raise EducalinksError(r.get("mensaje", "Error al crear"))
+            return {"ok": True, "mensaje": r.get("mensaje", "Actividad creada")}
+        except ValueError:
+            return {"ok": True, "mensaje": "Actividad creada"}
+
+    # ------------------------------------------------------------------ #
     # Aula virtual: catalogo de clases y sus materiales
     # ------------------------------------------------------------------ #
     def get_materias_clase(self):

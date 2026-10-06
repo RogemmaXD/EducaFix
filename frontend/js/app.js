@@ -303,7 +303,9 @@
       (esPersonal ?
         '<button class="acc-btn" data-accion="pt-del" data-id="' + esc(id) + '" title="Eliminar">🗑️</button>' :
         '<button class="acc-btn share" data-accion="ev-share" data-id="' + esc(id) + '" title="Compartir">🔗</button>' +
-        '<button class="acc-btn" data-accion="ev-ics" data-id="' + esc(id) + '" title="Agregar a mi calendario">📅</button>') +
+        '<button class="acc-btn" data-accion="ev-ics" data-id="' + esc(id) + '" title="Agregar a mi calendario">📅</button>' +
+        (!h && ev && ev.fecha_inicio && diasRestantes(ev) >= 0 ?
+          '<button class="acc-btn" data-accion="entregar-abrir" data-id="' + esc(id) + '" data-materia="' + esc(ev.materia || '') + '" data-titulo="' + esc(ev.titulo || '') + '" title="Entregar tarea">📤</button>' : '')) +
       '<button class="acc-btn ' + (star ? 'on' : '') + '" data-accion="ev-star" data-id="' + esc(id) + '" title="Marcar como importante">⭐</button>' +
       '<button class="acc-btn" data-accion="subt-open" data-id="' + esc(id) + '" title="Sub-tareas (checklist)">☑' + (subtn ? '<span class="subt-prog" style="margin-left:.15rem">' + subtn + '</span>' : '') + '</button>' +
       (esPersonal ? '' :
@@ -1778,11 +1780,13 @@
     var cl = claveMsg(m.id);
     var leido = esLeido(cl);
     return '<div class="com-card que" data-clave="' + esc(cl) + '">' +
-      '<div style="display:flex;gap:.6rem"><div class="com-ico">✉️</div><div style="flex:1;min-width:0">' +
-      '<div class="c-tit">' + marcar(m.asunto, q) + '</div>' +
+      '<div style="display:flex;gap:.6rem"><div class="com-ico" data-accion="mensaje-leer" data-idx="' + (MSJ_COMPLETOS ? 'buscar:' + esc(m.asunto) : idx) + '" style="cursor:pointer">✉️</div><div style="flex:1;min-width:0">' +
+      '<div class="c-tit" data-accion="mensaje-leer" data-idx="' + idx + '" style="cursor:pointer">' + marcar(m.asunto, q) + '</div>' +
       '<div class="c-sub">' + esc(m.remitente || 'Remitente') + (m.fecha ? ' · ' + esc(m.fecha) : '') + '</div></div></div>' +
       '<div class="com-meta"><span>' + (leido ? '✓ Leído' : '<strong style="color:var(--acento)">Nuevo</strong>') + '</span>' +
-      '<span class="acc"><button class="acc-btn ' + (leido ? 'on' : '') + '" data-accion="leido" data-clave="' + esc(cl) + '" title="Marcar leído">✓</button>' +
+      '<span class="acc">' +
+      '<button class="acc-btn" data-accion="mensaje-responder" data-para="' + esc(m.remitente || '') + '" title="Responder">↩️</button>' +
+      '<button class="acc-btn ' + (leido ? 'on' : '') + '" data-accion="leido" data-clave="' + esc(cl) + '" title="Marcar leído">✓</button>' +
       '<button class="acc-btn ' + (FAV[cl] ? 'on' : '') + '" data-accion="fav" data-clave="' + esc(cl) + '" title="Favorito">★</button></span></div></div>';
   }
   function comCircular(c, idx, q) {
@@ -1807,7 +1811,8 @@
     closeOverlay('overlay-enfoque');
     closeOverlay('overlay-materia'); closeOverlay('overlay-examen');
     closeOverlay('overlay-flash'); closeOverlay('overlay-nuevaflash');
-    closeOverlay('overlay-info');
+    closeOverlay('overlay-info'); closeOverlay('overlay-mensaje'); closeOverlay('overlay-leer');
+    closeOverlay('overlay-entregar');
     cerrarCampana(); cerrarBusqueda();
   }
 
@@ -2550,6 +2555,20 @@
         case 'pagos-ver': abrirInfoPagos(); break;
         case 'snapshots-estado': abrirSnapshotsEstado(); break;
         case 'info-cerrar': closeOverlay('overlay-info'); break;
+        case 'mensaje-abrir': cerrarPaneles(); abrirMensajeNuevo(); break;
+        case 'mensaje-cerrar': closeOverlay('overlay-mensaje'); break;
+        case 'mensaje-enviar': enviarMensajeActual(); break;
+        case 'mensaje-responder': closeOverlay('overlay-leer'); abrirMensajeResponder(t.dataset.para || ''); break;
+        case 'leer-cerrar': closeOverlay('overlay-leer'); break;
+        case 'mensaje-leer': abrirLeerMensaje(parseInt(t.dataset.idx || '0', 10)); break;
+        case 'entregar-abrir': abrirEntregar(t.dataset.id, t.dataset.materia, t.dataset.titulo); break;
+        case 'entregar-cerrar': closeOverlay('overlay-entregar'); break;
+        case 'entregar-tab': entregarSwitchTab(t.dataset.tab); break;
+        case 'entregar-add-enlace': entregarAddEnlace(); break;
+        case 'entregar-enviar-archivo': entregarEnviarArchivo(); break;
+        case 'entregar-enviar-enlaces': entregarEnviarEnlaces(); break;
+        case 'enlaces-ver': abrirEnlacesExternos(); break;
+        case 'eventos-ver': abrirEventos(); break;
         case 'mat-tab': agg.matTab = t.dataset.tab; renderMateriaOverlay(); break;
         case 'mat-full': agg.matFull = !agg.matFull; renderMateriaOverlay(); break;
         case 'mat-share': compartirMateria(t.dataset.materia); break;
@@ -2681,6 +2700,249 @@
     if (i >= 0) LEIDOS.splice(i, 1); else LEIDOS.push(clave);
     guardarLS(LS_LEIDOS, LEIDOS);
     repintarCom();
+  }
+
+  /* ================= MENSAJES: leer cuerpo + enviar + responder ================= */
+  var MSJ_COMPLETOS = null;
+  var mensajeRespondiendo = null;
+
+  function cargarMensajesCompletos() {
+    if (MSJ_COMPLETOS) return Promise.resolve();
+    return apiFetch('api/mensajes/completos', { headers: { 'Accept': 'application/json' } })
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)); })
+      .then(function (j) { MSJ_COMPLETOS = j; })
+      .catch(function (e) { console.warn('mensajes completos no disponibles', e); });
+  }
+
+  function abrirMensajeNuevo() {
+    mensajeRespondiendo = null;
+    $('#mensaje-titulo').innerHTML = '✉️ Nuevo mensaje <span style="margin-left:auto"></span><button class="x" data-accion="mensaje-cerrar" aria-label="Cerrar">✕</button>';
+    $('#mensaje-asunto').value = '';
+    $('#mensaje-cuerpo').value = '';
+    cargarPlanificacion().then(function () {
+      var sel = $('#mensaje-para');
+      if (!sel) return;
+      var opts = '<option value="">— elegir destinatario —</option>';
+      var vistos = {};
+      (PLAN || []).forEach(function (p) {
+        if (!p.docente || vistos[p.docente]) return;
+        vistos[p.docente] = 1;
+        opts += '<option value="' + esc(p.docente) + '">' + esc(p.docente) + ' (' + esc(truncNombre(p.materia, 20)) + ')</option>';
+      });
+      sel.innerHTML = opts;
+    });
+    openOverlay('overlay-mensaje');
+    setTimeout(function () { var i = $('#mensaje-para'); if (i) i.focus(); }, 60);
+  }
+
+  function abrirMensajeResponder(remitente) {
+    mensajeRespondiendo = { para: remitente };
+    $('#mensaje-titulo').innerHTML = '↩️ Responder <span style="margin-left:auto"></span><button class="x" data-accion="mensaje-cerrar" aria-label="Cerrar">✕</button>';
+    $('#mensaje-asunto').value = 'Re: ';
+    $('#mensaje-cuerpo').value = '';
+    $('#mensaje-para').innerHTML = '<option value="' + esc(remitente) + '" selected>' + esc(remitente) + '</option>';
+    openOverlay('overlay-mensaje');
+    setTimeout(function () { var i = $('#mensaje-cuerpo'); if (i) i.focus(); }, 60);
+  }
+
+  function enviarMensajeActual() {
+    var para = $('#mensaje-para').value;
+    var asunto = ($('#mensaje-asunto').value || '').trim();
+    var cuerpo = ($('#mensaje-cuerpo').value || '').trim();
+    if (!para) { toast('Elige un destinatario.', 'err'); return; }
+    if (!asunto) { toast('Escribe un asunto.', 'err'); return; }
+    if (!cuerpo) { toast('Escribe el mensaje.', 'err'); return; }
+    var btn = $('[data-accion="mensaje-enviar"]');
+    if (btn) { btn.disabled = true; btn.textContent = 'Enviando…'; }
+    apiFetch('api/mensajes/enviar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ para_codi: para, para_tipo: 'D', asunto: asunto, cuerpo: cuerpo })
+    })
+      .then(function (r) {
+        if (!r.ok) return r.json().then(function (j) { throw new Error(j.detail || 'Error ' + r.status); });
+        return r.json();
+      })
+      .then(function (j) {
+        toast('✓ ' + (j.mensaje || 'Mensaje enviado'));
+        closeOverlay('overlay-mensaje');
+      })
+      .catch(function (e) {
+        toast('Error: ' + e.message, 'err');
+      })
+      .finally(function () {
+        if (btn) { btn.disabled = false; btn.textContent = 'Enviar'; }
+      });
+  }
+
+  function abrirLeerMensaje(idx) {
+    cargarMensajesCompletos().then(function () {
+      var msj = MSJ_COMPLETOS && MSJ_COMPLETOS.mensajes && MSJ_COMPLETOS.mensajes[idx];
+      if (!msj) { toast('Mensaje no encontrado.', 'err'); return; }
+      $('#leer-titulo').innerHTML = '✉️ ' + esc(truncNombre(msj.docente, 30)) +
+        ' <span style="margin-left:auto"></span><button class="x" data-accion="leer-cerrar" aria-label="Cerrar">✕</button>';
+      var html = '<div class="sub" style="margin-bottom:.6rem">' + esc(msj.recibido || '') + '</div>' +
+        '<div class="tarjeta" style="font-size:.88rem;line-height:1.6;white-space:pre-wrap;max-height:50vh;overflow:auto">' +
+        esc(msj.cuerpo || '(sin contenido)') + '</div>' +
+        '<div style="margin-top:.7rem;display:flex;gap:.5rem;flex-wrap:wrap">' +
+        '<button class="btn mini" data-accion="mensaje-responder" data-para="' + esc(msj.docente) + '">↩️ Responder</button></div>';
+      $('#leer-cuerpo').innerHTML = html;
+      openOverlay('overlay-leer');
+    });
+  }
+
+  /* ================= ENTREGAR TAREAS (subir archivo + enlaces) ================= */
+  var entregarActual = null;  // {id, materia, titulo}
+  var entregarTab = 'archivo';
+
+  function abrirEntregar(id, materia, titulo) {
+    entregarActual = { id: id, materia: materia || '', titulo: titulo || '' };
+    entregarTab = 'archivo';
+    $('#entregar-contexto').textContent = (materia || '') + ' — ' + (titulo || '');
+    $('#entregar-panel-archivo').style.display = '';
+    $('#entregar-panel-enlaces').style.display = 'none';
+    $('#tab-archivo').classList.add('activa');
+    $('#tab-enlaces').classList.remove('activa');
+    $('#entregar-resultado').innerHTML = '';
+    $('#entregar-file').value = '';
+    // reset enlaces (dejar 1)
+    var lista = $('#entregar-enlaces-lista');
+    if (lista) lista.innerHTML = '<label class="lbl">Enlace 1<input type="url" class="entregar-enlace-input" placeholder="https://..." style="margin-top:.3rem"></label>';
+    openOverlay('overlay-entregar');
+  }
+
+  function entregarSwitchTab(tab) {
+    entregarTab = tab;
+    $('#entregar-panel-archivo').style.display = tab === 'archivo' ? '' : 'none';
+    $('#entregar-panel-enlaces').style.display = tab === 'enlaces' ? '' : 'none';
+    $('#tab-archivo').classList.toggle('activa', tab === 'archivo');
+    $('#tab-enlaces').classList.toggle('activa', tab === 'enlaces');
+  }
+
+  function entregarAddEnlace() {
+    var lista = $('#entregar-enlaces-lista');
+    if (!lista) return;
+    var n = lista.children.length + 1;
+    var div = document.createElement('div');
+    div.innerHTML = '<label class="lbl">Enlace ' + n + '<input type="url" class="entregar-enlace-input" placeholder="https://..." style="margin-top:.3rem"></label>';
+    lista.appendChild(div);
+    var inputs = lista.querySelectorAll('.entregar-enlace-input');
+    if (inputs.length) inputs[inputs.length - 1].focus();
+  }
+
+  function entregarEnviarArchivo() {
+    if (!entregarActual) return;
+    var file = $('#entregar-file').files[0];
+    if (!file) { toast('Selecciona un archivo primero.', 'err'); return; }
+    var ext = file.name.split('.').pop().toLowerCase();
+    if (!['pdf', 'jpg', 'jpeg', 'png'].includes(ext)) {
+      toast('Solo PDF, JPG, JPEG o PNG.', 'err'); return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      toast('El archivo supera los 2MB.', 'err'); return;
+    }
+    var btn = $('[data-accion="entregar-enviar-archivo"]');
+    if (btn) { btn.disabled = true; btn.textContent = '⏳ Subiendo…'; }
+    var fd = new FormData();
+    fd.append('archivo', file);
+    fd.append('agen_codi', entregarActual.id);
+    fd.append('nombre_materia', entregarActual.materia);
+    apiFetch('api/tareas/subir', {
+      method: 'POST',
+      body: fd
+    })
+      .then(function (r) {
+        if (!r.ok) return r.json().then(function (j) { throw new Error(j.detail || 'Error ' + r.status); });
+        return r.json();
+      })
+      .then(function (j) {
+        $('#entregar-resultado').innerHTML = '<div class="entregar-ok">✅ ' + esc(j.mensaje || 'Tarea enviada') + '</div>';
+        toast('✅ Tarea enviada');
+        setTimeout(function () { closeOverlay('overlay-entregar'); }, 1800);
+        renderVistaActual();
+      })
+      .catch(function (e) {
+        $('#entregar-resultado').innerHTML = '<div class="entregar-err">❌ ' + esc(e.message) + '</div>';
+      })
+      .finally(function () {
+        if (btn) { btn.disabled = false; btn.textContent = '📤 Subir tarea'; }
+      });
+  }
+
+  function entregarEnviarEnlaces() {
+    if (!entregarActual) return;
+    var inputs = document.querySelectorAll('#entregar-enlaces-lista .entregar-enlace-input');
+    var enlaces = [];
+    inputs.forEach(function (inp) {
+      var v = (inp.value || '').trim();
+      if (v && v.length > 5) enlaces.push(v);
+    });
+    if (!enlaces.length) { toast('Escribe al menos un enlace.', 'err'); return; }
+    var btn = $('[data-accion="entregar-enviar-enlaces"]');
+    if (btn) { btn.disabled = true; btn.textContent = '⏳ Enviando…'; }
+    apiFetch('api/tareas/enlaces', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ agen_codi: entregarActual.id, nombre_materia: entregarActual.materia, enlaces: enlaces })
+    })
+      .then(function (r) {
+        if (!r.ok) return r.json().then(function (j) { throw new Error(j.detail || 'Error ' + r.status); });
+        return r.json();
+      })
+      .then(function (j) {
+        $('#entregar-resultado').innerHTML = '<div class="entregar-ok">✅ ' + esc(j.mensaje || 'Enlaces enviados') + '</div>';
+        toast('✅ Enlaces enviados');
+        setTimeout(function () { closeOverlay('overlay-entregar'); }, 1800);
+      })
+      .catch(function (e) {
+        $('#entregar-resultado').innerHTML = '<div class="entregar-err">❌ ' + esc(e.message) + '</div>';
+      })
+      .finally(function () {
+        if (btn) { btn.disabled = false; btn.textContent = '🔗 Enviar enlaces'; }
+      });
+  }
+
+  /* ================= EVENTOS Y ENLACES ================= */
+  var EVENTOS = null;
+  function cargarEventos() {
+    if (EVENTOS) return Promise.resolve();
+    return apiFetch('api/eventos', { headers: { 'Accept': 'application/json' } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (j) { if (j) EVENTOS = j; })
+      .catch(function () {});
+  }
+
+  var ENLACES = null;
+  function cargarEnlaces() {
+    if (ENLACES) return Promise.resolve();
+    return apiFetch('api/enlaces', { headers: { 'Accept': 'application/json' } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (j) { if (j) ENLACES = j; })
+      .catch(function () {});
+  }
+
+  function abrirEnlacesExternos() {
+    cargarEnlaces().then(function () {
+      var enl = (ENLACES || {}).enlaces || [];
+      abrirInfo('🔗 Plataformas externas',
+        enl.length ? enl.map(function (e) {
+          return '<a class="menu-row" href="' + esc(e.url) + '" target="_blank" rel="noopener" style="text-decoration:none">' +
+            '<span class="mr-ico" aria-hidden="true">🔗</span>' +
+            '<span class="mr-main"><span class="mr-tit">' + esc(e.nombre) + '</span>' +
+            '<span class="mr-sub">' + esc(truncNombre(e.url, 50)) + '</span></span>' +
+            '<span class="mr-chevron" aria-hidden="true">↗</span></a>';
+        }).join('') : '<div class="vacio">No hay plataformas externas disponibles.</div>');
+    });
+  }
+
+  function abrirEventos() {
+    cargarEventos().then(function () {
+      var evs = (EVENTOS || {}).eventos || [];
+      abrirInfo('📅 Eventos del colegio',
+        evs.length ? evs.map(function (e) {
+          return '<div class="ayuda-fila"><b>' + esc(e.fecha || '') + '</b><span>' + esc(e.titulo || '') + '</span></div>';
+        }).join('') : '<div class="vacio">Sin eventos próximos.</div>');
+    });
   }
   function toggleFav(clave) {
     FAV[clave] = !FAV[clave];
@@ -3495,6 +3757,8 @@
       '<button data-accion="estado-3p" data-id="' + esc(id) + '" data-estado="prog" class="' + (est === 'prog' ? 'on-prog' : '') + '" title="En progreso" aria-label="En progreso">⏳</button>' +
       '<button data-accion="estado-3p" data-id="' + esc(id) + '" data-estado="hecha" class="' + (est === 'hecha' ? 'on-hecha' : '') + '" title="Completado" aria-label="Completado">✓</button>' +
       '</div>' +
+      (!e.personal && est !== 'hecha' && e.fecha_inicio && diasRestantes(e) >= 0 ?
+        '<button class="acc-btn" data-accion="entregar-abrir" data-id="' + esc(id) + '" data-materia="' + esc(e.materia || '') + '" data-titulo="' + esc(e.titulo || '') + '" title="Entregar tarea" style="background:var(--acento-suave);color:var(--acento)">📤</button>' : '') +
       (e.personal ? '<button class="acc-btn" data-accion="pt-del" data-id="' + esc(id) + '" title="Eliminar">🗑️</button>' : '') +
       '</div></div>';
   }
@@ -4299,6 +4563,9 @@
         menuRow('📂', 'Documentos', docs ? docs + ' materiales del aula virtual' : 'materiales por materia', 'ir:documentos', '') +
         menuRow('🧠', 'Estudio', due ? due + ' flashcards para hoy · pomodoro' : 'pomodoro, sesiones y flashcards', 'ir:estudio', due)) +
       grupo('Colegio',
+        menuRow('✉️', 'Nuevo mensaje', 'escribir a un docente directamente', 'mensaje-abrir', '') +
+        menuRow('📅', 'Eventos del colegio', 'calendario de actividades y feriados', 'eventos-ver', '') +
+        menuRow('🔗', 'Plataformas externas', 'herramientas del colegio', 'enlaces-ver', '') +
         menuRow('📣', 'Comunicados', 'mensajes y circulares', 'ir:comunicados', noLeidos) +
         (fal.disponible ?
           menuRow('🧾', 'Mi asistencia',
