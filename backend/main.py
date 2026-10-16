@@ -149,8 +149,11 @@ def login(datos: DatosLogin, request: Request, response: Response):
         if "Perfil no valido" in msg:
             raise HTTPException(status_code=400, detail=msg)
         if "Login rechazado" in msg:
+            if datos.perfil == "docente":
+                raise HTTPException(status_code=401,
+                                    detail="Estas credenciales no son de docente. Verifica que la cédula y contraseña correspondan a una cuenta con perfil Docente en Educalinks.")
             raise HTTPException(status_code=401,
-                                detail="Usuario o contrasena incorrectos")
+                                detail="Usuario o contrasena incorrectos. Si eres docente, selecciona el perfil Docente arriba.")
         if "Ingresa" in msg:
             raise HTTPException(status_code=400, detail=msg)
         raise HTTPException(status_code=502, detail=msg)
@@ -261,8 +264,8 @@ def _requiere_docente(ses: Sesion = Depends(requiere_sesion)) -> Sesion:
 
 
 class MensajeEnviar(BaseModel):
-    para_codi: str
-    para_tipo: str = "D"  # D=docente, A=alumno
+    para_codi: str | list[str]
+    para_tipo: str = "D"
     asunto: str
     cuerpo: str
 
@@ -575,6 +578,53 @@ def asistencia(response: Response, ses: Sesion = Depends(_requiere_alumno)):
     """Historial de faltas/atrasos del estudiante (del PDF del portal)."""
     try:
         data, snap, ts = _con_respaldo(ses, "asistencia", ses.cliente.get_faltas)
+    except EducalinksError as exc:
+        raise HTTPException(status_code=502, detail=str(exc))
+    if snap:
+        response.headers["X-Snapshot"] = "true"
+        response.headers["X-Snapshot-Ts"] = str(ts)
+    return data
+
+
+@app.get("/api/mensajes/{mens_codi}")
+def mensaje_individual(mens_codi: str,
+                         response: Response,
+                         ses: Sesion = Depends(_requiere_alumno)):
+    """Cuerpo completo de un mensaje individual."""
+    try:
+        data = ses.cliente.get_mensaje_individual(mens_codi)
+        return data
+    except EducalinksError as exc:
+        raise HTTPException(status_code=502, detail=str(exc))
+
+
+@app.post("/api/mensajes/{mens_codi}/leer")
+def mensaje_marcar_leido(mens_codi: str,
+                          ses: Sesion = Depends(_requiere_alumno)):
+    """Marca un mensaje como leído en el servidor de Educalinks."""
+    try:
+        return ses.cliente.marcar_leido_servidor(mens_codi)
+    except EducalinksError as exc:
+        raise HTTPException(status_code=502, detail=str(exc))
+
+
+@app.post("/api/mensajes/{mens_codi}/eliminar")
+def mensaje_eliminar(mens_codi: str,
+                      ses: Sesion = Depends(_requiere_alumno)):
+    """Elimina un mensaje (lo mueve a eliminados)."""
+    try:
+        return ses.cliente.eliminar_mensaje(mens_codi)
+    except EducalinksError as exc:
+        raise HTTPException(status_code=502, detail=str(exc))
+
+
+@app.get("/api/mensajes/enviados")
+def mensajes_enviados(response: Response,
+                       ses: Sesion = Depends(_requiere_alumno)):
+    """Bandeja de mensajes enviados."""
+    try:
+        data, snap, ts = _con_respaldo(ses, "mensajes_enviados",
+                                        ses.cliente.get_mensajes_enviados)
     except EducalinksError as exc:
         raise HTTPException(status_code=502, detail=str(exc))
     if snap:

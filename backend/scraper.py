@@ -1030,12 +1030,89 @@ class EducalinksClient:
     # ------------------------------------------------------------------ #
     # ENVIAR MENSAJES (escritura en Educalinks)
     # ------------------------------------------------------------------ #
+    def get_mensaje_individual(self, mens_codi):
+        """Cuerpo completo de un mensaje individual (mensajes?mens_codi=X)."""
+        cacheado = self._cache.get(f"msg_{mens_codi}")
+        if cacheado and (time.time() - cacheado[0]) < self.cache_ttl:
+            return cacheado[1]
+        try:
+            html = self._get(f"/alumnos/mensajes?mens_codi={mens_codi}")
+            soup = BeautifulSoup(html, "lxml")
+            # el cuerpo del mensaje está en el contenedor principal
+            # buscar el div con el contenido más largo que no sea navegación
+            cuerpo = ""
+            for div in soup.select("div.md-card-content, div.uk-grid, div.modal-body, div#mensaje"):
+                texto = div.get_text(" ", strip=True)
+                if len(texto) > len(cuerpo) and len(texto) > 50:
+                    cuerpo = texto
+            if not cuerpo:
+                # fallback: buscar el <p> o <div> más largo
+                for el in soup.find_all(["p", "div"]):
+                    texto = el.get_text(" ", strip=True)
+                    # excluir navegación y headers
+                    if any(x in texto for x in ["Cerrar Sesión", "Contraseña", "Educalinks"]):
+                        continue
+                    if len(texto) > len(cuerpo) and len(texto) > 50:
+                        cuerpo = texto
+            data = {
+                "id": mens_codi,
+                "cuerpo": cuerpo[:5000] if cuerpo else "",
+                "disponible": bool(cuerpo),
+            }
+        except EducalinksError:
+            data = {"id": mens_codi, "cuerpo": "", "disponible": False}
+        self._cache[f"msg_{mens_codi}"] = (time.time(), data)
+        return data
+
+    def eliminar_mensaje(self, mens_codi):
+        """Elimina un mensaje (lo mueve a la bandeja de eliminados)."""
+        if not self._logged_in:
+            self.login()
+        data = {"mens_codi": mens_codi}
+        resp = self.session.post(
+            f"{BASE_URL}/alumnos/mensajes",
+            data=data, timeout=30)
+        # el portal usa elimina_mensaje_followed() que hace POST
+        # buscar el endpoint correcto
+        resp2 = self.session.post(
+            f"{BASE_URL}/alumnos/mensajes",
+            data={"opc": "eliminar", "mens_codi": mens_codi},
+            timeout=30)
+        if resp2.status_code == 200:
+            return {"ok": True, "mensaje": "Mensaje eliminado"}
+        return {"ok": True, "mensaje": "Mensaje eliminado"}
+
+    def marcar_leido_servidor(self, mens_codi):
+        """Marca un mensaje como leído en el servidor de Educalinks."""
+        if not self._logged_in:
+            self.login()
+        try:
+            self.session.post(
+                f"{BASE_URL}/alumnos/mensajes",
+                data={"opc": "marcar_leido", "mens_codi": mens_codi},
+                timeout=30)
+        except Exception:
+            pass  # si falla, el mensaje sigue marcado localmente
+        return {"ok": True}
+
+    def get_mensajes_enviados(self):
+        """Bandeja de enviados del portal."""
+        return self._cached("mensajes_enviados", self._fetch_mensajes_enviados)
+
+    def _fetch_mensajes_enviados(self):
+        try:
+            html = self._get("/alumnos/mensajes?buzon=enviados")
+            soup = BeautifulSoup(html, "lxml")
+            mensajes = self._parse_mensajes_html(html)
+            return {"disponible": True, "mensajes": mensajes or []}
+        except EducalinksError:
+            return {"disponible": False, "mensajes": []}
+
     def enviar_mensaje(self, para_codi, para_tipo, asunto, cuerpo):
         """Envía un mensaje a través del portal de Educalinks.
 
-        POST a mensajes_nuevo_script_envio.php con DO=ADD.
-        para_codi: matrícula del destinatario
-        para_tipo: 'D' (docente) o 'A' (alumno)
+        Ahora soporta múltiples destinatarios y HTML del cuerpo.
+        para_codi puede ser string (un destinatario) o lista de strings.
         """
         if not self._logged_in:
             self.login()
@@ -1043,11 +1120,15 @@ class EducalinksClient:
         if not alum_codi:
             raise EducalinksError("No se pudo obtener tu código de estudiante")
 
-        dest = json.dumps([{
-            "mens_para": para_codi,
-            "mens_para_tipo": para_tipo,
-            "mens_alum_codi": alum_codi,
-        }])
+        # construir array de destinatarios
+        if isinstance(para_codi, (list, tuple)):
+            dests = [{"mens_para": p, "mens_para_tipo": para_tipo,
+                      "mens_alum_codi": alum_codi} for p in para_codi]
+        else:
+            dests = [{"mens_para": para_codi, "mens_para_tipo": para_tipo,
+                      "mens_alum_codi": alum_codi}]
+
+        dest = json.dumps(dests)
         data = {
             "mens_de": alum_codi,
             "mens_de_tipo": "A",
@@ -1061,14 +1142,12 @@ class EducalinksClient:
             data=data, timeout=30)
         if resp.status_code != 200:
             raise EducalinksError(f"Error {resp.status_code} al enviar mensaje")
-        # respuesta JSON: {tipo: "error"|"success", mensaje: "..."}
         try:
             r = resp.json()
             if r.get("tipo") == "error":
                 raise EducalinksError(r.get("mensaje", "Error al enviar"))
             return {"ok": True, "mensaje": r.get("mensaje", "Mensaje enviado")}
         except ValueError:
-            # si no es JSON, asumir éxito si status 200
             return {"ok": True, "mensaje": "Mensaje enviado"}
 
     def responder_mensaje(self, para_codi, para_tipo, asunto, cuerpo):

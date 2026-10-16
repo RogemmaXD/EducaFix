@@ -110,7 +110,7 @@
       })
       .catch(function (err) {
         var status = err.status || 0;
-        if (status === 401) mostrarError('Usuario o contraseña incorrectos. Verifica e inténtalo de nuevo.');
+        if (status === 401) mostrarError(err.message || 'Usuario o contraseña incorrectos.');
         else if (status === 400) mostrarError(err.message);
         else if (status === 502) mostrarError(err.message || 'Educalinks no responde ahora. Intenta en unos minutos.');
         else if (status === 0) {

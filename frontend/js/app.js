@@ -1780,13 +1780,14 @@
     var cl = claveMsg(m.id);
     var leido = esLeido(cl);
     return '<div class="com-card que" data-clave="' + esc(cl) + '">' +
-      '<div style="display:flex;gap:.6rem"><div class="com-ico" data-accion="mensaje-leer" data-idx="' + (MSJ_COMPLETOS ? 'buscar:' + esc(m.asunto) : idx) + '" style="cursor:pointer">✉️</div><div style="flex:1;min-width:0">' +
-      '<div class="c-tit" data-accion="mensaje-leer" data-idx="' + idx + '" style="cursor:pointer">' + marcar(m.asunto, q) + '</div>' +
+      '<div style="display:flex;gap:.6rem"><div class="com-ico" data-accion="mensaje-leer" data-idx="' + idx + '" data-id="' + esc(m.id) + '" style="cursor:pointer">✉️</div><div style="flex:1;min-width:0">' +
+      '<div class="c-tit" data-accion="mensaje-leer" data-idx="' + idx + '" data-id="' + esc(m.id) + '" style="cursor:pointer">' + marcar(m.asunto, q) + '</div>' +
       '<div class="c-sub">' + esc(m.remitente || 'Remitente') + (m.fecha ? ' · ' + esc(m.fecha) : '') + '</div></div></div>' +
       '<div class="com-meta"><span>' + (leido ? '✓ Leído' : '<strong style="color:var(--acento)">Nuevo</strong>') + '</span>' +
       '<span class="acc">' +
       '<button class="acc-btn" data-accion="mensaje-responder" data-para="' + esc(m.remitente || '') + '" title="Responder">↩️</button>' +
-      '<button class="acc-btn ' + (leido ? 'on' : '') + '" data-accion="leido" data-clave="' + esc(cl) + '" title="Marcar leído">✓</button>' +
+      '<button class="acc-btn" data-accion="mensaje-del" data-id="' + esc(m.id) + '" title="Eliminar del servidor">🗑️</button>' +
+      '<button class="acc-btn ' + (leido ? 'on' : '') + '" data-accion="leido" data-clave="' + esc(cl) + '" title="Marcar leído localmente">✓</button>' +
       '<button class="acc-btn ' + (FAV[cl] ? 'on' : '') + '" data-accion="fav" data-clave="' + esc(cl) + '" title="Favorito">★</button></span></div></div>';
   }
   function comCircular(c, idx, q) {
@@ -2568,7 +2569,11 @@
         case 'entregar-enviar-archivo': entregarEnviarArchivo(); break;
         case 'entregar-enviar-enlaces': entregarEnviarEnlaces(); break;
         case 'enlaces-ver': abrirEnlacesExternos(); break;
-        case 'eventos-ver': abrirEventos(); break;
+        case 'eventos-ver': abrirEventosConPDFs(); break;
+        case 'observaciones-ver': abrirObservaciones(); break;
+        case 'informe-dia': abrirInformeDia(); break;
+        case 'mensaje-enviados': abrirMensajesEnviados(); break;
+        case 'mensaje-del': eliminarMensajeServidor(t.dataset.id); break;
         case 'mat-tab': agg.matTab = t.dataset.tab; renderMateriaOverlay(); break;
         case 'mat-full': agg.matFull = !agg.matFull; renderMateriaOverlay(); break;
         case 'mat-share': compartirMateria(t.dataset.materia); break;
@@ -2776,6 +2781,38 @@
   }
 
   function abrirLeerMensaje(idx) {
+    /* obtener el ID del mensaje del dataset del elemento clicado */
+    var el = event && event.target ? event.target.closest('[data-id]') : null;
+    var mensId = el ? el.dataset.id : null;
+
+    /* primero intentar el mensaje individual del servidor */
+    if (mensId) {
+      apiFetch('api/mensajes/' + encodeURIComponent(mensId), { headers: { 'Accept': 'application/json' } })
+        .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)); })
+        .then(function (j) {
+          if (j && j.disponible && j.cuerpo) {
+            /* marcar como leído en el servidor (fire-and-forget) */
+            marcarLeidoServidor(mensId);
+            /* mostrar el mensaje individual */
+            $('#leer-titulo').innerHTML = '✉️ Mensaje <span style="margin-left:auto"></span><button class="x" data-accion="leer-cerrar" aria-label="Cerrar">✕</button>';
+            $('#leer-cuerpo').innerHTML =
+              '<div class="tarjeta" style="font-size:.88rem;line-height:1.6;white-space:pre-wrap;max-height:50vh;overflow:auto">' +
+              esc(j.cuerpo) + '</div>' +
+              '<div style="margin-top:.7rem;display:flex;gap:.5rem;flex-wrap:wrap">' +
+              '<button class="btn mini" data-accion="leer-cerrar">Cerrar</button></div>';
+            openOverlay('overlay-leer');
+            return;
+          }
+          /* si el individual no tiene cuerpo, usar el del panel */
+          _abrirLeerDesdePanel(idx);
+        })
+        .catch(function () { _abrirLeerDesdePanel(idx); });
+    } else {
+      _abrirLeerDesdePanel(idx);
+    }
+  }
+
+  function _abrirLeerDesdePanel(idx) {
     cargarMensajesCompletos().then(function () {
       var msj = MSJ_COMPLETOS && MSJ_COMPLETOS.mensajes && MSJ_COMPLETOS.mensajes[idx];
       if (!msj) { toast('Mensaje no encontrado.', 'err'); return; }
@@ -2935,12 +2972,96 @@
     });
   }
 
-  function abrirEventos() {
+  /* ================= OBSERVACIONES + INFORME DEL DÍA ================= */
+  var OBSERVACIONES = null;
+  function cargarObservaciones() {
+    if (OBSERVACIONES) return Promise.resolve();
+    return apiFetch('api/observaciones', { headers: { 'Accept': 'application/json' } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (j) { if (j) OBSERVACIONES = j; })
+      .catch(function () {});
+  }
+
+  function abrirObservaciones() {
+    cargarObservaciones().then(function () {
+      var obs = (OBSERVACIONES || {}).observaciones || [];
+      abrirInfo('🧾 Observaciones de comportamiento',
+        obs.length ? obs.map(function (o) {
+          return '<div class="ayuda-fila"><b>' + esc(o.fecha || o.periodo || '') + '</b>' +
+            '<span>' + esc(o.tipo || '') + ' — ' + esc(o.detalle || '') +
+            (o.puntos ? ' (' + esc(o.puntos) + ')' : '') + '</span></div>';
+        }).join('') : '<div class="vacio">Sin observaciones registradas.</div>');
+    });
+  }
+
+  function abrirInformeDia() {
+    var hoy = new Date();
+    var evsHoy = eventosDia(hoy).filter(function (e) { return !HECHAS[e.id]; });
+    var manana = addDays(hoy, 1);
+    var evsManana = eventosDia(manana);
+    var c = claseActual();
+    var html =
+      '<h3 style="margin-bottom:.6rem;font-size:.95rem">📋 HOY — ' + fmtDia(hoy) + '</h3>' +
+      (c.hoy ? '<div class="sub" style="margin-bottom:.4rem"><strong>Clases:</strong> ' + c.hoy.length + '</div>' : '') +
+      (evsHoy.length ?
+        '<div style="margin-bottom:.8rem">' + evsHoy.map(function (e) {
+          return '<div class="ayuda-fila"><b>' + esc(e.materia || '') + '</b><span>' + esc(truncNombre(e.titulo, 40)) + '</span></div>';
+        }).join('') + '</div>'
+        : '<div class="sub" style="margin-bottom:.6rem">Sin pendientes para hoy ✓</div>') +
+      '<h3 style="margin-bottom:.6rem;font-size:.95rem">📋 MAÑANA — ' + fmtDia(manana) + '</h3>' +
+      (evsManana.length ?
+        '<div style="margin-bottom:.8rem">' + evsManana.map(function (e) {
+          return '<div class="ayuda-fila"><b>' + esc(e.materia || '') + '</b><span>' + esc(truncNombre(e.titulo, 40)) + '</span></div>';
+        }).join('') + '</div>'
+        : '<div class="sub">Sin pendientes para mañana ✓</div>');
+    abrirInfo('📅 Informe del día', html);
+  }
+
+  function abrirMensajesEnviados() {
+    apiFetch('api/mensajes/enviados', { headers: { 'Accept': 'application/json' } })
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)); })
+      .then(function (j) {
+        var msj = j.mensajes || [];
+        abrirInfo('📤 Mensajes enviados',
+          msj.length ? msj.map(function (m) {
+            return '<div class="ayuda-fila"><b>' + esc(truncNombre(m.asunto, 30)) + '</b>' +
+              '<span>' + esc(m.remitente || '') + ' · ' + esc(m.fecha || '') + '</span></div>';
+          }).join('') : '<div class="vacio">No has enviado mensajes todavía.</div>');
+      })
+      .catch(function (e) {
+        abrirInfo('📤 Mensajes enviados', '<div class="vacio">No se pudo cargar la bandeja de enviados.</div>');
+      });
+  }
+
+  function eliminarMensajeServidor(mensCodi) {
+    if (!mensCodi) return;
+    apiFetch('api/mensajes/' + encodeURIComponent(mensCodi) + '/eliminar', {
+      method: 'POST'
+    })
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error('Error')); })
+      .then(function (j) {
+        toast('🗑️ ' + (j.mensaje || 'Mensaje eliminado'));
+        renderVistaActual();
+      })
+      .catch(function (e) { toast('No se pudo eliminar: ' + e.message, 'err'); });
+  }
+
+  function marcarLeidoServidor(mensCodi) {
+    if (!mensCodi) return;
+    apiFetch('api/mensajes/' + encodeURIComponent(mensCodi) + '/leer', {
+      method: 'POST'
+    }).catch(function () {});
+  }
+
+  function abrirEventosConPDFs() {
     cargarEventos().then(function () {
       var evs = (EVENTOS || {}).eventos || [];
       abrirInfo('📅 Eventos del colegio',
         evs.length ? evs.map(function (e) {
-          return '<div class="ayuda-fila"><b>' + esc(e.fecha || '') + '</b><span>' + esc(e.titulo || '') + '</span></div>';
+          var pdfBtn = e.pdf ?
+            ' <a class="btn ghost mini" href="api/descargar?url=' + encodeURIComponent(e.pdf) + '" target="_blank">📄 PDF</a>' : '';
+          return '<div class="ayuda-fila"><b>' + esc(e.fecha || '') + '</b>' +
+            '<span>' + esc(e.titulo || '') + pdfBtn + '</span></div>';
         }).join('') : '<div class="vacio">Sin eventos próximos.</div>');
     });
   }
@@ -3341,7 +3462,8 @@
           (m.ok ? '<span class="badge nota verde">✓ detectado</span>' : '<span class="badge estado">por mapear</span>') + '</span>';
       }).join('') + '</div>' +
       '<div class="menu-sec">Atajos</div><div class="menu-grupo">' +
-      menuRowDoc('📣', 'Mensajes y circulares', 'comunicados del colegio', 'ir:comunicados') +
+      menuRowDoc('📋', 'Informe del día', 'qué toca hoy y mañana', 'informe-dia') +
+      menuRowDoc('✉️', 'Mensajes', 'comunicados del colegio', 'ir:comunicados') +
       menuRowDoc('⚙️', 'Ajustes', 'tema, colores y metas', 'ajustes') +
       menuRowDoc('↻', 'Sincronizar portal', 'volver a leer Educalinks', 'refresh-manual') +
       menuRowDoc('⏻', 'Cerrar sesión', '', 'salir') +
@@ -4564,7 +4686,10 @@
         menuRow('🧠', 'Estudio', due ? due + ' flashcards para hoy · pomodoro' : 'pomodoro, sesiones y flashcards', 'ir:estudio', due)) +
       grupo('Colegio',
         menuRow('✉️', 'Nuevo mensaje', 'escribir a un docente directamente', 'mensaje-abrir', '') +
-        menuRow('📅', 'Eventos del colegio', 'calendario de actividades y feriados', 'eventos-ver', '') +
+        menuRow('📤', 'Mensajes enviados', 'los mensajes que tú enviaste', 'mensaje-enviados', '') +
+        menuRow('📅', 'Eventos del colegio', 'calendario con PDFs descargables', 'eventos-ver', '') +
+        menuRow('📋', 'Informe del día', 'qué toca hoy y mañana', 'informe-dia', '') +
+        menuRow('🧾', 'Observaciones', 'comportamiento y disciplina', 'observaciones-ver', '') +
         menuRow('🔗', 'Plataformas externas', 'herramientas del colegio', 'enlaces-ver', '') +
         menuRow('📣', 'Comunicados', 'mensajes y circulares', 'ir:comunicados', noLeidos) +
         (fal.disponible ?
